@@ -1,8 +1,6 @@
 package models
 
 type Gender struct {
+	Gender_Id   string
 	Descripcion string
-	Animes      []Anime
-	Movies      []Movie
-	Series      []Series
 }
