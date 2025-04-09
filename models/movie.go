@@ -1,11 +1,14 @@
 package models
 
-type Movies struct {
-	ID          uint   `json:"id" gorm:"primaryKey"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Year        int    `json:"year"`
+type Movie struct {
+	Title    string
+	Year     int
+	GenderID uint
+	Gender   Gender
+}
 
-	GenderID uint    `json:"gender_id"`
-	Gender   Genders `json:"gender" gorm:"foreignKey:GendersID"`
+type MovieDTO struct {
+	Title  string `json:"title"`
+	Year   int    `json:"year"`
+	Gender string `json:"gender"`
 }
