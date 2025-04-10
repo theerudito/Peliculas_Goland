@@ -1,4 +1,4 @@
--- GÉNEROS
+-- GENDERS
 CREATE TABLE
   IF NOT EXISTS genders (
     gender_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,7 +17,7 @@ VALUES
   ('FANTASIA'),
   ('DOCUMENTAL');
 
--- PELÍCULAS (con cover y url como BLOBs)
+-- MOVIES (con cover y url como BLOBs)
 CREATE TABLE
   IF NOT EXISTS movies (
     movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
