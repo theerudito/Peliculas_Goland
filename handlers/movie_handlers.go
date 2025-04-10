@@ -13,8 +13,8 @@ func Get_Movies(c *fiber.Ctx) error {
 	var dto []models.MovieDTO
 
 	rows, err := db.DB.Query(`SELECT movie.movie_id, movie.title, movie.year,movie.cover, movie.url, gender.descripcion
-												 		FROM movies AS movie
-												 		INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id`)
+	FROM movies AS movie
+	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id`)
 
 	if err != nil {
 		return err
@@ -39,9 +39,10 @@ func Get_MovieByID(c *fiber.Ctx) error {
 	var movie models.MovieDTO
 
 	err := db.DB.QueryRow(`SELECT movie.movie_id, movie.title, movie.year,movie.cover, movie.url, gender.descripcion
-												 FROM movies AS movie
-												 INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id
-												 WHERE movie.movie_id = ?`, id).Scan(&movie.ID, &movie.Title, &movie.Year, &movie.Cover, &movie.URL, &movie.Gender)
+	FROM movies AS movie
+	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id
+	WHERE movie.movie_id = ?`, id).Scan(&movie.ID, &movie.Title, &movie.Year, &movie.Cover, &movie.URL, &movie.Gender)
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return c.Status(404).JSON(fiber.Map{"error": "Movie not found"})
@@ -60,7 +61,7 @@ func Post_Movie(c *fiber.Ctx) error {
 	}
 
 	_, err := db.DB.Exec(`INSERT INTO movies (title, year, gender_id) 
-												VALUES (?, ?, ?)`, movie.Title, movie.Year, movie.GenderID)
+	VALUES (?, ?, ?)`, movie.Title, movie.Year, movie.GenderID)
 
 	if err != nil {
 		return err
