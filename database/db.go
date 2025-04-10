@@ -13,7 +13,7 @@ var DB *sql.DB
 func Connect() {
 	var err error
 
-	DB, err = sql.Open("sqlite3", "./peliculas.db")
+	DB, err = sql.Open("sqlite3", "./movies.db")
 	if err != nil {
 		log.Fatalf("Error al abrir la base de datos: %v", err)
 	}
