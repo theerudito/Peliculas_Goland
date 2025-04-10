@@ -1,10 +1,10 @@
 package models
 
 type Movie struct {
-	Title    string
-	Year     int
-	GenderID uint
-	Gender   Gender
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Year     int    `json:"year"`
+	GenderID uint   `json:"gender_id"`
 }
 
 type MovieDTO struct {
