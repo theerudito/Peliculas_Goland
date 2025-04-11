@@ -47,23 +47,26 @@ CREATE TABLE
     title TEXT NOT NULL,
     descripcion TEXT NOT NULL,
     cover TEXT NOT NULL,
+    year INTEGER NOT NULL,
     gender_id INTEGER NOT NULL,
     FOREIGN KEY (gender_id) REFERENCES genders (gender_id)
   );
 
 INSERT INTO
-  content_types (title, descripcion, cover, gender_id)
+  content_types (title, descripcion, cover, year, gender_id)
 VALUES
   (
     'Anime',
     'JUJUTSU KAISEN',
     'https://latanime.org/thumbs/imagen/jujutsu-kaisen-s2-latino-1690490946.jpg',
+    2023,
     7
   ),
   (
     'Anime',
     'JUJUTSU KAISEN',
     'https://latanime.org/thumbs/imagen/jujutsu-kaisen-s2-castellano-1692305959.jpg',
+    2024,
     7
   );
 
