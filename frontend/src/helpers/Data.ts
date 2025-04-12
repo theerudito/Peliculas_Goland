@@ -8,7 +8,7 @@ export const Movies_List = [
     title: "MAN OF HONOR",
     year: 2000,
     cover: image_1,
-    url: "",
+    url: "https://pixeldrain.com/api/file/kyjhvCUN",
     gender: "CRIMEN",
   },
   {
@@ -16,7 +16,7 @@ export const Movies_List = [
     title: "CADENA PERPECTUA",
     year: 1994,
     cover: image_2,
-    url: "",
+    url: "https://pixeldrain.com/api/file/CkpdetaB",
     gender: "DRAMA",
   },
   {
@@ -24,7 +24,7 @@ export const Movies_List = [
     title: "THE GLADIATOR",
     year: 1994,
     cover: image_3,
-    url: "",
+    url: "https://pixeldrain.com/api/file/kyjhvCUN",
     gender: "DRAMA",
   },
 ];

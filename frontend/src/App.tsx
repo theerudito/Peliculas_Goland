@@ -1,9 +1,11 @@
-import { Home } from "./components/Home";
+import { Component_Home } from "./components/Component_Home";
 
 function App() {
   return (
     <>
-      <Home />
+      <div>
+        <Component_Home />
+      </div>
     </>
   );
 }
