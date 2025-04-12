@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -23,16 +24,16 @@ func Connect() {
 
 	log.Println("Conectado a la base de datos SQLite")
 
-	// initSQL, err := ioutil.ReadFile("init.sql")
-	// if err != nil {
-	// 	log.Fatalf("No se pudo leer el archivo init.sql: %v", err)
-	// }
+	initSQL, err := os.ReadFile("init.sql")
+	if err != nil {
+		log.Fatalf("No se pudo leer el archivo init.sql: %v", err)
+	}
 
-	// _, err = DB.Exec(string(initSQL))
-	// if err != nil {
-	// 	log.Fatalf("Error al ejecutar init.sql: %v", err)
-	// }
+	_, err = DB.Exec(string(initSQL))
+	if err != nil {
+		log.Fatalf("Error al ejecutar init.sql: %v", err)
+	}
 
-	// log.Println("Archivo init.sql ejecutado correctamente")
+	log.Println("Archivo init.sql ejecutado correctamente")
 
 }
