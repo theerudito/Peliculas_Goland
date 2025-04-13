@@ -1,22 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Modal.css";
+import {
+  Content_List,
+  Episode_List,
+  Gender_List,
+  Season_List,
+} from "../helpers/Data";
+import {
+  _contents,
+  _episodes,
+  _seasons,
+  Content_Types,
+  Episodes,
+  Seasons,
+} from "../models/Movies";
 
 export const Modal_Content = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    year: "",
-    cover: "",
-    url: "",
-    gender: "DRAMA",
-  });
+  const [episode, setEpisode] = useState<Episodes>(_episodes);
+  const [season, setSeason] = useState<Seasons>(_seasons);
+  const [content, setContent] = useState<Content_Types>(_contents);
+  const [gender, setGender] = useState({ gender_id: 0 });
+  //const [formData, setFormData] = useState<FormDataDTO>();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEpisode((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    setSeason((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    setContent((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    setGender((prevData) => ({
+      ...prevData,
+      [name]: parseInt(value, 10),
+    }));
+  };
+
+  const SendData = () => {};
+
+  const AddEpisode = () => {};
+
+  const RemoveEpisode = (id) => {
+    Episode_List.filter((item) => item.episode_id !== id);
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -32,10 +74,22 @@ export const Modal_Content = () => {
               <i className="bi bi-x-lg" onClick={() => setIsOpen(false)}></i>
             </div>
             <div className="container-modal-input">
-              <input type="text" placeholder="TITLE EPISODE" />
-              <input type="text" placeholder="URL EPISODE" />
+              <input
+                type="text"
+                placeholder="TITLE EPISODE"
+                name="title_episode"
+                value={episode.title_episode}
+                onChange={handleChangeInput}
+              />
+              <input
+                type="text"
+                placeholder="URL EPISODE"
+                name="url_episode"
+                value={episode.url_episode}
+                onChange={handleChangeInput}
+              />
 
-              <button>1 ADD EPISODE</button>
+              <button onClick={AddEpisode}>1 ADD EPISODE</button>
               <div className="container-modal-table">
                 <table>
                   <thead>
@@ -46,57 +100,92 @@ export const Modal_Content = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>JUJUTSUN KAISEN</td>
-                      <td>EPISODE 1</td>
-                      <td>
-                        {" "}
-                        <i className="bi bi-trash"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>JUJUTSUN KAISEN</td>
-                      <td>EPISODE 2</td>
-                      <td>
-                        <i className="bi bi-trash"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>JUJUTSUN KAISEN</td>
-                      <td>EPISODE 2</td>
-                      <td>
-                        <i className="bi bi-trash"></i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>JUJUTSUN KAISEN</td>
-                      <td>EPISODE 2</td>
-                      <td>
-                        <i className="bi bi-trash"></i>
-                      </td>
-                    </tr>
+                    {Episode_List.map((item) => (
+                      <tr key={item.episode_id}>
+                        <td>{item.episode}</td>
+                        <td>{item.title}</td>
+                        <td>
+                          <i
+                            className="bi bi-trash"
+                            onClick={() => RemoveEpisode(item.episode_id)}
+                          ></i>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
 
-              <input type="text" placeholder="TITLE SEASON" />
-              <select>
-                <option>SEASON 1</option>
-                <option>SEASON 2</option>
-                <option>SEASON 3</option>
+              <select
+                name="season_id"
+                value={season.season_id}
+                onChange={handleChangeSelect}
+              >
+                {Season_List.map((item) => (
+                  <option key={item.season_id} value={item.season_id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
 
-              <input type="text" placeholder="TITLE CONTENT" />
-              <input type="text" placeholder="DESCRIPCION" />
-              <input type="text" placeholder="COVER" />
-              <input type="date" placeholder="YEAR" />
+              <input
+                type="text"
+                placeholder="TITLE SEASON"
+                name="title_season"
+                value={season.title_season}
+                onChange={handleChangeInput}
+              />
 
-              <select>
-                <option>DRAMA</option>
-                <option>CRIMEN</option>
-                <option>ACCION</option>
+              <select
+                name="content_type_id"
+                onChange={handleChangeSelect}
+                value={content.content_type_id}
+              >
+                {Content_List.map((item) => (
+                  <option
+                    key={item.content_type_id}
+                    value={item.content_type_id}
+                  >
+                    {item.name}
+                  </option>
+                ))}
               </select>
-              <button> 2 ADD CONTENT</button>
+
+              <input
+                type="text"
+                placeholder="DESCRIPCION"
+                name="title_content"
+                value={content.title_content}
+                onChange={handleChangeInput}
+              />
+              <input
+                type="text"
+                placeholder="COVER"
+                name="cover_content"
+                value={content.cover_content}
+                onChange={handleChangeInput}
+              />
+              <input
+                type="number"
+                placeholder="YEAR"
+                name="year_content"
+                value={content.year_content}
+                onChange={handleChangeInput}
+              />
+
+              <select
+                name="gender_id"
+                value={gender.gender_id}
+                onChange={handleChangeSelect}
+              >
+                {Gender_List.map((item) => (
+                  <option key={item.gender_id} value={item.gender_id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+
+              <button onClick={SendData}> 2 ADD CONTENT</button>
             </div>
           </div>
         </div>

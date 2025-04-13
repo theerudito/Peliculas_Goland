@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Movies } from "../models/Movies";
-import { Movies_List } from "../helpers/Data";
 import { GET_Movies } from "../helpers/Fetching";
 import { Component_Player } from "./Component_Player";
 import "../styles/Content.css";
+import { MoviesDTO } from "../models/Movies";
+import { Movies_List } from "../helpers/Data";
 
 export const Component_Content = () => {
-  const [value, setValue] = useState<Movies[]>(Movies_List);
+  const [value, setValue] = useState<MoviesDTO[]>(Movies_List);
   const [playing, setPlaying] = useState(false);
   const [url, setUrl] = useState("");
 
