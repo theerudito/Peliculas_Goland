@@ -1,6 +1,7 @@
 import image_1 from "../assets/imagen1.jpg";
 import image_2 from "../assets/imagen3.avif";
 import image_3 from "../assets/imagen2.jpg";
+import { Episodes } from "../models/Movies";
 
 export const Movies_List = [
   {
@@ -53,9 +54,26 @@ export const Content_List = [
   { content_type_id: 2, name: "SERIE" },
 ];
 
-export const Episode_List = [
-  { episode_id: 1, title: "TITLE 1", episode: "EPISODE 1" },
-  { episode_id: 2, title: "TITLE 4", episode: "EPISODE 2" },
-  { episode_id: 3, title: "TITLE 3", episode: "EPISODE 3" },
-  { episode_id: 4, title: "TITLE 4", episode: "EPISODE 4" },
+export const Episode_List: Episodes[] = [
+  {
+    episode_id: 1,
+    season_id: 1,
+    episode_number: 1,
+    episode_title: "TITLE 1",
+    episode_url: "",
+  },
+  {
+    episode_id: 2,
+    season_id: 1,
+    episode_number: 2,
+    episode_title: "TITLE 2",
+    episode_url: "",
+  },
+  {
+    episode_id: 3,
+    season_id: 1,
+    episode_number: 3,
+    episode_title: "TITLE 3",
+    episode_url: "",
+  },
 ];

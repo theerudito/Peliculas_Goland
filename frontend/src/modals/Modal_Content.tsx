@@ -21,6 +21,8 @@ export const Modal_Content = () => {
   const [season, setSeason] = useState<Seasons>(_seasons);
   const [content, setContent] = useState<Content_Types>(_contents);
   const [gender, setGender] = useState({ gender_id: 0 });
+  const [episodeList, setEpisodeList] = useState<Episodes[]>(Episode_List);
+
   //const [formData, setFormData] = useState<FormDataDTO>();
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,12 +52,27 @@ export const Modal_Content = () => {
     }));
   };
 
-  const SendData = () => {};
+  const SendData = () => {
 
-  const AddEpisode = () => {};
 
-  const RemoveEpisode = (id) => {
-    Episode_List.filter((item) => item.episode_id !== id);
+    
+  };
+
+  const AddEpisode = () => {
+    const newEpisode: Episodes = {
+      ...episode,
+      episode_id:
+        episodeList.length > 0
+          ? episodeList[episodeList.length - 1].episode_id + 1
+          : 1,
+    };
+
+    setEpisodeList([...episodeList, newEpisode]);
+  };
+
+  const RemoveEpisode = (id: number) => {
+    const updatedList = episodeList.filter((item) => item.episode_id !== id);
+    setEpisodeList(updatedList);
   };
 
   useEffect(() => {}, []);
@@ -77,15 +94,15 @@ export const Modal_Content = () => {
               <input
                 type="text"
                 placeholder="TITLE EPISODE"
-                name="title_episode"
-                value={episode.title_episode}
+                name="episode_title"
+                value={episode.episode_title}
                 onChange={handleChangeInput}
               />
               <input
                 type="text"
                 placeholder="URL EPISODE"
-                name="url_episode"
-                value={episode.url_episode}
+                name="episode_url"
+                value={episode.episode_url}
                 onChange={handleChangeInput}
               />
 
@@ -100,10 +117,10 @@ export const Modal_Content = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {Episode_List.map((item) => (
+                    {episodeList.map((item) => (
                       <tr key={item.episode_id}>
-                        <td>{item.episode}</td>
-                        <td>{item.title}</td>
+                        <td>{item.episode_title}</td>
+                        <td>EPISODE {item.episode_number}</td>
                         <td>
                           <i
                             className="bi bi-trash"
@@ -131,8 +148,8 @@ export const Modal_Content = () => {
               <input
                 type="text"
                 placeholder="TITLE SEASON"
-                name="title_season"
-                value={season.title_season}
+                name="season_title"
+                value={season.season_title}
                 onChange={handleChangeInput}
               />
 
@@ -154,22 +171,22 @@ export const Modal_Content = () => {
               <input
                 type="text"
                 placeholder="DESCRIPCION"
-                name="title_content"
-                value={content.title_content}
+                name="content_title"
+                value={content.content_title}
                 onChange={handleChangeInput}
               />
               <input
                 type="text"
                 placeholder="COVER"
-                name="cover_content"
-                value={content.cover_content}
+                name="content_cover"
+                value={content.content_cover}
                 onChange={handleChangeInput}
               />
               <input
                 type="number"
                 placeholder="YEAR"
-                name="year_content"
-                value={content.year_content}
+                name="content_year"
+                value={content.content_year}
                 onChange={handleChangeInput}
               />
 

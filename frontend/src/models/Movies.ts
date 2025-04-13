@@ -34,28 +34,28 @@ export const _users: Users = {
 
 export interface Content_Types {
   content_type_id: number;
-  title_content: string;
-  cover_content: string;
-  year_content: number;
-  url_contenct: string;
+  content_title: string;
+  content_cover: string;
+  content_year: number;
+  content_url: string;
   gender_id: number;
 }
 
 export interface Content_TypesDTO {
   content_type_id: number;
-  title_content: string;
-  cover_content: string;
-  year_content: number;
-  url_contenct: string;
+  content_title: string;
+  content_cover: string;
+  content_year: number;
+  content_url: string;
   gender_id: string;
 }
 
 export const _contents: Content_Types = {
   content_type_id: 0,
-  title_content: "",
-  cover_content: "",
-  year_content: 0,
-  url_contenct: "",
+  content_title: "",
+  content_cover: "",
+  content_year: 0,
+  content_url: "",
   gender_id: 0,
 };
 
@@ -63,45 +63,45 @@ export interface Seasons {
   season_id: number;
   content_type_id: number;
   season_number: number;
-  title_season: string;
+  season_title: string;
 }
 
 export interface SeasonsDTO {
   season_id: number;
   content_type_id: string;
   season_number: number;
-  title_season: string;
+  season_title: string;
 }
 
 export const _seasons: Seasons = {
   season_id: 0,
   content_type_id: 0,
   season_number: 0,
-  title_season: "",
+  season_title: "",
 };
 
 export interface Episodes {
   episode_id: number;
   season_id: number;
   episode_number: number;
-  title_episode: string;
-  url_episode: string;
+  episode_title: string;
+  episode_url: string;
 }
 
 export interface EpisodesDTO {
   season_id: number;
   season: string;
   episode_number: number;
-  title_episode: string;
-  url_episode: string;
+  episode_title: string;
+  episode_url: string;
 }
 
 export const _episodes: Episodes = {
   episode_id: 0,
   season_id: 0,
   episode_number: 0,
-  title_episode: "",
-  url_episode: "",
+  episode_title: "",
+  episode_url: "",
 };
 
 export const _episodesList: Episodes[] = [
@@ -109,8 +109,8 @@ export const _episodesList: Episodes[] = [
     episode_id: 0,
     season_id: 0,
     episode_number: 0,
-    title_episode: "",
-    url_episode: "",
+    episode_title: "",
+    episode_url: "",
   },
 ];
 
