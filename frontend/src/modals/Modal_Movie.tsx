@@ -26,7 +26,12 @@ export const Modal_Movie = () => {
   };
   const SendData = () => {
     console.log(formData);
+    Reset_Field();
   };
+
+  function Reset_Field() {
+    setFormData(formData);
+  }
 
   return (
     <div>

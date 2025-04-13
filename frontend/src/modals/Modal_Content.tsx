@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/Modal.css";
-import {
-  Content_List,
-  Episode_List,
-  Gender_List,
-  Season_List,
-} from "../helpers/Data";
+import { Content_List, Gender_List, Season_List } from "../helpers/Data";
 import {
   _contents,
   _episodes,
@@ -21,7 +16,7 @@ export const Modal_Content = () => {
   const [season, setSeason] = useState<Seasons>(_seasons);
   const [content, setContent] = useState<Content_Types>(_contents);
   const [gender, setGender] = useState({ gender_id: 0 });
-  const [episodeList, setEpisodeList] = useState<Episodes[]>(Episode_List);
+  const [episodeList, setEpisodeList] = useState<Episodes[]>([]);
 
   //const [formData, setFormData] = useState<FormDataDTO>();
 
@@ -53,14 +48,17 @@ export const Modal_Content = () => {
   };
 
   const SendData = () => {
-
-
-    
+    Reset_Field(2);
+    Reset_Field(3);
   };
 
   const AddEpisode = () => {
     const newEpisode: Episodes = {
       ...episode,
+      episode_number:
+        episodeList.length > 0
+          ? episodeList[episodeList.length - 1].episode_id + 1
+          : 1,
       episode_id:
         episodeList.length > 0
           ? episodeList[episodeList.length - 1].episode_id + 1
@@ -68,6 +66,7 @@ export const Modal_Content = () => {
     };
 
     setEpisodeList([...episodeList, newEpisode]);
+    Reset_Field(1);
   };
 
   const RemoveEpisode = (id: number) => {
@@ -75,7 +74,19 @@ export const Modal_Content = () => {
     setEpisodeList(updatedList);
   };
 
-  useEffect(() => {}, []);
+  function Reset_Field(action: number) {
+    switch (action) {
+      case 1:
+        setEpisode(_episodes);
+        break;
+      case 2:
+        setSeason(_seasons);
+        break;
+      case 3:
+        setContent(_contents);
+        break;
+    }
+  }
 
   return (
     <div>

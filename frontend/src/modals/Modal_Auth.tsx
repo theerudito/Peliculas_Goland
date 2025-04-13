@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { _user, Users } from "../models/Movies";
+import { _users, Users } from "../models/Movies";
 import "../styles/Modal.css";
 
 export const Modal_Auth = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<Users>(_user);
+  const [formData, setFormData] = useState<Users>(_users);
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
     setFormData({
@@ -15,7 +15,12 @@ export const Modal_Auth = () => {
 
   const SendData = () => {
     console.log(formData);
+    Reset_Field();
   };
+
+  function Reset_Field() {
+    setFormData(formData);
+  }
 
   return (
     <div>
