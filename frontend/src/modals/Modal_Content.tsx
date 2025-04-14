@@ -4,9 +4,11 @@ import { Content_List, Gender_List, Season_List } from "../helpers/Data";
 import {
   _contents,
   _episodes,
+  _form,
   _seasons,
   Content_Types,
   Episodes,
+  FormDataDTO,
   Seasons,
 } from "../models/Movies";
 
@@ -17,8 +19,7 @@ export const Modal_Content = () => {
   const [content, setContent] = useState<Content_Types>(_contents);
   const [gender, setGender] = useState({ gender_id: 0 });
   const [episodeList, setEpisodeList] = useState<Episodes[]>([]);
-
-  //const [formData, setFormData] = useState<FormDataDTO>();
+  const [formData, setFormData] = useState<FormDataDTO>(_form);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,11 +46,29 @@ export const Modal_Content = () => {
       ...prevData,
       [name]: parseInt(value, 10),
     }));
+
+    setSeason((prevData) => ({
+      ...prevData,
+      [name]: parseInt(value, 10),
+    }));
+
+    setContent((prevData) => ({
+      ...prevData,
+      [name]: parseInt(value, 10),
+    }));
   };
 
   const SendData = () => {
-    Reset_Field(2);
-    Reset_Field(3);
+    setFormData({
+      gender_id: gender.gender_id,
+      season: season,
+      content: content,
+      episode: episodeList,
+    });
+
+    console.log(formData);
+    //Reset_Field(2);
+    //Reset_Field(3);
   };
 
   const AddEpisode = () => {
@@ -103,6 +122,7 @@ export const Modal_Content = () => {
             </div>
             <div className="container-modal-input">
               <input
+                className="input"
                 type="text"
                 placeholder="TITLE EPISODE"
                 name="episode_title"
@@ -110,6 +130,7 @@ export const Modal_Content = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="text"
                 placeholder="URL EPISODE"
                 name="episode_url"
@@ -157,6 +178,7 @@ export const Modal_Content = () => {
               </select>
 
               <input
+                className="input"
                 type="text"
                 placeholder="TITLE SEASON"
                 name="season_title"
@@ -180,6 +202,7 @@ export const Modal_Content = () => {
               </select>
 
               <input
+                className="input"
                 type="text"
                 placeholder="DESCRIPCION"
                 name="content_title"
@@ -187,6 +210,7 @@ export const Modal_Content = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="text"
                 placeholder="COVER"
                 name="content_cover"
@@ -194,6 +218,7 @@ export const Modal_Content = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="number"
                 placeholder="YEAR"
                 name="content_year"

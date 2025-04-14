@@ -37,6 +37,7 @@ export const Modal_Auth = () => {
             </div>
             <div className="container-modal-input">
               <input
+                className="input"
                 type="text"
                 name="user"
                 placeholder="USER"
@@ -44,6 +45,7 @@ export const Modal_Auth = () => {
                 onChange={handleChange}
               />
               <input
+                className="input"
                 type="password"
                 name="password"
                 placeholder="PASSWORD"

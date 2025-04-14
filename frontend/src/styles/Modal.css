@@ -42,7 +42,7 @@
   gap: 10px;
 }
 
-input {
+.input {
   border: none;
   outline: none;
   border-radius: 5px;
@@ -97,7 +97,6 @@ button {
 }
 
 .container-modal-table i {
-  color: red;
   cursor: pointer;
 }
 

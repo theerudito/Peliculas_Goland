@@ -118,5 +118,32 @@ export interface FormDataDTO {
   gender_id: number;
   season: Seasons;
   content: Content_Types;
-  episode: Episodes;
+  episode: Episodes[];
 }
+
+export const _form: FormDataDTO = {
+  gender_id: 0,
+  season: {
+    season_id: 0,
+    content_type_id: 0,
+    season_number: 0,
+    season_title: "",
+  },
+  content: {
+    content_type_id: 0,
+    content_title: "",
+    content_cover: "",
+    content_year: 0,
+    content_url: "",
+    gender_id: 0,
+  },
+  episode: [
+    {
+      episode_id: 0,
+      season_id: 0,
+      episode_number: 0,
+      episode_title: "",
+      episode_url: "",
+    },
+  ],
+};

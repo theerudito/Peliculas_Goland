@@ -48,6 +48,7 @@ export const Modal_Movie = () => {
             </div>
             <div className="container-modal-input">
               <input
+                className="input"
                 type="text"
                 placeholder="TITLE"
                 name="title"
@@ -55,6 +56,7 @@ export const Modal_Movie = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="number"
                 name="year"
                 placeholder="YEAR"
@@ -62,6 +64,7 @@ export const Modal_Movie = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="text"
                 placeholder="COVER"
                 name="cover"
@@ -69,6 +72,7 @@ export const Modal_Movie = () => {
                 onChange={handleChangeInput}
               />
               <input
+                className="input"
                 type="text"
                 placeholder="URL"
                 value={formData.url}
