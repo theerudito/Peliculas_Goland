@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { _users, Users } from "../models/Movies";
 import "../styles/Modal.css";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { closeModal } from "../store/slice/ModalSlices";
 
 export const Modal_Auth = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen } = useSelector((store: RootState) => store.modal);
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState<Users>(_users);
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
@@ -24,16 +29,15 @@ export const Modal_Auth = () => {
 
   return (
     <div>
-      <button className="open-modal-btn" onClick={() => setIsOpen(true)}>
-        Abrir Modal
-      </button>
-
       {isOpen && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>LOGIN USER</p>
-              <i className="bi bi-x-lg" onClick={() => setIsOpen(false)}></i>
+              <i
+                className="bi bi-x-lg"
+                onClick={() => dispatch(closeModal(1))}
+              ></i>
             </div>
             <div className="container-modal-input">
               <input

@@ -11,9 +11,13 @@ import {
   FormDataDTO,
   Seasons,
 } from "../models/Movies";
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal } from "../store/slice/ModalSlices";
+import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen } = useSelector((store: RootState) => store.modal);
+  const dispatch = useDispatch();
   const [episode, setEpisode] = useState<Episodes>(_episodes);
   const [season, setSeason] = useState<Seasons>(_seasons);
   const [content, setContent] = useState<Content_Types>(_contents);
@@ -21,7 +25,7 @@ export const Modal_Content = () => {
   const [episodeList, setEpisodeList] = useState<Episodes[]>([]);
   const [formData, setFormData] = useState<FormDataDTO>(_form);
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEpisode((prevData) => ({
       ...prevData,
@@ -109,16 +113,15 @@ export const Modal_Content = () => {
 
   return (
     <div>
-      <button className="open-modal-btn" onClick={() => setIsOpen(true)}>
-        Abrir Modal
-      </button>
-
       {isOpen && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>ADD ANIME OR SERIE</p>
-              <i className="bi bi-x-lg" onClick={() => setIsOpen(false)}></i>
+              <i
+                className="bi bi-x-lg"
+                onClick={() => dispatch(closeModal(2))}
+              ></i>
             </div>
             <div className="container-modal-input">
               <input

@@ -1,6 +1,9 @@
+import { useDispatch } from "react-redux";
 import "../styles/Header.css";
+import { openModal } from "../store/slice/ModalSlices";
 
 export const Component_Header = () => {
+  const dispatch = useDispatch();
   return (
     <div className="header">
       <nav className="nav-links">
@@ -15,7 +18,9 @@ export const Component_Header = () => {
           <i className="bi bi-search"></i>
         </button>
       </div>
-      <button className="login-btn">LOGIN</button>
+      <button className="login-btn" onClick={() => dispatch(openModal(1))}>
+        LOGIN
+      </button>
     </div>
   );
 };
