@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import "../styles/Header.css";
-import { openModal } from "../store/slice/ModalSlices";
+import { openModal } from "../store/slice/Modal_Slices";
 
 export const Component_Header = () => {
   const dispatch = useDispatch();

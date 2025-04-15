@@ -1,11 +1,33 @@
 body {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100vh;
   box-sizing: border-box;
-  background-color: #161824;
-  overflow: hidden;
+  background-size: cover;
+  background-image: url("https://wallpapercave.com/wp/wp13637673.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: -1;
+  user-select: none;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.471); /* Opacidad ajustable */
+  z-index: 0;
+  pointer-events: none; /* No bloquea clics */
+}
+
+/* Para que el contenido esté encima del overlay */
+body > * {
+  position: relative;
+  z-index: 1;
 }
 
 .app-container {

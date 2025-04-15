@@ -4,7 +4,6 @@
   left: 0;
   right: 0;
   height: 40px;
-  background-color: #8000ff;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -37,7 +36,7 @@
 }
 
 .search-btn {
-  background-color: #8000ff;
+  background-color: #0054b8;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -53,7 +52,7 @@
 .login-btn {
   margin-left: 20px;
   padding: 0px 20px;
-  background-color: #8000ff;
+  background-color: #0054b8;
   color: white;
   border: 1px solid white;
   border-radius: 5px;

@@ -12,11 +12,11 @@ import {
   Seasons,
 } from "../models/Movies";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../store/slice/ModalSlices";
+import { closeModal } from "../store/slice/Modal_Slices";
 import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
-  const { isOpen } = useSelector((store: RootState) => store.modal);
+  const { openModal_Content } = useSelector((store: RootState) => store.modal);
   const dispatch = useDispatch();
   const [episode, setEpisode] = useState<Episodes>(_episodes);
   const [season, setSeason] = useState<Seasons>(_seasons);
@@ -113,14 +113,14 @@ export const Modal_Content = () => {
 
   return (
     <div>
-      {isOpen && (
+      {openModal_Content && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>ADD ANIME OR SERIE</p>
               <i
                 className="bi bi-x-lg"
-                onClick={() => dispatch(closeModal(2))}
+                onClick={() => dispatch(closeModal(3))}
               ></i>
             </div>
             <div className="container-modal-input">

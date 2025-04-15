@@ -3,10 +3,10 @@ import { _users, Users } from "../models/Movies";
 import "../styles/Modal.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { closeModal } from "../store/slice/ModalSlices";
+import { closeModal } from "../store/slice/Modal_Slices";
 
 export const Modal_Auth = () => {
-  const { isOpen } = useSelector((store: RootState) => store.modal);
+  const { openModal_Auth } = useSelector((store: RootState) => store.modal);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<Users>(_users);
@@ -29,7 +29,7 @@ export const Modal_Auth = () => {
 
   return (
     <div>
-      {isOpen && (
+      {openModal_Auth && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">

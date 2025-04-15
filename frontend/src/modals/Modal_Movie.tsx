@@ -4,10 +4,10 @@ import { Gender_List } from "../helpers/Data";
 import { _movies, Movies } from "../models/Movies";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { closeModal } from "../store/slice/ModalSlices";
+import { closeModal } from "../store/slice/Modal_Slices";
 
 export const Modal_Movie = () => {
-  const { isOpen } = useSelector((store: RootState) => store.modal);
+  const { openModal_Movie } = useSelector((store: RootState) => store.modal);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<Movies>(_movies);
@@ -40,7 +40,7 @@ export const Modal_Movie = () => {
 
   return (
     <div>
-      {isOpen && (
+      {openModal_Movie && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
