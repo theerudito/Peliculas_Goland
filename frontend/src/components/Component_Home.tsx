@@ -4,7 +4,6 @@ import { Modal_Movie } from "../modals/Modal_Movie";
 import "../styles/App.css";
 import { Component_Footer } from "./Component_Footer";
 import { Component_Header } from "./Component_Header";
-import { Component_Menu } from "./Component_Menu";
 
 export const Component_Home = () => {
   return (
@@ -15,7 +14,6 @@ export const Component_Home = () => {
         <Modal_Movie />
         <Modal_Auth />
       </div>
-      {/* <Component_Menu /> */}
       <Component_Footer />
     </div>
   );

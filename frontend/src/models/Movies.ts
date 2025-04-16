@@ -1,24 +1,24 @@
 export interface Movies {
-  title: string;
-  year: number;
-  cover: string;
-  url: string;
+  movie_title: string;
+  movie_year: number;
+  movie_cover: string;
+  movie_url: string;
   gender_id: number;
 }
 export interface MoviesDTO {
-  movie_id: number;
-  title: string;
-  year: number;
-  cover: string;
-  url: string;
-  gender: string;
+  movie_movie_id: number;
+  movie_title: string;
+  movie_year: number;
+  movie_cover: string;
+  movie_url: string;
+  movie_gender: string;
 }
 
 export const _movies: Movies = {
-  title: "",
-  year: 0,
-  cover: "",
-  url: "",
+  movie_title: "",
+  movie_year: 0,
+  movie_cover: "",
+  movie_url: "",
   gender_id: 0,
 };
 
@@ -31,6 +31,11 @@ export const _users: Users = {
   user: "",
   password: "",
 };
+
+export interface GenderDTO {
+  gender_id: number;
+  name: string;
+}
 
 export interface Content_Types {
   content_type_id: number;
@@ -68,9 +73,7 @@ export interface Seasons {
 
 export interface SeasonsDTO {
   season_id: number;
-  content_type_id: string;
-  season_number: number;
-  season_title: string;
+  name: string;
 }
 
 export const _seasons: Seasons = {

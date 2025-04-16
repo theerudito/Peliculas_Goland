@@ -1,114 +1,86 @@
-import { useState } from "react";
 import "../styles/Modal.css";
-import { Content_List, Gender_List, Season_List } from "../helpers/Data";
-import {
-  _contents,
-  _episodes,
-  _form,
-  _seasons,
-  Content_Types,
-  Episodes,
-  FormDataDTO,
-  Seasons,
-} from "../models/Movies";
+import { Content_List } from "../helpers/Data";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../store/slice/Modal_Slices";
 import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
   const { openModal_Content } = useSelector((store: RootState) => store.modal);
+  const content = useSelector((store: RootState) => store.content);
+  const values = useSelector((store: RootState) => store.data);
+
+  const form = content.form_Content;
   const dispatch = useDispatch();
-  const [episode, setEpisode] = useState<Episodes>(_episodes);
-  const [season, setSeason] = useState<Seasons>(_seasons);
-  const [content, setContent] = useState<Content_Types>(_contents);
-  const [gender, setGender] = useState({ gender_id: 0 });
-  const [episodeList, setEpisodeList] = useState<Episodes[]>([]);
-  const [formData, setFormData] = useState<FormDataDTO>(_form);
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEpisode((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setSeason((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setContent((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    // const { name, value } = e.target;
+    // setEpisode((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
+    // setSeason((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
+    // setContent((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    setGender((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
-
-    setSeason((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
-
-    setContent((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
+    // const { name, value } = e.target;
+    // setGender((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
+    // setSeason((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
+    // setContent((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
   };
 
   const SendData = () => {
-    setFormData({
-      gender_id: gender.gender_id,
-      season: season,
-      content: content,
-      episode: episodeList,
-    });
-
-    console.log(formData);
-    //Reset_Field(2);
-    //Reset_Field(3);
+    console.log(form);
   };
 
   const AddEpisode = () => {
-    const newEpisode: Episodes = {
-      ...episode,
-      episode_number:
-        episodeList.length > 0
-          ? episodeList[episodeList.length - 1].episode_id + 1
-          : 1,
-      episode_id:
-        episodeList.length > 0
-          ? episodeList[episodeList.length - 1].episode_id + 1
-          : 1,
-    };
-
-    setEpisodeList([...episodeList, newEpisode]);
-    Reset_Field(1);
+    // const newEpisode: Episodes = {
+    //   ...episode,
+    //   episode_number:
+    //     episodeList.length > 0
+    //       ? episodeList[episodeList.length - 1].episode_id + 1
+    //       : 1,
+    //   episode_id:
+    //     episodeList.length > 0
+    //       ? episodeList[episodeList.length - 1].episode_id + 1
+    //       : 1,
+    // };
+    // setEpisodeList([...episodeList, newEpisode]);
+    // Reset_Field(1);
   };
 
   const RemoveEpisode = (id: number) => {
-    const updatedList = episodeList.filter((item) => item.episode_id !== id);
-    setEpisodeList(updatedList);
+    // const updatedList = episodeList.filter((item) => item.episode_id !== id);
+    // setEpisodeList(updatedList);
   };
 
   function Reset_Field(action: number) {
-    switch (action) {
-      case 1:
-        setEpisode(_episodes);
-        break;
-      case 2:
-        setSeason(_seasons);
-        break;
-      case 3:
-        setContent(_contents);
-        break;
-    }
+    // switch (action) {
+    //   case 1:
+    //     setEpisode(_episodes);
+    //     break;
+    //   case 2:
+    //     setSeason(_seasons);
+    //     break;
+    //   case 3:
+    //     setContent(_contents);
+    //     break;
+    // }
   }
 
   return (
@@ -129,7 +101,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="TITLE EPISODE"
                 name="episode_title"
-                value={episode.episode_title}
+                value={form.episode.episode_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -137,7 +109,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="URL EPISODE"
                 name="episode_url"
-                value={episode.episode_url}
+                value={form.episode.episode_url}
                 onChange={handleChangeInput}
               />
 
@@ -152,7 +124,7 @@ export const Modal_Content = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {episodeList.map((item) => (
+                    {content.episodes_list.map((item) => (
                       <tr key={item.episode_id}>
                         <td>{item.episode_title}</td>
                         <td>EPISODE {item.episode_number}</td>
@@ -170,10 +142,10 @@ export const Modal_Content = () => {
 
               <select
                 name="season_id"
-                value={season.season_id}
+                value={content.form_Content.gender_id}
                 onChange={handleChangeSelect}
               >
-                {Season_List.map((item) => (
+                {values.season_list.map((item) => (
                   <option key={item.season_id} value={item.season_id}>
                     {item.name}
                   </option>
@@ -185,16 +157,16 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="TITLE SEASON"
                 name="season_title"
-                value={season.season_title}
+                value={form.season.season_title}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="content_type_id"
                 onChange={handleChangeSelect}
-                value={content.content_type_id}
+                value={content.form_Content.content.content_type_id}
               >
-                {Content_List.map((item) => (
+                {values.type_list.map((item) => (
                   <option
                     key={item.content_type_id}
                     value={item.content_type_id}
@@ -209,7 +181,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="DESCRIPCION"
                 name="content_title"
-                value={content.content_title}
+                value={form.content.content_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -217,7 +189,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="COVER"
                 name="content_cover"
-                value={content.content_cover}
+                value={form.content.content_cover}
                 onChange={handleChangeInput}
               />
               <input
@@ -225,16 +197,16 @@ export const Modal_Content = () => {
                 type="number"
                 placeholder="YEAR"
                 name="content_year"
-                value={content.content_year}
+                value={form.content.content_year}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="gender_id"
-                value={gender.gender_id}
+                value={content.form_Content.gender_id}
                 onChange={handleChangeSelect}
               >
-                {Gender_List.map((item) => (
+                {values.gender_list.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
                     {item.name}
                   </option>

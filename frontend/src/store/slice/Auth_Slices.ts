@@ -4,11 +4,11 @@ import { _users } from "../../models/Movies";
 export const Auth_Slices = createSlice({
   name: "auth",
   initialState: {
-    userData: _users,
+    form_Auth: _users,
   },
   reducers: {
     Login(state, actions) {
-      state.userData = actions.payload;
+      state.form_Auth = actions.payload;
     },
   },
 });

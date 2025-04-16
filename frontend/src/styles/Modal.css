@@ -21,7 +21,7 @@
 }
 
 .container-modal-header {
-  background: #0054b8;
+  background: #8000ff;
   color: white;
   display: flex;
   width: auto;
@@ -59,7 +59,7 @@ select {
 }
 
 button {
-  background-color: #0054b8;
+  background-color: #8000ff;
   color: white;
   border: 1px solid white;
   border-radius: 5px;

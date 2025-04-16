@@ -12,7 +12,10 @@ export const Movies_Slices = createSlice({
     addMovies(state, actions) {
       state.form_Movies = actions.payload;
     },
+    getMovies(state, actions) {
+      state.data_Movies = actions.payload;
+    },
   },
 });
 
-export const { addMovies } = Movies_Slices.actions;
+export const { addMovies, getMovies } = Movies_Slices.actions;

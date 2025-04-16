@@ -1,41 +1,44 @@
-import { useState } from "react";
 import "../styles/Modal.css";
 import { Gender_List } from "../helpers/Data";
-import { _movies, Movies } from "../models/Movies";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { closeModal } from "../store/slice/Modal_Slices";
+import { addMovies } from "../store/slice/Movies_Slices";
 
 export const Modal_Movie = () => {
   const { openModal_Movie } = useSelector((store: RootState) => store.modal);
-  const dispatch = useDispatch();
+  const { form_Movies } = useSelector((store: RootState) => store.movie);
 
-  const [formData, setFormData] = useState<Movies>(_movies);
+  const dispatch = useDispatch();
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "year" ? Number(value) : value,
-    }));
+    const updatedForm = {
+      ...form_Movies,
+      [name]: value,
+    };
+
+    dispatch(addMovies(updatedForm));
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
+    const updatedForm = {
+      ...form_Movies,
       [name]: parseInt(value, 10),
-    }));
+    };
+
+    dispatch(addMovies(updatedForm));
   };
+
   const SendData = () => {
-    console.log(formData);
+    console.log(form_Movies);
     Reset_Field();
   };
 
   function Reset_Field() {
-    setFormData(formData);
+    // setFormData(formData);
   }
 
   return (
@@ -55,38 +58,38 @@ export const Modal_Movie = () => {
                 className="input"
                 type="text"
                 placeholder="TITLE"
-                name="title"
-                value={formData.title}
+                name="movie_title"
+                value={form_Movies.movie_title}
                 onChange={handleChangeInput}
               />
               <input
                 className="input"
                 type="number"
-                name="year"
+                name="movie_year"
                 placeholder="YEAR"
-                value={formData.year}
+                value={form_Movies.movie_year}
                 onChange={handleChangeInput}
               />
               <input
                 className="input"
                 type="text"
                 placeholder="COVER"
-                name="cover"
-                value={formData.cover}
+                name="movie_cover"
+                value={form_Movies.movie_cover}
                 onChange={handleChangeInput}
               />
               <input
                 className="input"
                 type="text"
                 placeholder="URL"
-                value={formData.url}
-                name="url"
+                value={form_Movies.movie_url}
+                name="movie_url"
                 onChange={handleChangeInput}
               />
               <select
                 name="gender_id"
                 onChange={handleChangeSelect}
-                value={formData.gender_id}
+                value={form_Movies.gender_id}
               >
                 {Gender_List.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
