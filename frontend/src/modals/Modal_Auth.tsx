@@ -3,7 +3,7 @@ import { _users, Users } from "../models/Movies";
 import "../styles/Modal.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { closeModal } from "../store/slice/Modal_Slices";
+import { closeModal } from "../store/useModal";
 
 export const Modal_Auth = () => {
   const { openModal_Auth } = useSelector((store: RootState) => store.modal);

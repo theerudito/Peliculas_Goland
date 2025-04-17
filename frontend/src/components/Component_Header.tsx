@@ -1,11 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useModal } from "../store/useModal";
 import "../styles/Header.css";
-import { openModal } from "../store/slice/Modal_Slices";
 import { useState } from "react";
 
 export const Component_Header = () => {
   const [userIn] = useState(false);
-  const dispatch = useDispatch();
+  const { OpenModal_Auth, OpenModal_Content, OpenModal_Movie } = useModal(
+    (state) => state
+  );
 
   return (
     <div className="container-header-header">
@@ -22,13 +23,13 @@ export const Component_Header = () => {
         </button>
       </div>
       <div className="container-header-buttons">
-        <button onClick={() => dispatch(openModal(2))}>ADD MOVIES</button>
-        <button onClick={() => dispatch(openModal(3))}>ADD CONTENT</button>
+        <button onClick={() => OpenModal_Movie(true)}>ADD MOVIES</button>
+        <button onClick={() => OpenModal_Content(true)}>ADD CONTENT</button>
 
         {userIn === true ? (
-          <button onClick={() => dispatch(openModal(1))}>LOGOUT</button>
+          <button onClick={() => OpenModal_Auth(true)}>LOGOUT</button>
         ) : (
-          <button onClick={() => dispatch(openModal(1))}>LOGIN</button>
+          <button onClick={() => OpenModal_Auth(true)}>LOGIN</button>
         )}
       </div>
     </div>

@@ -2,8 +2,8 @@ import "../styles/Modal.css";
 import { Gender_List } from "../helpers/Data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { closeModal } from "../store/slice/Modal_Slices";
-import { addMovies } from "../store/slice/Movies_Slices";
+import { closeModal } from "../store/useModal";
+import { addMovies } from "../store/useMovies";
 
 export const Modal_Movie = () => {
   const { openModal_Movie } = useSelector((store: RootState) => store.modal);

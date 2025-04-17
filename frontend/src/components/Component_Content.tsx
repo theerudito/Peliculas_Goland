@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { GET_Movies } from "../helpers/Fetching";
 import { Component_Player } from "./Component_Player";
 import "../styles/Content.css";
-import { MoviesDTO } from "../models/Movies";
 import { Movies_List } from "../helpers/Data";
+import { MoviesDTO } from "../models/Movies";
 
 export const Component_Content = () => {
   const [value, setValue] = useState<MoviesDTO[]>(Movies_List);
@@ -31,22 +31,22 @@ export const Component_Content = () => {
       {playing === false ? (
         <div className="container-body">
           {value.map((item) => (
-            <div key={item.movie_id} className="container-card">
+            <div key={item.movie_movie_id} className="container-card">
               <img
-                src={item.cover}
-                alt={item.title}
+                src={item.movie_cover}
+                alt={item.movie_cover}
                 className="card-background-image"
               />
 
               <div className="card-overlay">
-                <p className="card-year">{item.year}</p>
+                <p className="card-year">{item.movie_year}</p>
                 <div className="card-play">
                   <i
                     className="bi bi-play-circle"
-                    onClick={() => playVideo(item.url)}
+                    onClick={() => playVideo(item.movie_url)}
                   ></i>
                 </div>
-                <p className="card-title">{item.title}</p>
+                <p className="card-title">{item.movie_title}</p>
               </div>
             </div>
           ))}

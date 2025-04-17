@@ -1,57 +1,61 @@
 import image_1 from "../assets/imagen1.jpg";
 import image_2 from "../assets/imagen3.avif";
 import image_3 from "../assets/imagen2.jpg";
-import { Episodes } from "../models/Movies";
+import { Episodes } from "../models/Episodes";
+import { Season } from "../models/Seasons";
+import { Content_Type } from "../models/Content_Type";
+import { MoviesDTO } from "../models/Movies";
+import { Genders } from "../models/Gender";
 
-export const Movies_List = [
+export const Movies_List: MoviesDTO[] = [
   {
-    movie_id: 1,
-    title: "MAN OF HONOR",
-    year: 2000,
-    cover: image_1,
-    url: "https://pixeldrain.com/api/file/kyjhvCUN",
-    gender: "CRIMEN",
+    movie_movie_id: 1,
+    movie_title: "MAN OF HONOR",
+    movie_year: 2000,
+    movie_cover: image_1,
+    movie_url: "https://pixeldrain.com/api/file/kyjhvCUN",
+    movie_gender: "CRIMEN",
   },
   {
-    movie_id: 2,
-    title: "CADENA PERPECTUA",
-    year: 1994,
-    cover: image_2,
-    url: "https://pixeldrain.com/api/file/CkpdetaB",
-    gender: "DRAMA",
+    movie_movie_id: 2,
+    movie_title: "CADENA PERPECTUA",
+    movie_year: 1994,
+    movie_cover: image_2,
+    movie_url: "https://pixeldrain.com/api/file/CkpdetaB",
+    movie_gender: "DRAMA",
   },
   {
-    movie_id: 3,
-    title: "THE GLADIATOR",
-    year: 1994,
-    cover: image_3,
-    url: "https://pixeldrain.com/api/file/kyjhvCUN",
-    gender: "DRAMA",
+    movie_movie_id: 3,
+    movie_title: "THE GLADIATOR",
+    movie_year: 1994,
+    movie_cover: image_3,
+    movie_url: "https://pixeldrain.com/api/file/kyjhvCUN",
+    movie_gender: "DRAMA",
   },
 ];
 
-export const Gender_List = [
-  { gender_id: 1, name: "DRAMA" },
-  { gender_id: 2, name: "COMEDI" },
-  { gender_id: 3, name: "ACCION" },
+export const Gender_List: Genders[] = [
+  { gender_id: 1, gender_name: "DRAMA" },
+  { gender_id: 2, gender_name: "COMEDY" },
+  { gender_id: 3, gender_name: "ACCION" },
 ];
 
-export const Season_List = [
-  { season_id: 1, name: "SEASON 1" },
-  { season_id: 2, name: "SEASON 2" },
-  { season_id: 3, name: "SEASON 3" },
-  { season_id: 4, name: "SEASON 4" },
-  { season_id: 5, name: "SEASON 5" },
-  { season_id: 6, name: "SEASON 6" },
-  { season_id: 7, name: "SEASON 7" },
-  { season_id: 8, name: "SEASON 8" },
-  { season_id: 9, name: "SEASON 9" },
-  { season_id: 10, name: "SEASON 10" },
+export const Season_List: Season[] = [
+  { season_id: 1, season_name: "SEASON 1" },
+  { season_id: 2, season_name: "SEASON 2" },
+  { season_id: 3, season_name: "SEASON 3" },
+  { season_id: 4, season_name: "SEASON 4" },
+  { season_id: 5, season_name: "SEASON 5" },
+  { season_id: 6, season_name: "SEASON 6" },
+  { season_id: 7, season_name: "SEASON 7" },
+  { season_id: 8, season_name: "SEASON 8" },
+  { season_id: 9, season_name: "SEASON 9" },
+  { season_id: 10, season_name: "SEASON 10" },
 ];
 
-export const Content_List = [
-  { content_type_id: 1, name: "ANIME" },
-  { content_type_id: 2, name: "SERIE" },
+export const Content_Type_List: Content_Type[] = [
+  { content_type_id: 1, content_type_title: "ANIME" },
+  { content_type_id: 2, content_type_title: "SERIE" },
 ];
 
 export const Episode_List: Episodes[] = [

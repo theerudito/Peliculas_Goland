@@ -1,7 +1,7 @@
 import "../styles/Modal.css";
 import { Content_List } from "../helpers/Data";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../store/slice/Modal_Slices";
+import { closeModal } from "../store/useModal";
 import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
