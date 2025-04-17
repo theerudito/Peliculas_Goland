@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { _contents, Content, ContentDTO } from "../models/Contents";
+import { _content, Content, ContentDTO } from "../models/Contents";
 
 type Data = {
   form_content_type: Content;
@@ -10,21 +10,21 @@ type Data = {
 };
 
 export const useContent = create<Data>((set) => ({
-  form_content_type: _contents,
+  form_content_type: _content,
   list_content_type: [],
   getContent_Types: () => {
     const mockData: ContentDTO[] = [
       {
-        content_type_id: 1,
-        content_type_title: "Breaking Bad",
-        content_type_cover: "breakingbad.jpg",
-        content_type_year: 2008,
-        content_type_url: "https://example.com/breakingbad",
-        content_type_gender: "DRAMA",
+        content_id: 1,
+        content_title: "Breaking Bad",
+        content_cover: "breakingbad.jpg",
+        content_year: 2008,
+        content_url: "https://example.com/breakingbad",
+        content_gender: "DRAMA",
       },
     ];
     set({ list_content_type: mockData });
   },
   postContent_Types: () => {},
-  reset: () => set({ form_content_type: _contents }),
+  reset: () => set({ form_content_type: _content }),
 }));

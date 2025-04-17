@@ -1,56 +1,40 @@
 import "../styles/Modal.css";
-import { Gender_List } from "../helpers/Data";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { closeModal } from "../store/useModal";
-import { addMovies } from "../store/useMovies";
+import { useModal } from "../store/useModal";
+import { useMovies } from "../store/useMovies";
+import { useData } from "../store/useData";
 
 export const Modal_Movie = () => {
-  const { openModal_Movie } = useSelector((store: RootState) => store.modal);
-  const { form_Movies } = useSelector((store: RootState) => store.movie);
-
-  const dispatch = useDispatch();
-
+  const { _modal_Movie, OpenModal_Movie } = useModal((state) => state);
+  const { form_movie } = useMovies((state) => state);
+  const { gender_list, gender } = useData((state) => state);
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    const updatedForm = {
-      ...form_Movies,
-      [name]: value,
-    };
-
-    dispatch(addMovies(updatedForm));
+    // const { name, value } = e.target;
+    // const updatedForm = {
+    //   ...form_Movies,
+    //   [name]: value,
+    // };
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    const updatedForm = {
-      ...form_Movies,
-      [name]: parseInt(value, 10),
-    };
-
-    dispatch(addMovies(updatedForm));
+    // const { name, value } = e.target;
+    // const updatedForm = {
+    //   ...form_Movies,
+    //   [name]: parseInt(value, 10),
+    // };
   };
 
-  const SendData = () => {
-    console.log(form_Movies);
-    Reset_Field();
-  };
-
-  function Reset_Field() {
-    // setFormData(formData);
-  }
+  const SendData = () => {};
 
   return (
     <div>
-      {openModal_Movie && (
+      {_modal_Movie && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>ADD MOVIE</p>
               <i
                 className="bi bi-x-lg"
-                onClick={() => dispatch(closeModal(2))}
+                onClick={() => OpenModal_Movie(false)}
               ></i>
             </div>
             <div className="container-modal-input">
@@ -59,7 +43,7 @@ export const Modal_Movie = () => {
                 type="text"
                 placeholder="TITLE"
                 name="movie_title"
-                value={form_Movies.movie_title}
+                value={form_movie.movie_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -67,7 +51,7 @@ export const Modal_Movie = () => {
                 type="number"
                 name="movie_year"
                 placeholder="YEAR"
-                value={form_Movies.movie_year}
+                value={form_movie.movie_year}
                 onChange={handleChangeInput}
               />
               <input
@@ -75,25 +59,25 @@ export const Modal_Movie = () => {
                 type="text"
                 placeholder="COVER"
                 name="movie_cover"
-                value={form_Movies.movie_cover}
+                value={form_movie.movie_cover}
                 onChange={handleChangeInput}
               />
               <input
                 className="input"
                 type="text"
                 placeholder="URL"
-                value={form_Movies.movie_url}
+                value={form_movie.movie_url}
                 name="movie_url"
                 onChange={handleChangeInput}
               />
               <select
                 name="gender_id"
                 onChange={handleChangeSelect}
-                value={form_Movies.gender_id}
+                value={gender.gender_id}
               >
-                {Gender_List.map((item) => (
+                {gender_list.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
-                    {item.name}
+                    {item.gender_name}
                   </option>
                 ))}
               </select>

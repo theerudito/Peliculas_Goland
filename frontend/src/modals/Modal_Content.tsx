@@ -1,16 +1,12 @@
+import { useData } from "../store/useData";
+import { useModal } from "../store/useModal";
 import "../styles/Modal.css";
-import { Content_List } from "../helpers/Data";
-import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../store/useModal";
-import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
-  const { openModal_Content } = useSelector((store: RootState) => store.modal);
-  const content = useSelector((store: RootState) => store.content);
-  const values = useSelector((store: RootState) => store.data);
-
-  const form = content.form_Content;
-  const dispatch = useDispatch();
+  const { _modal_Content, OpenModal_Content } = useModal((state) => state);
+  const { type, gender, season, type_list, season_list, type_list  } = useData((state) => state)
+    (state) => state.type_list
+  );
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
@@ -44,9 +40,7 @@ export const Modal_Content = () => {
     // }));
   };
 
-  const SendData = () => {
-    console.log(form);
-  };
+  const SendData = () => {};
 
   const AddEpisode = () => {
     // const newEpisode: Episodes = {
@@ -85,14 +79,14 @@ export const Modal_Content = () => {
 
   return (
     <div>
-      {openModal_Content && (
+      {_modal_Content && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>ADD ANIME OR SERIE</p>
               <i
                 className="bi bi-x-lg"
-                onClick={() => dispatch(closeModal(3))}
+                onClick={() => OpenModal_Content(false)}
               ></i>
             </div>
             <div className="container-modal-input">
@@ -101,7 +95,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="TITLE EPISODE"
                 name="episode_title"
-                value={form.episode.episode_title}
+                value={form_content_type.episode.episode_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -109,7 +103,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="URL EPISODE"
                 name="episode_url"
-                value={form.episode.episode_url}
+                value={form_content_type.episode.episode_url}
                 onChange={handleChangeInput}
               />
 

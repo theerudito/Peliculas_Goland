@@ -15,3 +15,11 @@ export interface ContentDTO {
   content_url: string;
   content_gender: string;
 }
+export const _content: Content = {
+  content_id: 0,
+  content_title: "",
+  content_cover: "",
+  content_year: 0,
+  content_url: "",
+  gender_id: 0,
+};
