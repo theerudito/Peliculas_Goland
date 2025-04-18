@@ -8,7 +8,7 @@ import (
 
 func Get_Contents(c *fiber.Ctx) error {
 
-	var dto []models.Content_Type
+	var dto []models.ContentDTO
 
 	rows, err := db.DB.Query(`SELECT 
 	ct.content_type_id,
@@ -24,8 +24,8 @@ func Get_Contents(c *fiber.Ctx) error {
 	defer rows.Close()
 
 	for rows.Next() {
-		var content models.Content_Type
-		err := rows.Scan(&content.Content_Type_ID, &content.Title, &content.Descripcion, &content.Cover, &content.Year)
+		var content models.ContentDTO
+		err := rows.Scan(&content.Content_Id, &content.Content_Type, &content.Content_Cover, &content.Content_Url, &content.Content_Year)
 		if err != nil {
 			return err
 		}
@@ -37,7 +37,7 @@ func Get_Contents(c *fiber.Ctx) error {
 
 func Get_Content_ID(c *fiber.Ctx) error {
 
-	var dto []models.Content_Type
+	var dto []models.ContentDTO
 
 	pID := c.Params("id")
 
@@ -56,8 +56,8 @@ func Get_Content_ID(c *fiber.Ctx) error {
 	defer rows.Close()
 
 	for rows.Next() {
-		var content models.Content_Type
-		if err := rows.Scan(&content.Content_Type_ID, &content.Title, &content.Descripcion, &content.Cover, &content.Year); err != nil {
+		var content models.ContentDTO
+		if err := rows.Scan(&content.Content_Id, &content.Content_Type, &content.Content_Cover, &content.Content_Url, &content.Content_Year); err != nil {
 			return err
 		}
 		dto = append(dto, content)

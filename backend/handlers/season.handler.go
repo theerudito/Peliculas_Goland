@@ -17,8 +17,6 @@ func Get_Seasons(c *fiber.Ctx) error {
 	ct.descripcion,
 	ct."year"
 	FROM seasons s
-	LEFT JOIN content_types ct ON s.content_type_id  = ct.content_type_id
-	WHERE ct.title = 'Anime'
 	`)
 
 	if err != nil {
@@ -30,7 +28,7 @@ func Get_Seasons(c *fiber.Ctx) error {
 
 		var season models.Season
 
-		err := rows.Scan(&season.Season_ID, &season.Title, &season.Descripcion, &season.Year)
+		err := rows.Scan(&season.Season_ID, &season.Season_Name)
 
 		if err != nil {
 			return err
@@ -68,7 +66,7 @@ func Get_Season_ID(c *fiber.Ctx) error {
 
 		var season models.Season
 
-		err := rows.Scan(&season.Season_ID, &season.Title, &season.Descripcion, &season.Year)
+		err := rows.Scan(&season.Season_ID, &season.Season_Name)
 
 		if err != nil {
 			return err

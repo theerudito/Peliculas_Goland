@@ -1,4 +1,5 @@
 export interface Movies {
+  movie_movie_id: string;
   movie_title: string;
   movie_year: number;
   movie_cover: string;
@@ -15,6 +16,7 @@ export interface MoviesDTO {
 }
 
 export const _movies: Movies = {
+  movie_movie_id: "",
   movie_title: "",
   movie_year: 0,
   movie_cover: "",

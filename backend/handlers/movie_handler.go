@@ -12,7 +12,7 @@ func Get_Movies(c *fiber.Ctx) error {
 
 	var dto []models.MovieDTO
 
-	rows, err := db.DB.Query(`SELECT movie.movie_id, movie.title, movie.year,movie.cover, movie.url, gender.descripcion
+	rows, err := db.DB.Query(`SELECT movie.movie_movie_id, movie.movie_title, movie.movie_year,movie.movie_cover, movie.movie_url, gender.name
 	FROM movies AS movie
 	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id`)
 
@@ -23,7 +23,7 @@ func Get_Movies(c *fiber.Ctx) error {
 
 	for rows.Next() {
 		var movie models.MovieDTO
-		err := rows.Scan(&movie.ID, &movie.Title, &movie.Year, &movie.Cover, &movie.URL, &movie.Gender)
+		err := rows.Scan(&movie.Movie_Movie_Id, &movie.Movie_Title, &movie.Movie_Year, &movie.Movie_Cover, &movie.Movie_Url, &movie.Gender)
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ func Get_MovieByID(c *fiber.Ctx) error {
 	err := db.DB.QueryRow(`SELECT movie.movie_id, movie.title, movie.year,movie.cover, movie.url, gender.descripcion
 	FROM movies AS movie
 	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id
-	WHERE movie.movie_id = ?`, id).Scan(&movie.ID, &movie.Title, &movie.Year, &movie.Cover, &movie.URL, &movie.Gender)
+	WHERE movie.movie_id = ?`, id).Scan(&movie.Movie_Movie_Id, &movie.Movie_Title, &movie.Movie_Year, &movie.Movie_Cover, &movie.Movie_Url, &movie.Gender)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -61,7 +61,7 @@ func Post_Movie(c *fiber.Ctx) error {
 	}
 
 	_, err := db.DB.Exec(`INSERT INTO movies (title, year, gender_id) 
-	VALUES (?, ?, ?)`, movie.Title, movie.Year, movie.GenderID)
+	VALUES (?, ?, ?)`, movie.Movie_Title, movie.Movie_Cover, movie.Movie_Year, movie.Movie_Url, movie.Gender_Id)
 
 	if err != nil {
 		return err
@@ -82,7 +82,7 @@ func Put_Movies(c *fiber.Ctx) error {
 
 	_, err := db.DB.Exec(`UPDATE movies SET 
 		title = ?, year = ?, gender_id = ? WHERE id = ?`,
-		movie.Title, movie.Year, movie.GenderID, id)
+		movie.Movie_Title, movie.Movie_Cover, movie.Movie_Year, movie.Movie_Url, movie.Gender_Id, id)
 
 	if err != nil {
 		return err

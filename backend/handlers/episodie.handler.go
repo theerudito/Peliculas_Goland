@@ -34,7 +34,7 @@ func Get_Episodies(c *fiber.Ctx) error {
 
 		var episodie models.Episodie
 
-		err := rows.Scan(&episodie.Episode_ID, &episodie.Episode_Number, &episodie.Title, &episodie.Url)
+		err := rows.Scan(&episodie.Episode_ID, &episodie.Episode_Number, &episodie.Episode_Name, &episodie.Episode_Url)
 
 		if err != nil {
 			return err

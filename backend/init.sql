@@ -2,11 +2,11 @@
 CREATE TABLE
   IF NOT EXISTS genders (
     gender_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    descripcion TEXT NOT NULL UNIQUE
+    gender_name TEXT NOT NULL UNIQUE
   );
 
 INSERT INTO
-  genders (descripcion)
+  genders (gender_name)
 VALUES
   ('DRAMA'),
   ('COMEDIA'),
@@ -20,17 +20,23 @@ VALUES
 -- PELÍCULAS (con cover y url como BLOBs)
 CREATE TABLE
   IF NOT EXISTS movies (
-    movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    year INTEGER NOT NULL,
-    cover TEXT NOT NULL,
-    url TEXT NOT NULL,
+    movie_movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_title TEXT NOT NULL,
+    movie_year INTEGER NOT NULL,
+    movie_cover TEXT NOT NULL,
+    movie_url TEXT NOT NULL,
     gender_id INTEGER NOT NULL,
     FOREIGN KEY (gender_id) REFERENCES genders (gender_id)
   );
 
 INSERT INTO
-  movies (title, year, cover, url, gender_id)
+  movies (
+    movie_title,
+    movie_year,
+    movie_cover,
+    movie_url,
+    gender_id
+  )
 VALUES
   (
     'MAN OF HONOR',
@@ -57,48 +63,53 @@ VALUES
 -- TIPOS DE CONTENIDO (Series, Animes, etc.)
 CREATE TABLE
   IF NOT EXISTS content_types (
-    content_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    descripcion TEXT NOT NULL,
-    cover TEXT NOT NULL,
-    year INTEGER NOT NULL,
+    content_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content_type INTEGER NOT NULL,
+    content_cover TEXT NOT NULL,
+    content_url TEXT NOT NULL,
+    content_year TEXT NOT NULL,
     gender_id INTEGER NOT NULL,
     FOREIGN KEY (gender_id) REFERENCES genders (gender_id)
   );
 
 INSERT INTO
-  content_types (title, descripcion, cover, year, gender_id)
+  content_types (
+    content_type,
+    content_cover,
+    content_url,
+    content_year,
+    gender_id
+  )
 VALUES
   (
-    'Anime',
+    1,
     'JUJUTSU KAISEN',
     'https://latanime.org/thumbs/imagen/jujutsu-kaisen-s2-latino-1690490946.jpg',
     2023,
     7
   ),
   (
-    'Anime',
-    'JUJUTSU KAISEN',
+    2,
+    'VIKING',
     'https://latanime.org/thumbs/imagen/jujutsu-kaisen-s2-castellano-1692305959.jpg',
     2024,
-    7
+    1
   );
 
 -- TEMPORADAS DE SERIES O ANIMES
 CREATE TABLE
   IF NOT EXISTS seasons (
     season_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content_type_id INTEGER NOT NULL,
-    season_number INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    FOREIGN KEY (content_type_id) REFERENCES content_types (content_type_id)
+    content_id INTEGER NOT NULL,
+    season_name INTEGER NOT NULL,
+    FOREIGN KEY (content_id) REFERENCES content_types (content_id)
   );
 
 INSERT INTO
-  seasons (content_type_id, season_number, title)
+  seasons (content_id, season_name)
 VALUES
-  (1, 1, 'Temporada 1'),
-  (2, 2, 'Temporada 2');
+  (1, 'Temporada 1'),
+  (2, 'Temporada 2');
 
 -- EPISODIOS DE TEMPORADAS
 CREATE TABLE
@@ -106,13 +117,18 @@ CREATE TABLE
     episode_id INTEGER PRIMARY KEY AUTOINCREMENT,
     season_id INTEGER NOT NULL,
     episode_number INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    url TEXT NOT NULL,
+    episode_name TEXT NOT NULL,
+    episode_url TEXT NOT NULL,
     FOREIGN KEY (season_id) REFERENCES seasons (season_id)
   );
 
 INSERT INTO
-  episodes (season_id, episode_number, title, url)
+  episodes (
+    season_id,
+    episode_number,
+    episode_name,
+    episode_url
+  )
 VALUES
   (
     1,
