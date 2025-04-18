@@ -1,30 +1,47 @@
 import { create } from "zustand";
+import { _episodes, Episodes } from "../models/Episodes";
 import { _content, Content, ContentDTO } from "../models/Contents";
 
 type Data = {
-  form_content_type: Content;
+  form_content: Content;
+  form_Episode: Episodes;
   list_content_type: ContentDTO[];
+  listEpisode: Episodes[];
   getContent_Types: () => void;
+  addEpisode: (episode: Episodes) => void;
+  removeEpisode: (id: number) => void;
   postContent_Types: () => void;
   reset: () => void;
 };
 
 export const useContent = create<Data>((set) => ({
-  form_content_type: _content,
+  form_content: _content,
+  form_Episode: _episodes,
   list_content_type: [],
+  listEpisode: [],
   getContent_Types: () => {
-    const mockData: ContentDTO[] = [
-      {
-        content_id: 1,
-        content_title: "Breaking Bad",
-        content_cover: "breakingbad.jpg",
-        content_year: 2008,
-        content_url: "https://example.com/breakingbad",
-        content_gender: "DRAMA",
-      },
-    ];
-    set({ list_content_type: mockData });
+    set({ list_content_type: [] });
   },
+
   postContent_Types: () => {},
-  reset: () => set({ form_content_type: _content }),
+  addEpisode: (episode: Episodes) => {
+    set((state) => ({
+      listEpisode: [...state.listEpisode, episode],
+    }));
+  },
+
+  removeEpisode: (id: number) => {
+    set((state) => ({
+      listEpisode: state.listEpisode.filter((ep) => ep.episode_id !== id),
+    }));
+  },
+
+  reset: () => {
+    set({
+      form_content: _content,
+      form_Episode: _episodes,
+      list_content_type: [],
+      listEpisode: [],
+    });
+  },
 }));

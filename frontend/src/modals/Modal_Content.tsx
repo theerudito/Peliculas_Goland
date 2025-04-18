@@ -1,12 +1,14 @@
+import { _season } from "../models/Seasons";
+import { useContent } from "../store/useContent";
 import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
 import "../styles/Modal.css";
 
 export const Modal_Content = () => {
-  const { _modal_Content, OpenModal_Content } = useModal((state) => state);
-  const { type, gender, season, type_list, season_list, type_list  } = useData((state) => state)
-    (state) => state.type_list
-  );
+  const { gender_list, form_gender, season_list, form_season, type_list, form_type } = useData((state) => state)
+  const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } = useContent((state) => state)
+  const { OpenModal_Content, _modal_Content } = useModal((state) => state)
+
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
@@ -40,42 +42,7 @@ export const Modal_Content = () => {
     // }));
   };
 
-  const SendData = () => {};
-
-  const AddEpisode = () => {
-    // const newEpisode: Episodes = {
-    //   ...episode,
-    //   episode_number:
-    //     episodeList.length > 0
-    //       ? episodeList[episodeList.length - 1].episode_id + 1
-    //       : 1,
-    //   episode_id:
-    //     episodeList.length > 0
-    //       ? episodeList[episodeList.length - 1].episode_id + 1
-    //       : 1,
-    // };
-    // setEpisodeList([...episodeList, newEpisode]);
-    // Reset_Field(1);
-  };
-
-  const RemoveEpisode = (id: number) => {
-    // const updatedList = episodeList.filter((item) => item.episode_id !== id);
-    // setEpisodeList(updatedList);
-  };
-
-  function Reset_Field(action: number) {
-    // switch (action) {
-    //   case 1:
-    //     setEpisode(_episodes);
-    //     break;
-    //   case 2:
-    //     setSeason(_seasons);
-    //     break;
-    //   case 3:
-    //     setContent(_contents);
-    //     break;
-    // }
-  }
+  const SendData = () => { };
 
   return (
     <div>
@@ -95,7 +62,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="TITLE EPISODE"
                 name="episode_title"
-                value={form_content_type.episode.episode_title}
+                value={form_Episode.episode_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -103,11 +70,11 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="URL EPISODE"
                 name="episode_url"
-                value={form_content_type.episode.episode_url}
+                value={form_Episode.episode_url}
                 onChange={handleChangeInput}
               />
 
-              <button onClick={AddEpisode}>1 ADD EPISODE</button>
+              <button onClick={() => addEpisode(form_Episode)}>1 ADD EPISODE</button>
               <div className="container-modal-table">
                 <table>
                   <thead>
@@ -118,14 +85,14 @@ export const Modal_Content = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {content.episodes_list.map((item) => (
+                    {listEpisode.map((item) => (
                       <tr key={item.episode_id}>
                         <td>{item.episode_title}</td>
                         <td>EPISODE {item.episode_number}</td>
                         <td>
                           <i
                             className="bi bi-trash"
-                            onClick={() => RemoveEpisode(item.episode_id)}
+                            onClick={() => removeEpisode(item.episode_id)}
                           ></i>
                         </td>
                       </tr>
@@ -136,12 +103,12 @@ export const Modal_Content = () => {
 
               <select
                 name="season_id"
-                value={content.form_Content.gender_id}
+                value={form_season.season_id}
                 onChange={handleChangeSelect}
               >
-                {values.season_list.map((item) => (
+                {season_list.map((item) => (
                   <option key={item.season_id} value={item.season_id}>
-                    {item.name}
+                    {item.season_name}
                   </option>
                 ))}
               </select>
@@ -150,22 +117,22 @@ export const Modal_Content = () => {
                 className="input"
                 type="text"
                 placeholder="TITLE SEASON"
-                name="season_title"
-                value={form.season.season_title}
+                name="season_name"
+                value={_season.season_name}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="content_type_id"
                 onChange={handleChangeSelect}
-                value={content.form_Content.content.content_type_id}
+                value={form_type.content_type_id}
               >
-                {values.type_list.map((item) => (
+                {type_list.map((item) => (
                   <option
                     key={item.content_type_id}
                     value={item.content_type_id}
                   >
-                    {item.name}
+                    {item.content_type_title}
                   </option>
                 ))}
               </select>
@@ -175,7 +142,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="DESCRIPCION"
                 name="content_title"
-                value={form.content.content_title}
+                value={form_content.content_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -183,7 +150,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="COVER"
                 name="content_cover"
-                value={form.content.content_cover}
+                value={form_content.content_cover}
                 onChange={handleChangeInput}
               />
               <input
@@ -191,18 +158,18 @@ export const Modal_Content = () => {
                 type="number"
                 placeholder="YEAR"
                 name="content_year"
-                value={form.content.content_year}
+                value={form_content.content_year}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="gender_id"
-                value={content.form_Content.gender_id}
+                value={form_gender.gender_id}
                 onChange={handleChangeSelect}
               >
-                {values.gender_list.map((item) => (
+                {gender_list.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
-                    {item.name}
+                    {item.gender_name}
                   </option>
                 ))}
               </select>

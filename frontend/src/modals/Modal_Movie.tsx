@@ -6,7 +6,7 @@ import { useData } from "../store/useData";
 export const Modal_Movie = () => {
   const { _modal_Movie, OpenModal_Movie } = useModal((state) => state);
   const { form_movie } = useMovies((state) => state);
-  const { gender_list, gender } = useData((state) => state);
+  const { gender_list, form_gender } = useData((state) => state);
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
     // const updatedForm = {
@@ -23,7 +23,7 @@ export const Modal_Movie = () => {
     // };
   };
 
-  const SendData = () => {};
+  const SendData = () => { };
 
   return (
     <div>
@@ -73,7 +73,7 @@ export const Modal_Movie = () => {
               <select
                 name="gender_id"
                 onChange={handleChangeSelect}
-                value={gender.gender_id}
+                value={form_gender.gender_id}
               >
                 {gender_list.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
