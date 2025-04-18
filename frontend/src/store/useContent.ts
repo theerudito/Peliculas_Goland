@@ -24,6 +24,7 @@ export const useContent = create<Data>((set) => ({
   },
 
   postContent_Types: () => {},
+
   addEpisode: (episode: Episodes) => {
     set((state) => ({
       listEpisode: [...state.listEpisode, episode],
@@ -40,7 +41,6 @@ export const useContent = create<Data>((set) => ({
     set({
       form_content: _content,
       form_Episode: _episodes,
-      list_content_type: [],
       listEpisode: [],
     });
   },

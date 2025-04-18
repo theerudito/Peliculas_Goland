@@ -6,7 +6,7 @@ type Data = {
   form_movie: Movies;
   list_movies: MoviesDTO[];
   getMovies: () => void;
-  postMovies: () => void;
+  postMovies: (obj: Movies) => void;
   reset: () => void;
 };
 
@@ -16,6 +16,8 @@ export const useMovies = create<Data>((set) => ({
   getMovies: () => {
     set({ list_movies: Movies_List });
   },
-  postMovies: () => {},
+  postMovies: (obj: Movies) => {
+    console.log(obj);
+  },
   reset: () => set({ form_movie: _movies }),
 }));

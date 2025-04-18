@@ -2,28 +2,47 @@ import "../styles/Modal.css";
 import { useModal } from "../store/useModal";
 import { useMovies } from "../store/useMovies";
 import { useData } from "../store/useData";
+import { Movies } from "../models/Movies";
 
 export const Modal_Movie = () => {
   const { _modal_Movie, OpenModal_Movie } = useModal((state) => state);
-  const { form_movie } = useMovies((state) => state);
+  const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, form_gender } = useData((state) => state);
+
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const { name, value } = e.target;
-    // const updatedForm = {
-    //   ...form_Movies,
-    //   [name]: value,
-    // };
+    const { name, value } = e.target;
+    useMovies.setState((state) => ({
+      form_movie: {
+        ...state.form_movie,
+        [name as keyof typeof state.form_movie]: value,
+      },
+    }));
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // const { name, value } = e.target;
-    // const updatedForm = {
-    //   ...form_Movies,
-    //   [name]: parseInt(value, 10),
-    // };
+    const { name, value } = e.target;
+
+    useData.setState((state) => ({
+      form_gender: {
+        ...state.form_gender,
+        [name as keyof typeof state.form_gender]: value,
+      },
+    }));
   };
 
-  const SendData = () => { };
+
+  function sendData() {
+    const { movie_title, movie_year, movie_url, movie_cover, } = form_movie
+    const obj: Movies = {
+      movie_title,
+      movie_year,
+      movie_url,
+      movie_cover,
+      gender_id: form_gender.gender_id
+    }
+    postMovies(obj)
+ 
+  }
 
   return (
     <div>
@@ -81,7 +100,7 @@ export const Modal_Movie = () => {
                   </option>
                 ))}
               </select>
-              <button onClick={SendData}>ADD</button>
+              <button onClick={() => sendData()}>ADD</button>
             </div>
           </div>
         </div>
