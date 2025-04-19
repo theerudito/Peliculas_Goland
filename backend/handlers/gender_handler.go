@@ -26,7 +26,8 @@ func Get_Gender(c *fiber.Ctx) error {
 
 		var gender models.Gender
 
-		err := rows.Scan(&gender.Gender_Id, &gender.Gender_Name)
+		err := rows.Scan(&gender.Gender_Id,
+			&gender.Gender_Name)
 
 		if err != nil {
 			return err
@@ -37,7 +38,6 @@ func Get_Gender(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto)
-
 }
 
 func Get_Gender_ID(c *fiber.Ctx) error {
@@ -61,7 +61,8 @@ func Get_Gender_ID(c *fiber.Ctx) error {
 
 		var gender models.Gender
 
-		err := rows.Scan(&gender.Gender_Id, &gender.Gender_Name)
+		err := rows.Scan(&gender.Gender_Id,
+			&gender.Gender_Name)
 
 		if err != nil {
 			return err

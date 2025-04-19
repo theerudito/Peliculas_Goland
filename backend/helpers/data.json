@@ -1,0 +1,21 @@
+{
+  "content_id": 0,
+  "content_title": "JUJUTSU KAISE",
+  "content_type_id": 1,
+  "content_cover": "",
+  "content_url": "",
+  "content_year": 2025,
+  "gender_id": 1,
+  "season_id": 1,
+  "season_name": 1,
+  "season_content_id": 1,
+  "episodes": [
+    {
+      "episode_id": 1,
+      "episode_number": 1,
+      "episode_name": "Las runas",
+      "episode_url": "wwww",
+      "season_id": 1
+    }
+  ]
+}

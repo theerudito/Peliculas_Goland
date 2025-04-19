@@ -1,7 +1,7 @@
 package models
 
 type Movie struct {
-	Movie_Movie_Id int    `json:"movie_movie_id"`
+	Movie_Movie_Id uint   `json:"movie_movie_id"`
 	Movie_Title    string `json:"movie_title"`
 	Movie_Year     int    `json:"movie_year"`
 	Movie_Cover    string `json:"movie_cover"`
@@ -10,7 +10,7 @@ type Movie struct {
 }
 
 type MovieDTO struct {
-	Movie_Movie_Id int    `json:"movie_movie_id"`
+	Movie_Movie_Id uint   `json:"movie_movie_id"`
 	Movie_Title    string `json:"movie_title"`
 	Movie_Year     int    `json:"movie_year"`
 	Movie_Cover    string `json:"movie_cover"`

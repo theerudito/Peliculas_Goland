@@ -26,7 +26,8 @@ func Get_Seasons(c *fiber.Ctx) error {
 
 		var season models.Season
 
-		err := rows.Scan(&season.Season_ID, &season.Season_Name)
+		err := rows.Scan(&season.Season_Id,
+			&season.Season_Name)
 
 		if err != nil {
 			return err
@@ -48,7 +49,7 @@ func Get_Season_ID(c *fiber.Ctx) error {
 
 	rows, err := db.DB.Query(`SELECT
 	season.season_id,
-	season.season_name
+	season.season_title
 	FROM seasons AS season
 	WHERE season.season_id = ?`, pID)
 
@@ -61,7 +62,8 @@ func Get_Season_ID(c *fiber.Ctx) error {
 
 		var season models.Season
 
-		err := rows.Scan(&season.Season_ID, &season.Season_Name)
+		err := rows.Scan(&season.Season_Id,
+			&season.Season_Name)
 
 		if err != nil {
 			return err

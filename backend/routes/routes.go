@@ -20,18 +20,18 @@ func SetupRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	// MOVIES
-	v1.Get("/movies", handlers.Get_Movies)
-	v1.Get("/movies/:id", handlers.Get_Movies)
-	v1.Post("/movies", handlers.Post_Movie)
-	v1.Put("/movies/:id", handlers.Put_Movies)
-	v1.Delete("/movies/:id", handlers.Delete_Movies)
+	v1.Get("/movies", handlers.GetMovies)
+	v1.Get("/movies/:id", handlers.GetMovies)
+	v1.Post("/movies", handlers.PostMovie)
+	v1.Put("/movies/:id", handlers.PutMovies)
+	v1.Delete("/movies/:id", handlers.DeleteMovies)
 
 	// CONTENT
-	v1.Get("/contents", handlers.Get_Contents)
-	v1.Get("/contents/:id", handlers.Get_Content_ID)
-	v1.Post("/contents", handlers.Post_Movie)
-	v1.Put("/contents/:id", handlers.Put_Movies)
-	v1.Delete("/contents/:id", handlers.Delete_Movies)
+	v1.Get("/contents", handlers.GetContent)
+	v1.Get("/contents/:id", handlers.GetContentID)
+	v1.Post("/contents", handlers.PostContent)
+	v1.Put("/contents", handlers.PutContent)
+	v1.Delete("/contents/:id", handlers.DeleteContent)
 
 	// SEASONS
 	v1.Get("/seasons", handlers.Get_Seasons)
@@ -40,6 +40,6 @@ func SetupRoutes(app *fiber.App) {
 	v1.Get("/genders", handlers.Get_Gender)
 
 	// EPISODIES
-	v1.Get("/episodies", handlers.Get_Episodies)
+	v1.Get("/episodes", handlers.Get_Episodies)
 
 }

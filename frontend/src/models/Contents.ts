@@ -1,5 +1,6 @@
 export interface Content {
   content_id: number;
+  content_title: string;
   content_type_id: number;
   content_cover: string;
   content_year: number;
@@ -9,6 +10,7 @@ export interface Content {
 
 export interface ContentDTO {
   content_id: number;
+  content_title: string;
   content_type: string;
   content_cover: string;
   content_year: number;
@@ -17,6 +19,7 @@ export interface ContentDTO {
 }
 export const _content: Content = {
   content_id: 0,
+  content_title: "",
   content_type_id: 0,
   content_cover: "",
   content_year: 0,
