@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Movies_List } from "../helpers/Data";
 import { _movies, Movies, MoviesDTO } from "../models/Movies";
+import { POST_Movie } from "../helpers/Fetching";
 
 type Data = {
   form_movie: Movies;
@@ -16,8 +17,8 @@ export const useMovies = create<Data>((set) => ({
   getMovies: () => {
     set({ list_movies: Movies_List });
   },
-  postMovies: (obj: Movies) => {
-    console.log(obj);
+  postMovies: async (obj: Movies) => {
+    await POST_Movie(obj);
   },
   reset: () => set({ form_movie: _movies }),
 }));

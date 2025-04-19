@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	db "github.com/theerudito/peliculas/database"
@@ -12,9 +13,9 @@ func Get_Movies(c *fiber.Ctx) error {
 
 	var dto []models.MovieDTO
 
-	rows, err := db.DB.Query(`SELECT movie.movie_movie_id, movie.movie_title, movie.movie_year,movie.movie_cover, movie.movie_url, gender.name
+	rows, err := db.DB.Query(`SELECT movie.movie_movie_id, movie.movie_title, movie.movie_year,movie.movie_cover, movie.movie_url, gender.gender_name
 	FROM movies AS movie
-	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id`)
+	INNER JOIN genders AS gender ON movie.movie_movie_id = gender.gender_id`)
 
 	if err != nil {
 		return err
@@ -38,10 +39,9 @@ func Get_MovieByID(c *fiber.Ctx) error {
 
 	var movie models.MovieDTO
 
-	err := db.DB.QueryRow(`SELECT movie.movie_id, movie.title, movie.year,movie.cover, movie.url, gender.descripcion
-	FROM movies AS movie
-	INNER JOIN genders AS gender ON movie.movie_id = gender.gender_id
-	WHERE movie.movie_id = ?`, id).Scan(&movie.Movie_Movie_Id, &movie.Movie_Title, &movie.Movie_Year, &movie.Movie_Cover, &movie.Movie_Url, &movie.Gender)
+	err := db.DB.QueryRow(`FROM movies AS movie
+	INNER JOIN genders AS gender ON movie.movie_movie_id = gender.gender_id
+	WHERE  movie.movie_movie_id = ?`, id).Scan(&movie.Movie_Movie_Id, &movie.Movie_Title, &movie.Movie_Year, &movie.Movie_Cover, &movie.Movie_Url, &movie.Gender)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -60,8 +60,8 @@ func Post_Movie(c *fiber.Ctx) error {
 		return err
 	}
 
-	_, err := db.DB.Exec(`INSERT INTO movies (title, year, gender_id) 
-	VALUES (?, ?, ?)`, movie.Movie_Title, movie.Movie_Cover, movie.Movie_Year, movie.Movie_Url, movie.Gender_Id)
+	_, err := db.DB.Exec(`INSERT INTO movies (movie_title, movie_year, movie_cover, movie_url, gender_id)
+	VALUES (?, ?, ?, ?, ?)`, strings.ToUpper(movie.Movie_Title), movie.Movie_Year, movie.Movie_Cover, movie.Movie_Url, movie.Gender_Id)
 
 	if err != nil {
 		return err
@@ -80,9 +80,9 @@ func Put_Movies(c *fiber.Ctx) error {
 		return err
 	}
 
-	_, err := db.DB.Exec(`UPDATE movies SET 
-		title = ?, year = ?, gender_id = ? WHERE id = ?`,
-		movie.Movie_Title, movie.Movie_Cover, movie.Movie_Year, movie.Movie_Url, movie.Gender_Id, id)
+	_, err := db.DB.Exec(`UPDATE movies SET
+	movie_title = ?, movie_year = ?, movie_cover = ?, movie_url = ?, gender_id = ?`,
+		strings.ToUpper(movie.Movie_Title), movie.Movie_Year, movie.Movie_Cover, movie.Movie_Url, movie.Gender_Id, id)
 
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func Delete_Movies(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	_, err := db.DB.Exec("DELETE FROM movies WHERE id = ?", id)
+	_, err := db.DB.Exec("DELETE FROM movies WHERE movie_movie_id = ?", id)
 
 	if err != nil {
 		return err

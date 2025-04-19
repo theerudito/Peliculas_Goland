@@ -8,21 +8,16 @@ import (
 
 func Get_Episodies(c *fiber.Ctx) error {
 
-	var dto []models.Episodie
+	var dto []models.EpisodieDTO
 
-	pTitle := c.Params("title")
-
-	pID := c.Params("id")
-
-	rows, err := db.DB.Query(`SELECT 
-	e.episode_id,
-	e.episode_number,
-	e.title,
-	e.url
-	FROM episodes e
-	LEFT JOIN seasons s ON e.season_id  = s.season_id
-	LEFT JOIN content_types ct ON s.content_type_id  = ct.content_type_id
-	WHERE ct.title = ? AND ct.content_type_id  = ?`, pTitle, pID)
+	rows, err := db.DB.Query(`SELECT
+	episode.episode_id,
+	episode.episode_name,
+	episode.episode_number,
+	episode.episode_url,
+	season.season_name
+	FROM episodes AS episode
+	INNER JOIN seasons AS season ON season.season_id = episode.season_id`)
 
 	if err != nil {
 		return err
@@ -32,9 +27,9 @@ func Get_Episodies(c *fiber.Ctx) error {
 
 	for rows.Next() {
 
-		var episodie models.Episodie
+		var episodie models.EpisodieDTO
 
-		err := rows.Scan(&episodie.Episode_ID, &episodie.Episode_Number, &episodie.Episode_Name, &episodie.Episode_Url)
+		err := rows.Scan(&episodie.Episode_ID, &episodie.Episode_Number, &episodie.Episode_Name, &episodie.Episode_Url, &episodie.Season)
 
 		if err != nil {
 			return err

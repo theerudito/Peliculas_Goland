@@ -30,18 +30,17 @@ export const Modal_Movie = () => {
     }));
   };
 
-
   function sendData() {
-    const { movie_title, movie_year, movie_url, movie_cover, } = form_movie
+    const { movie_title, movie_year, movie_url, movie_cover } = form_movie
     const obj: Movies = {
+      movie_movie_id: 0,
       movie_title,
-      movie_year,
+      movie_year: Number(movie_year),
       movie_url,
       movie_cover,
-      gender_id: form_gender.gender_id
+      gender_id: Number(form_gender.gender_id)
     }
     postMovies(obj)
- 
   }
 
   return (
