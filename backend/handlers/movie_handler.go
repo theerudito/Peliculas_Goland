@@ -15,16 +15,18 @@ func GetMovies(c *fiber.Ctx) error {
 
 	var dto []models.MovieDTO
 
-	rows, err := db.DB.Query(`SELECT 
-	movie.movie_movie_id, 
-	movie.movie_title, 
-	movie.movie_year,
-	movie.movie_cover, 
-	movie.movie_url, 
-	gender.gender_name
-	FROM movies AS movie
-	INNER JOIN genders AS gender ON movie.movie_movie_id = gender.gender_id`)
-
+	rows, err := db.DB.Query(`
+		SELECT 
+			movie.movie_movie_id, 
+			movie.movie_title, 
+			movie.movie_year,
+			movie.movie_cover, 
+			movie.movie_url, 
+			gender.gender_name
+		FROM movies AS movie
+		INNER JOIN genders AS gender 
+			ON movie.gender_id = gender.gender_id
+	`)
 	if err != nil {
 		return err
 	}
@@ -38,14 +40,16 @@ func GetMovies(c *fiber.Ctx) error {
 			&movie.Movie_Year,
 			&movie.Movie_Cover,
 			&movie.Movie_Url,
-			&movie.Gender)
-
+			&movie.Gender,
+		)
 		if err != nil {
 			return err
 		}
 		dto = append(dto, movie)
 	}
+
 	return c.JSON(dto)
+
 }
 
 func GetMoviebyid(c *fiber.Ctx) error {
@@ -54,23 +58,83 @@ func GetMoviebyid(c *fiber.Ctx) error {
 
 	var movie models.MovieDTO
 
-	err := db.DB.QueryRow(`FROM movies AS movie
-	INNER JOIN genders AS gender ON movie.movie_movie_id = gender.gender_id
-	WHERE  movie.movie_movie_id = ?`, id).Scan(
+	err := db.DB.QueryRow(`
+		SELECT 
+			movie.movie_movie_id,
+			movie.movie_title,
+			movie.movie_year,
+			movie.movie_cover,
+			movie.movie_url,
+			gender.gender_name
+		FROM movies AS movie
+		INNER JOIN genders AS gender 
+			ON movie.gender_id = gender.gender_id
+		WHERE movie.movie_movie_id = ?
+	`, id).Scan(
 		&movie.Movie_Movie_Id,
 		&movie.Movie_Title,
 		&movie.Movie_Year,
 		&movie.Movie_Cover,
 		&movie.Movie_Url,
-		&movie.Gender)
+		&movie.Gender,
+	)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return c.Status(404).JSON(fiber.Map{"error": "Movie not found"})
+			return c.Status(404).JSON(fiber.Map{"error": "Contenido no encontrado ❌"})
 		}
 		return err
 	}
+
 	return c.JSON(movie)
+
+}
+
+func FindMovie(c *fiber.Ctx) error {
+
+	value := c.Params("value")
+
+	var dto []models.MovieDTO
+
+	search := "%" + strings.ToUpper(value) + "%"
+
+	rows, err := db.DB.Query(`
+	SELECT
+		movie.movie_movie_id,
+		movie.movie_title,
+		movie.movie_year,
+		movie.movie_cover,
+		movie.movie_url,
+		gender.gender_name
+	FROM movies AS movie
+	INNER JOIN genders AS gender
+		ON movie.gender_id = gender.gender_id
+	WHERE movie.movie_title LIKE ?
+`, search)
+
+	if err != nil {
+		return err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var movie models.MovieDTO
+		err := rows.Scan(
+			&movie.Movie_Movie_Id,
+			&movie.Movie_Title,
+			&movie.Movie_Year,
+			&movie.Movie_Cover,
+			&movie.Movie_Url,
+			&movie.Gender,
+		)
+		if err != nil {
+			return err
+		}
+		dto = append(dto, movie)
+	}
+
+	return c.JSON(dto)
 }
 
 func PostMovie(c *fiber.Ctx) error {
@@ -83,12 +147,12 @@ func PostMovie(c *fiber.Ctx) error {
 
 	movieYear, err := helpers.ConvertToInt(body["movie_year"])
 	if err != nil {
-		return fmt.Errorf("invalid movie_year: %v", err)
+		return fmt.Errorf("el año es invalido: %v", err)
 	}
 
 	genderId, err := helpers.ConvertToUInt(body["gender_id"])
 	if err != nil {
-		return fmt.Errorf("invalid gender_id: %v", err)
+		return fmt.Errorf("el id es invalido: %v", err)
 	}
 
 	movie := &models.Movie{
@@ -99,7 +163,8 @@ func PostMovie(c *fiber.Ctx) error {
 		Gender_Id:   genderId,
 	}
 
-	_, err = db.DB.Exec(`INSERT INTO movies (
+	_, err = db.DB.Exec(`
+	INSERT INTO movies (
 	movie_title, 
 	movie_year, 
 	movie_cover, 
@@ -117,7 +182,7 @@ func PostMovie(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(201).JSON(fiber.Map{"message": "Movie added"})
+	return c.Status(201).JSON(fiber.Map{"message": "Contenido creado correctamente 🚀"})
 }
 
 func PutMovies(c *fiber.Ctx) error {
@@ -145,19 +210,31 @@ func PutMovies(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(fiber.Map{"message": "Movie Updated"})
+	return c.JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
 }
 
 func DeleteMovies(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	_, err := db.DB.Exec(`DELETE FROM movies 
-	WHERE movie_movie_id = ?`, id)
-
+	res, err := db.DB.Exec(`DELETE FROM movies WHERE movie_movie_id = ?`, id)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(fiber.Map{"message": "Movie Deleted"})
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "Contenido no encontrado ❌",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Contenido eliminado correctamente 🗑️",
+	})
+
 }

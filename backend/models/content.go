@@ -12,7 +12,7 @@ type Content struct {
 type ContentDTO struct {
 	Content_Id    uint   `json:"content_id"`
 	Content_Title string `json:"content_title"`
-	Content_Type  int    `json:"content_type"`
+	Content_Type  string `json:"content_type"`
 	Content_Cover string `json:"content_cover"`
 	Content_Year  int    `json:"content_year"`
 	Gender        string `json:"gender"`

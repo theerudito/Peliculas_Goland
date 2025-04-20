@@ -8,7 +8,7 @@ import (
 
 func Get_Seasons(c *fiber.Ctx) error {
 
-	var dto []models.Season
+	var dto []models.SeasonDTO
 
 	rows, err := db.DB.Query(`
 	SELECT
@@ -24,7 +24,7 @@ func Get_Seasons(c *fiber.Ctx) error {
 
 	for rows.Next() {
 
-		var season models.Season
+		var season models.SeasonDTO
 
 		err := rows.Scan(&season.Season_Id,
 			&season.Season_Name)

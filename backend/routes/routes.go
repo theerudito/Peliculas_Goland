@@ -21,7 +21,8 @@ func SetupRoutes(app *fiber.App) {
 
 	// MOVIES
 	v1.Get("/movies", handlers.GetMovies)
-	v1.Get("/movies/:id", handlers.GetMovies)
+	v1.Get("/movies/:id", handlers.GetMoviebyid)
+	v1.Get("/movies/find/:value", handlers.FindMovie)
 	v1.Post("/movies", handlers.PostMovie)
 	v1.Put("/movies/:id", handlers.PutMovies)
 	v1.Delete("/movies/:id", handlers.DeleteMovies)
@@ -29,6 +30,9 @@ func SetupRoutes(app *fiber.App) {
 	// CONTENT
 	v1.Get("/contents", handlers.GetContent)
 	v1.Get("/contents/:id", handlers.GetContentID)
+	v1.Get("/contents/find/:type", handlers.GetContenType)
+	v1.Get("/contents/search/:value", handlers.FindContent)
+	v1.Get("/contents/content-type/:value", handlers.GetContentData)
 	v1.Post("/contents", handlers.PostContent)
 	v1.Put("/contents", handlers.PutContent)
 	v1.Delete("/contents/:id", handlers.DeleteContent)
