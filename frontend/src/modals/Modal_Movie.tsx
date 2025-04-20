@@ -5,6 +5,7 @@ import { useData } from "../store/useData";
 import { Movies } from "../models/Movies";
 
 export const Modal_Movie = () => {
+  const { getMovies, reset } = useMovies((state) => state);
   const { _modal_Movie, OpenModal_Movie } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, form_gender } = useData((state) => state);
@@ -30,6 +31,11 @@ export const Modal_Movie = () => {
     }));
   };
 
+  function handleCloseModal() {
+    reset();
+    OpenModal_Movie(false);
+  }
+
   function sendData() {
     const { movie_title, movie_year, movie_url, movie_cover } = form_movie
     const obj: Movies = {
@@ -40,7 +46,9 @@ export const Modal_Movie = () => {
       movie_cover,
       gender_id: Number(form_gender.gender_id)
     }
-    postMovies(obj)
+    postMovies(obj);
+    handleCloseModal();
+    getMovies();
   }
 
   return (
@@ -52,7 +60,7 @@ export const Modal_Movie = () => {
               <p>ADD MOVIE</p>
               <i
                 className="bi bi-x-lg"
-                onClick={() => OpenModal_Movie(false)}
+                onClick={() => handleCloseModal()}
               ></i>
             </div>
             <div className="container-modal-input">
