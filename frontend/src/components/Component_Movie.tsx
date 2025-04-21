@@ -1,46 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Component_Player } from "./Component_Player";
-import "../styles/Content.css";
-import { useContent } from "../store/useContent";
+import { useMovies } from "../store/useMovies";
 import cover from "../assets/logo.webp";
-
-export const Component_Content = () => {
-  const { list_content, getContent } = useContent((state) => state)
-  const [playing, setPlaying] = useState(false);
+import { usePlayer } from "../store/usePlayer";
 
 
+export const Component_Movie = () => {
+  const { list_movies, getMovies } = useMovies((state) => state)
+  const { open_player, playing, url } = usePlayer((state) => state)
 
   const playVideo = (url: string) => {
     if (url === "") return;
-    setPlaying(true);
-    //setUrl(url);
+    open_player(url);
   };
 
   useEffect(() => {
-    getContent();
-  }, [getContent]);
+    getMovies();
+  }, [getMovies]);
 
   return (
-
     <div className="app-container">
       <div className="main-content">
         <div className="container-content">
           {playing === false ? (
             <div className="container-body">
-              {list_content.map((item) => (
-                <div key={item.content_id} className="container-card">
+              {list_movies.map((item) => (
+                <div key={item.movie_movie_id} className="container-card">
                   <img
-                    src={item.content_cover === "" ? cover : item.content_cover}
+                    src={item.movie_cover === "" ? cover : item.movie_cover}
                     alt={cover}
                     className="card-background-image"
                   />
 
                   <div className="card-overlay">
-                    <p className="card-year">{item.content_year}</p>
+                    <p className="card-year">{item.movie_year}</p>
                     <div className="card-play">
                       <i
                         className="bi bi-play-circle"
-                        onClick={() => playVideo(item.content_id.toString())}
+                        onClick={() => playVideo(item.movie_url)}
                       ></i>
                     </div>
                     <p className="card-title"></p>
@@ -50,13 +47,12 @@ export const Component_Content = () => {
             </div>
           ) : (
             <div className="container-player">
-              <Component_Player />
+              <Component_Player url={url} />
             </div>
           )}
         </div>
       </div>
     </div>
 
-
   );
-};
+}

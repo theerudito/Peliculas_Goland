@@ -1,126 +1,59 @@
-import { useState } from "react";
+import { _season } from "../models/Seasons";
+import { useContent } from "../store/useContent";
+import { useData } from "../store/useData";
+import { useModal } from "../store/useModal";
 import "../styles/Modal.css";
-import { Content_List, Gender_List, Season_List } from "../helpers/Data";
-import {
-  _contents,
-  _episodes,
-  _form,
-  _seasons,
-  Content_Types,
-  Episodes,
-  FormDataDTO,
-  Seasons,
-} from "../models/Movies";
-import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../store/slice/Modal_Slices";
-import { RootState } from "../store/store";
 
 export const Modal_Content = () => {
-  const { openModal_Content } = useSelector((store: RootState) => store.modal);
-  const dispatch = useDispatch();
-  const [episode, setEpisode] = useState<Episodes>(_episodes);
-  const [season, setSeason] = useState<Seasons>(_seasons);
-  const [content, setContent] = useState<Content_Types>(_contents);
-  const [gender, setGender] = useState({ gender_id: 0 });
-  const [episodeList, setEpisodeList] = useState<Episodes[]>([]);
-  const [formData, setFormData] = useState<FormDataDTO>(_form);
+  const { gender_list, form_gender, season_list, form_season, type_list, form_type } = useData((state) => state)
+  const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } = useContent((state) => state)
+  const { OpenModal_Content, _modal_Content } = useModal((state) => state)
+
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEpisode((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setSeason((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setContent((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    // const { name, value } = e.target;
+    // setEpisode((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
+    // setSeason((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
+    // setContent((prevData) => ({
+    //   ...prevData,
+    //   [name]: value,
+    // }));
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    setGender((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
-
-    setSeason((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
-
-    setContent((prevData) => ({
-      ...prevData,
-      [name]: parseInt(value, 10),
-    }));
+    // const { name, value } = e.target;
+    // setGender((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
+    // setSeason((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
+    // setContent((prevData) => ({
+    //   ...prevData,
+    //   [name]: parseInt(value, 10),
+    // }));
   };
 
-  const SendData = () => {
-    setFormData({
-      gender_id: gender.gender_id,
-      season: season,
-      content: content,
-      episode: episodeList,
-    });
-
-    console.log(formData);
-    //Reset_Field(2);
-    //Reset_Field(3);
-  };
-
-  const AddEpisode = () => {
-    const newEpisode: Episodes = {
-      ...episode,
-      episode_number:
-        episodeList.length > 0
-          ? episodeList[episodeList.length - 1].episode_id + 1
-          : 1,
-      episode_id:
-        episodeList.length > 0
-          ? episodeList[episodeList.length - 1].episode_id + 1
-          : 1,
-    };
-
-    setEpisodeList([...episodeList, newEpisode]);
-    Reset_Field(1);
-  };
-
-  const RemoveEpisode = (id: number) => {
-    const updatedList = episodeList.filter((item) => item.episode_id !== id);
-    setEpisodeList(updatedList);
-  };
-
-  function Reset_Field(action: number) {
-    switch (action) {
-      case 1:
-        setEpisode(_episodes);
-        break;
-      case 2:
-        setSeason(_seasons);
-        break;
-      case 3:
-        setContent(_contents);
-        break;
-    }
-  }
+  const SendData = () => { };
 
   return (
     <div>
-      {openModal_Content && (
+      {_modal_Content && (
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>ADD ANIME OR SERIE</p>
               <i
                 className="bi bi-x-lg"
-                onClick={() => dispatch(closeModal(3))}
+                onClick={() => OpenModal_Content(false)}
               ></i>
             </div>
             <div className="container-modal-input">
@@ -129,7 +62,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="TITLE EPISODE"
                 name="episode_title"
-                value={episode.episode_title}
+                value={form_Episode.episode_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -137,11 +70,11 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="URL EPISODE"
                 name="episode_url"
-                value={episode.episode_url}
+                value={form_Episode.episode_url}
                 onChange={handleChangeInput}
               />
 
-              <button onClick={AddEpisode}>1 ADD EPISODE</button>
+              <button onClick={() => addEpisode(form_Episode)}>1 ADD EPISODE</button>
               <div className="container-modal-table">
                 <table>
                   <thead>
@@ -152,14 +85,14 @@ export const Modal_Content = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {episodeList.map((item) => (
+                    {listEpisode.map((item) => (
                       <tr key={item.episode_id}>
                         <td>{item.episode_title}</td>
                         <td>EPISODE {item.episode_number}</td>
                         <td>
                           <i
                             className="bi bi-trash"
-                            onClick={() => RemoveEpisode(item.episode_id)}
+                            onClick={() => removeEpisode(item.episode_id)}
                           ></i>
                         </td>
                       </tr>
@@ -170,12 +103,12 @@ export const Modal_Content = () => {
 
               <select
                 name="season_id"
-                value={season.season_id}
+                value={form_season.season_id}
                 onChange={handleChangeSelect}
               >
-                {Season_List.map((item) => (
+                {season_list.map((item) => (
                   <option key={item.season_id} value={item.season_id}>
-                    {item.name}
+                    {item.season_name}
                   </option>
                 ))}
               </select>
@@ -184,22 +117,22 @@ export const Modal_Content = () => {
                 className="input"
                 type="text"
                 placeholder="TITLE SEASON"
-                name="season_title"
-                value={season.season_title}
+                name="season_name"
+                value={_season.season_name}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="content_type_id"
                 onChange={handleChangeSelect}
-                value={content.content_type_id}
+                value={form_type.content_type_id}
               >
-                {Content_List.map((item) => (
+                {type_list.map((item) => (
                   <option
                     key={item.content_type_id}
                     value={item.content_type_id}
                   >
-                    {item.name}
+                    {item.content_type_title}
                   </option>
                 ))}
               </select>
@@ -209,7 +142,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="DESCRIPCION"
                 name="content_title"
-                value={content.content_title}
+                value={form_content.content_title}
                 onChange={handleChangeInput}
               />
               <input
@@ -217,7 +150,7 @@ export const Modal_Content = () => {
                 type="text"
                 placeholder="COVER"
                 name="content_cover"
-                value={content.content_cover}
+                value={form_content.content_cover}
                 onChange={handleChangeInput}
               />
               <input
@@ -225,18 +158,18 @@ export const Modal_Content = () => {
                 type="number"
                 placeholder="YEAR"
                 name="content_year"
-                value={content.content_year}
+                value={form_content.content_year}
                 onChange={handleChangeInput}
               />
 
               <select
                 name="gender_id"
-                value={gender.gender_id}
+                value={form_gender.gender_id}
                 onChange={handleChangeSelect}
               >
-                {Gender_List.map((item) => (
+                {gender_list.map((item) => (
                   <option key={item.gender_id} value={item.gender_id}>
-                    {item.name}
+                    {item.gender_name}
                   </option>
                 ))}
               </select>

@@ -1,19 +1,19 @@
 package models
 
 type Movie struct {
-	ID       int    `json:"movie_id"`
-	Title    string `json:"title"`
-	Year     int    `json:"year"`
-	Cover    string `json:"cover"`
-	URL      string `json:"url"`
-	GenderID uint   `json:"gender_id"`
+	Movie_Movie_Id uint   `json:"movie_movie_id"`
+	Movie_Title    string `json:"movie_title"`
+	Movie_Year     int    `json:"movie_year"`
+	Movie_Cover    string `json:"movie_cover"`
+	Movie_Url      string `json:"movie_url"`
+	Gender_Id      uint   `json:"gender_id"`
 }
 
 type MovieDTO struct {
-	ID     int    `json:"movie_id"`
-	Title  string `json:"title"`
-	Year   int    `json:"year"`
-	Cover  string `json:"cover"`
-	URL    string `json:"url"`
-	Gender string `json:"gender"`
+	Movie_Movie_Id uint   `json:"movie_movie_id"`
+	Movie_Title    string `json:"movie_title"`
+	Movie_Year     int    `json:"movie_year"`
+	Movie_Cover    string `json:"movie_cover"`
+	Movie_Url      string `json:"movie_url"`
+	Gender         string `json:"gender"`
 }

@@ -1,8 +1,12 @@
 package models
 
 type Season struct {
-	Season_ID   int    `json:"season_id"`
-	Title       string `json:"title"`
-	Descripcion string `json:"descripcion"`
-	Year        string `json:"year"`
+	Season_Id   uint       `json:"season_id"`
+	Season_Name string     `json:"season_name"`
+	Episodes    []Episodie `json:"episodes"`
+}
+
+type SeasonDTO struct {
+	Season_Id   uint   `json:"season_id"`
+	Season_Name string `json:"season_name"`
 }

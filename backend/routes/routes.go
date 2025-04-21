@@ -20,21 +20,30 @@ func SetupRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	// MOVIES
-	v1.Get("/movies", handlers.Get_Movies)
-	v1.Get("/movies/:id", handlers.Get_Movies)
-	v1.Post("/movies", handlers.Post_Movie)
-	v1.Put("/movies/:id", handlers.Put_Movies)
-	v1.Delete("/movies/:id", handlers.Delete_Movies)
+	v1.Get("/movies", handlers.GetMovies)
+	v1.Get("/movies/:id", handlers.GetMoviebyid)
+	v1.Get("/movies/find/:value", handlers.FindMovie)
+	v1.Post("/movies", handlers.PostMovie)
+	v1.Put("/movies/:id", handlers.PutMovies)
+	v1.Delete("/movies/:id", handlers.DeleteMovies)
 
-	// CATEGORIES
-	v1.Get("/categories", handlers.Get_Contents)
-	v1.Get("/categories/:id", handlers.Get_Content_ID)
+	// CONTENT
+	v1.Get("/contents", handlers.GetContent)
+	v1.Get("/contents/:id", handlers.GetContentID)
+	v1.Get("/contents/find/:type", handlers.GetContenType)
+	v1.Get("/contents/search/:value", handlers.FindContent)
+	v1.Get("/contents/content-type/:value", handlers.GetContentData)
+	v1.Post("/contents", handlers.PostContent)
+	v1.Put("/contents", handlers.PutContent)
+	v1.Delete("/contents/:id", handlers.DeleteContent)
 
 	// SEASONS
-	v1.Get("/season", handlers.Get_Seasons)
-	v1.Get("/season/:id", handlers.Get_Season_ID)
+	v1.Get("/seasons", handlers.Get_Seasons)
+
+	// GENDER
+	v1.Get("/genders", handlers.Get_Gender)
 
 	// EPISODIES
-	v1.Get("/episodies/:title/:id", handlers.Get_Episodies)
+	v1.Get("/episodes", handlers.Get_Episodies)
 
 }
