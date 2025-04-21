@@ -13,5 +13,5 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	app.Listen(":1000")
+	_ = app.Listen(":1000")
 }
