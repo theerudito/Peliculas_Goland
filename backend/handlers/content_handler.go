@@ -99,18 +99,19 @@ func GetContenType(c *fiber.Ctx) error {
 
 	rows, err := db.DB.Query(`
 		SELECT
-			content.content_id,
-			content.content_title,
-			content.content_cover,
-			content.content_year,
-			gender.gender_name,
-			CASE
+		MIN(content.content_id) AS content_id,
+		content.content_title,
+		MIN(content.content_cover) AS content_cover,
+		MIN(content.content_year) AS content_year,
+		gender.gender_name,
+		CASE
 				WHEN content.content_type = 1 THEN 'ANIME'
 				ELSE 'SERIE'
 			END AS type
 		FROM content_types content
 		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-		WHERE content.content_type = ?
+		WHERE content_type = ?
+		GROUP BY content.content_title, gender.gender_name, content.content_type
 	`, value)
 
 	if err != nil {
@@ -146,6 +147,48 @@ func GetContenType(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
+func GetContentSeason(c *fiber.Ctx) error {
+
+	value := c.Params("value")
+
+	var dto []models.ContentDTO
+
+	rows, err := db.DB.Query(`
+	SELECT
+	content.content_id,
+	content.content_title,
+	content.content_cover,
+	content.content_year,
+	season.season_id,
+	season.season_name
+	FROM content_types AS content
+	INNER JOIN seasons AS season ON season.content_id = content.content_id
+	WHERE content.content_title = ?
+	ORDER BY season.season_id`, value)
+
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var content models.ContentDTO
+		err := rows.Scan(
+			&content.Content_Id,
+			&content.Content_Title,
+			&content.Content_Cover,
+			&content.Content_Year,
+			&content.Gender,
+			&content.Content_Type)
+		if err != nil {
+			return err
+		}
+		dto = append(dto, content)
+	}
+	return c.JSON(dto)
+
+}
+
 func FindContent(c *fiber.Ctx) error {
 	value := c.Params("value")
 
@@ -167,6 +210,9 @@ func FindContent(c *fiber.Ctx) error {
 		FROM content_types content
 		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
 		WHERE UPPER(content.content_title) LIKE ?
+		AND content.content_type = ?
+		GROUP BY content.content_title, gender.gender_name, content.content_type
+
 	`, search)
 
 	if err != nil {
@@ -210,27 +256,24 @@ func GetContentData(c *fiber.Ctx) error {
 
 	rows, err := db.DB.Query(`
 		SELECT
-			content.content_id,
-			content.content_title,
-			content.content_type,
-			content.content_cover,
-			content.content_year,
-			content.gender_id,
-
-			season.season_id,
-			season.season_name,
-
-			episode.episode_id,
-			episode.episode_number,
-			episode.episode_name,
-			episode.episode_url
-
+		content.content_id,
+		content.content_title,
+		content.content_type,
+		content.content_cover,
+		content.content_year,
+		content.gender_id,
+		season.season_id,
+		season.season_name,
+		episode.episode_id,
+		episode.episode_number,
+		episode.episode_name,
+		episode.episode_url
 		FROM content_types AS content
 		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
 		LEFT JOIN seasons AS season ON season.content_id = content.content_id
 		LEFT JOIN episodes AS episode ON episode.season_id = season.season_id
-		WHERE season.season_id = ?
-		ORDER BY season.season_id, episode.episode_number;
+		WHERE content.content_id = ?
+		ORDER BY season.season_id, episode.episode_number
 	`, value)
 
 	if err != nil {

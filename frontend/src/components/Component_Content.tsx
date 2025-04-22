@@ -1,18 +1,24 @@
-import { useEffect, useState } from "react";
-import { Component_Player } from "./Component_Player";
+import { useEffect } from "react";
 import "../styles/Content.css";
 import { useContent } from "../store/useContent";
 import cover from "../assets/logo.webp";
 
+
 export const Component_Content = () => {
   const { list_content, getContent } = useContent((state) => state)
-  const [playing, setPlaying] = useState(false);
+
 
 
 
   const playVideo = (url: string) => {
     if (url === "") return;
-    setPlaying(true);
+
+   
+
+
+
+
+
     //setUrl(url);
   };
 
@@ -25,34 +31,30 @@ export const Component_Content = () => {
     <div className="app-container">
       <div className="main-content">
         <div className="container-content">
-          {playing === false ? (
-            <div className="container-body">
-              {list_content.map((item) => (
-                <div key={item.content_id} className="container-card">
-                  <img
-                    src={item.content_cover === "" ? cover : item.content_cover}
-                    alt={cover}
-                    className="card-background-image"
-                  />
 
-                  <div className="card-overlay">
-                    <p className="card-year">{item.content_year}</p>
-                    <div className="card-play">
-                      <i
-                        className="bi bi-play-circle"
-                        onClick={() => playVideo(item.content_id.toString())}
-                      ></i>
-                    </div>
-                    <p className="card-title"></p>
+          <div className="container-body">
+            {list_content.map((item) => (
+              <div key={item.content_id} className="container-card">
+                <img
+                  src={item.content_cover === "" ? cover : item.content_cover}
+                  alt={cover}
+                  className="card-background-image"
+                />
+
+                <div className="card-overlay">
+                  <p className="card-year">{item.content_year}</p>
+                  <div className="card-play">
+                    <i
+                      className="bi bi-play-circle"
+                      onClick={() => playVideo(item.content_id.toString())}
+                    ></i>
                   </div>
+                  <p className="card-title">{item.content_title}</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="container-player">
-              <Component_Player />
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </div>

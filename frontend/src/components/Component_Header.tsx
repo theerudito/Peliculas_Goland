@@ -30,13 +30,25 @@ export const Component_Header = () => {
           </button>
         </div>
         <div className="container-header-buttons">
-          <button onClick={() => OpenModal_Movie(true)}>ADD MOVIES</button>
-          <button onClick={() => OpenModal_Content(true)}>ADD CONTENT</button>
+
+          <div onClick={() => OpenModal_Movie(true)}>
+            <i className="bi bi-camera-reels"></i>
+          </div>
+
+          <div onClick={() => OpenModal_Content(true)}>
+            <i className="bi bi-film"></i>
+          </div>
 
           {userIn === true ? (
-            <button onClick={() => OpenModal_Auth(true)}>LOGOUT</button>
+            <div onClick={() => OpenModal_Auth(true)}>
+              <i className="bi bi-person-fill" ></i>
+            </div>
+
           ) : (
-            <button onClick={() => OpenModal_Auth(true)}>LOGIN</button>
+            <div>
+              <i className="bi bi-person-fill-check"></i>
+            </div>
+
           )}
         </div>
       </div>
