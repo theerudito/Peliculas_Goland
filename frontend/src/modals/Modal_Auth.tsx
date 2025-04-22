@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/Modal.css";
+import "../styles/Styles_Modal.css";
 import { _users, Users } from "../models/Auth";
 import { useModal } from "../store/useModal";
 

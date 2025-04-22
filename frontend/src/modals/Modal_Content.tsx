@@ -2,13 +2,20 @@ import { _season } from "../models/Seasons";
 import { useContent } from "../store/useContent";
 import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
-import "../styles/Modal.css";
+import "../styles/Styles_Modal.css";
 
 export const Modal_Content = () => {
-  const { gender_list, form_gender, season_list, form_season, type_list, form_type } = useData((state) => state)
-  const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } = useContent((state) => state)
-  const { OpenModal_Content, _modal_Content } = useModal((state) => state)
-
+  const {
+    gender_list,
+    form_gender,
+    season_list,
+    form_season,
+    type_list,
+    form_type,
+  } = useData((state) => state);
+  const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } =
+    useContent((state) => state);
+  const { OpenModal_Content, _modal_Content } = useModal((state) => state);
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
@@ -42,7 +49,7 @@ export const Modal_Content = () => {
     // }));
   };
 
-  const SendData = () => { };
+  const SendData = () => {};
 
   return (
     <div>
@@ -74,7 +81,9 @@ export const Modal_Content = () => {
                 onChange={handleChangeInput}
               />
 
-              <button onClick={() => addEpisode(form_Episode)}>1 ADD EPISODE</button>
+              <button onClick={() => addEpisode(form_Episode)}>
+                1 ADD EPISODE
+              </button>
               <div className="container-modal-table">
                 <table>
                   <thead>

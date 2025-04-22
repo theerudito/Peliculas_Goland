@@ -1,64 +1,43 @@
-import { useEffect } from "react";
-import "../styles/Content.css";
-import { useContent } from "../store/useContent";
-import cover from "../assets/logo.webp";
-
+import { useState } from "react";
+import "../styles/Styles_Content.css";
 
 export const Component_Content = () => {
-  const { list_content, getContent } = useContent((state) => state)
+  const [season] = useState("1");
 
-
-
-
-  const playVideo = (url: string) => {
-    if (url === "") return;
-
-   
-
-
-
-
-
-    //setUrl(url);
-  };
-
-  useEffect(() => {
-    getContent();
-  }, [getContent]);
+  const episodes = Array(100).fill(`S ${season} - E1`);
 
   return (
+    <div className="anime-viewer">
+      <div className="anime-main">
+        <div className="anime-image">
+          <img src="https://cuevana.biz/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2FcoMNNwjHY4BZTqMIsklanMf2Wp7.jpg&w=256&q=75" />
+        </div>
 
-    <div className="app-container">
-      <div className="main-content">
-        <div className="container-content">
+        <div className="anime-info">
+          <h5>JUJUTSU KAISEN</h5>
+          <p>2025</p>
+          <p>Anime</p>
+          <select>
+            <option>TEMPORADA 1</option>
+          </select>
+        </div>
+      </div>
 
-          <div className="container-body">
-            {list_content.map((item) => (
-              <div key={item.content_id} className="container-card">
-                <img
-                  src={item.content_cover === "" ? cover : item.content_cover}
-                  alt={cover}
-                  className="card-background-image"
-                />
-
-                <div className="card-overlay">
-                  <p className="card-year">{item.content_year}</p>
-                  <div className="card-play">
-                    <i
-                      className="bi bi-play-circle"
-                      onClick={() => playVideo(item.content_id.toString())}
-                    ></i>
-                  </div>
-                  <p className="card-title">{item.content_title}</p>
+      <div className="episode-scroll">
+        <div className="episode-grid">
+          {episodes.map((ep, index) => (
+            <div key={index} className="episode">
+              <div className="episode-image">
+                <img src="https://latanime.org/assets/img/serie/imagen/my-hero-academia-vigilantes-1744052990.jpg" />
+                <div className="play-button">
+                  <i className="bi bi-play-circle"></i>
                 </div>
               </div>
-            ))}
-          </div>
-
+              <p className="episode-title">{ep}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
-
-
   );
 };

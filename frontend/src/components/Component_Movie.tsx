@@ -3,11 +3,11 @@ import { Component_Player } from "./Component_Player";
 import { useMovies } from "../store/useMovies";
 import cover from "../assets/logo.webp";
 import { usePlayer } from "../store/usePlayer";
-
+import "../styles/Styles_Serie_Anime_Movies.css";
 
 export const Component_Movie = () => {
-  const { list_movies, getMovies } = useMovies((state) => state)
-  const { open_player, playing, url } = usePlayer((state) => state)
+  const { list_movies, getMovies } = useMovies((state) => state);
+  const { open_player, playing, url } = usePlayer((state) => state);
 
   const playVideo = (url: string) => {
     if (url === "") return;
@@ -53,6 +53,5 @@ export const Component_Movie = () => {
         </div>
       </div>
     </div>
-
   );
-}
+};

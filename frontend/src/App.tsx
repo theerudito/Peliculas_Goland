@@ -4,8 +4,8 @@ import { Component_Header } from "./components/Component_Header";
 import { Component_Footer } from "./components/Component_Footer";
 import { Component_NotFound } from "./components/Component_NotFound";
 import { Component_Movie } from "./components/Component_Movie";
+import { Component_Serie_Anime } from "./components/Component_Serie_Anime";
 import { Component_Content } from "./components/Component_Content";
-import { Component_Viewer } from "./components/Component_Viewer";
 
 function App() {
   return (
@@ -16,16 +16,14 @@ function App() {
           <Routes>
             <Route path="/" element={<Component_Home />} />
             <Route path="/peliculas" element={<Component_Movie />} />
-            <Route path="/series" element={<Component_Content />} />
-            <Route path="/animes" element={<Component_Content />} />
-            <Route path="/viewer" element={<Component_Viewer />} />
-
+            <Route path="/series" element={<Component_Serie_Anime />} />
+            <Route path="/animes" element={<Component_Serie_Anime />} />
+            <Route path="/content" element={<Component_Content />} />
 
             <Route path="*" element={<Component_NotFound />} />
           </Routes>
           <Component_Footer />
         </BrowserRouter>
-
       </div>
     </>
   );

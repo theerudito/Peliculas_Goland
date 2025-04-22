@@ -1,11 +1,9 @@
 import ReactPlayer from "react-player";
-import "../styles/Player.css";
+import "../styles/Styles_Player.css";
 import { usePlayer } from "../store/usePlayer";
 
-
 export const Component_Player = ({ url }: { url: string }) => {
-
-  const { close_player } = usePlayer((state) => state)
+  const { close_player } = usePlayer((state) => state);
 
   if (url === "") return;
 

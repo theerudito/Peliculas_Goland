@@ -1,11 +1,11 @@
 import "../styles/App.css";
-import { Component_Viewer } from "./Component_Viewer";
+import { Component_Content } from "./Component_Content";
 
 export const Component_Home = () => {
   return (
     <div className="app-container">
       <div className="main-content">
-        <Component_Viewer />
+        <Component_Content />
       </div>
     </div>
   );
