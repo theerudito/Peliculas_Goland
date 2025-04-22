@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+<<<<<<< HEAD
+    <file url="file://$PROJECT_DIR$/init.sql" dialect="SQLite" />
+=======
     <file url="file://$PROJECT_DIR$/handlers/movie_handler.go" dialect="SQLite" />
+>>>>>>> 9079f832cd9966cc68761a0884cd2e9e88e6da91
   </component>
 </project>
