@@ -323,6 +323,163 @@ func GetContentEpisode(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
+func GetContentFull(c *fiber.Ctx) error {
+
+	value, err := url.QueryUnescape(c.Params("value"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid parameter")
+	}
+
+	search := "%" + value + "%"
+
+	idSeason := 13
+
+	log.Println(search)
+	log.Println(value)
+
+	var dto []models.ExampleData
+
+	rows, err := db.DB.Query(`
+		SELECT 
+		ct.content_id,
+		ct.content_title,
+		CASE ct.content_type
+			WHEN 1 THEN 'Serie'
+			WHEN 2 THEN 'Anime'
+		END as content_type,
+		ct.content_cover,
+		ct.content_year,
+		g.gender_name,
+		
+		s.season_id,
+		s.season_name,
+
+		e.episode_id,
+		e.episode_number,
+		e.episode_name,
+		e.episode_url
+	FROM 
+		content_types ct
+	JOIN 
+		genders g ON g.gender_id = ct.gender_id
+	JOIN 
+		seasons s ON s.content_id = ct.content_id
+	JOIN 
+		episodes e ON e.season_id = s.season_id
+	WHERE 
+		UPPER(ct.content_title) LIKE ?
+		AND s.season_id = ?
+	ORDER BY 
+		s.season_id, e.episode_number
+	`, search, idSeason)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   "Error al consultar la base de datos",
+			"details": err.Error(),
+		})
+	}
+
+	log.Println("Query executed successfully")
+	log.Println("Rows affected:", rows)
+
+	defer rows.Close()
+
+	contentMap := make(map[uint]*models.ExampleData)
+
+	for rows.Next() {
+		var (
+			contentId     uint
+			contentTitle  string
+			contentType   string
+			contentCover  string
+			contentYear   int
+			gender        string
+			seasonId      uint
+			seasonName    string
+			episodeId     uint
+			episodeNumber int
+			episodeName   string
+			episodeUrl    string
+		)
+
+		err := rows.Scan(
+			&contentId,
+			&contentTitle,
+			&contentType,
+			&contentCover,
+			&contentYear,
+			&gender,
+			&seasonId,
+			&seasonName,
+			&episodeId,
+			&episodeNumber,
+			&episodeName,
+			&episodeUrl,
+		)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		// Crear contenido si no existe
+		if _, ok := contentMap[contentId]; !ok {
+			contentMap[contentId] = &models.ExampleData{
+				Content: models.ExampleContent{
+					Content_Id:    contentId,
+					Content_Title: contentTitle,
+					Content_Type:  contentType,
+					Content_Cover: contentCover,
+					Content_Year:  contentYear,
+					Gender:        gender,
+				},
+				Seasons: []models.ExampleSeason{},
+			}
+		}
+
+		// Buscar o crear temporada
+		var season *models.ExampleSeason
+		for i := range contentMap[contentId].Seasons {
+			if contentMap[contentId].Seasons[i].Season_Id == seasonId {
+				season = &contentMap[contentId].Seasons[i]
+				break
+			}
+		}
+		if season == nil {
+			newSeason := models.ExampleSeason{
+				Season_Id:   seasonId,
+				Season_Name: seasonName,
+				Episodes:    []models.ExampleEpisodie{},
+			}
+			contentMap[contentId].Seasons = append(contentMap[contentId].Seasons, newSeason)
+			season = &contentMap[contentId].Seasons[len(contentMap[contentId].Seasons)-1]
+		}
+
+		// Agregar episodio
+		season.Episodes = append(season.Episodes, models.ExampleEpisodie{
+			Episode_Id:     episodeId,
+			Episode_Number: episodeNumber,
+			Episode_Name:   episodeName,
+			Episode_Url:    episodeUrl,
+		})
+	}
+
+	// Convertir a slice
+	for _, v := range contentMap {
+		dto = append(dto, *v)
+	}
+
+	if len(dto) == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "No se encontraron coincidencias",
+		})
+	}
+
+	return c.JSON(dto)
+
+}
+
 func FindContent(c *fiber.Ctx) error {
 	value := c.Params("value")
 

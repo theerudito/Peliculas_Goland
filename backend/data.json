@@ -1,0 +1,44 @@
+{
+  "content": {
+    "content_id": 1,
+    "content_title": "My Awesome Show",
+    "content_type": "Series",
+    "content_cover": "cover.jpg",
+    "content_year": 2023,
+    "gender": "Drama",
+    "season_id": 1,
+    "season_name": "Season 1"
+  },
+  "seasons": [
+    {
+      "season_id": 1,
+      "season_name": "Season 1",
+      "episodes": [
+        {
+          "episode_id": 1,
+          "episode_number": 1,
+          "episode_name": "The Beginning",
+          "episode_url": "https://example.com/episode1"
+        },
+        {
+          "episode_id": 2,
+          "episode_number": 2,
+          "episode_name": "The Continuation",
+          "episode_url": "https://example.com/episode2"
+        }
+      ]
+    },
+    {
+      "season_id": 2,
+      "season_name": "Season 2",
+      "episodes": [
+        {
+          "episode_id": 3,
+          "episode_number": 1,
+          "episode_name": "The Return",
+          "episode_url": "https://example.com/episode3"
+        }
+      ]
+    }
+  ]
+}
