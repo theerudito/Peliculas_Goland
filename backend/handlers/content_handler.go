@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
+	"net/url"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -150,8 +152,15 @@ func GetContenType(c *fiber.Ctx) error {
 
 func GetContentSeason(c *fiber.Ctx) error {
 
-	value := c.Params("value")
+	value, err := url.QueryUnescape(c.Params("value"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid parameter")
+	}
+
 	search := "%" + strings.ToUpper(value) + "%"
+
+	log.Println(search)
+	log.Println(value)
 
 	var dto []models.ContentDTO
 
@@ -167,7 +176,8 @@ func GetContentSeason(c *fiber.Ctx) error {
 		INNER JOIN seasons AS season ON season.content_id = content.content_id
 		WHERE UPPER(content.content_title) LIKE ?
 		ORDER BY season.season_id;
-	`, search)
+	`,
+		search)
 
 	if err != nil {
 		return err

@@ -30,7 +30,17 @@ export const _content: Content = {
   gender_id: 0,
 };
 
+export const _contentDTO: ContentDTO = {
+  content_id: 0,
+  content_title: "",
+  content_type: "",
+  content_cover: "",
+  content_year: 0,
+  content_url: "",
+  content_gender: "",
+};
+
 export interface ContentData {
   content: Content;
-  seasons: SeasonDTO[];
+  seasons: SeasonDTO;
 }

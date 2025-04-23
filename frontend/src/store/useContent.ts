@@ -7,7 +7,7 @@ import {
   GET_Content_Type,
 } from "../helpers/Fetching_Content";
 import { Content_Type_List } from "../helpers/Data";
-import { _seasonDTO } from "../models/Seasons";
+import { _seasonDTO, Season } from "../models/Seasons";
 
 type Data = {
   form_content: Content;
@@ -15,11 +15,12 @@ type Data = {
   list_content: ContentDTO[];
   data_content: ContentData[];
   listEpisode: Episodes[];
+  listSeason: Season[];
   type_content: number;
   changeType: (type: number) => void;
   getContent: () => void;
-  getSeason: () => void;
-  getEpisode: () => void;
+  getSeason: (value: string) => void;
+  getEpisode: (id: number) => void;
   addEpisode: (episode: Episodes) => void;
   removeEpisode: (id: number) => void;
   postContent: () => void;
@@ -31,12 +32,14 @@ export const useContent = create<Data>((set, get) => ({
   form_Episode: _episodes,
   list_content: [],
   listEpisode: [],
+  listSeason: [],
   data_content: [
     {
       content: _content,
-      seasons: [_seasonDTO],
+      seasons: _seasonDTO,
     },
   ],
+
   type_content: 1,
 
   changeType: (type) => {
@@ -51,18 +54,15 @@ export const useContent = create<Data>((set, get) => ({
     });
   },
 
-  getSeason: async () => {
-    const response = await GET_Content_Season("LOS 100");
+  getSeason: async (value: string) => {
+    const response = await GET_Content_Season(value);
     set({
-      list_content: response === null ? {} : response,
+      listSeason: Array.isArray(response) ? response : [],
     });
   },
 
-  getEpisode: async () => {
-    const response = await GET_Content_Epidodes(13);
-
-    console.log(response);
-
+  getEpisode: async (id: number) => {
+    const response = await GET_Content_Epidodes(id);
     set({
       data_content: Array.isArray(response) ? response : [],
     });

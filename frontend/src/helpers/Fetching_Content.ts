@@ -23,24 +23,22 @@ export const GET_Content_Type = async (value: number) => {
 
 export const GET_Content_Season = async (value: string) => {
   try {
-    // const data = await axios.get(`${url}/contents/season/${value}`);
-
-    // console.log("GET Content Season", data.data);
-
-    return (await axios.get(`${url}/contents/season/${value}`)).data;
+    return (
+      await axios.get(`${url}/contents/season/${encodeURIComponent(value)}`)
+    ).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
   }
 };
 
-export const GET_Content_Epidodes = async (value: number) => {
+export const GET_Content_Epidodes = async (id: number) => {
   try {
     //const data = await axios.get(`${url}/contents/episodes/${value}`);
 
     //console.log("GET Content Episodes", data.data);
 
-    return (await axios.get(`${url}/contents/episodes/${value}`)).data;
+    return (await axios.get(`${url}/contents/episodes/${id}`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
