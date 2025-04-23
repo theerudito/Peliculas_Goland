@@ -1,3 +1,5 @@
+import { SeasonDTO } from "./Seasons";
+
 export interface Content {
   content_id: number;
   content_title: string;
@@ -17,6 +19,7 @@ export interface ContentDTO {
   content_url: string;
   content_gender: string;
 }
+
 export const _content: Content = {
   content_id: 0,
   content_title: "",
@@ -26,3 +29,8 @@ export const _content: Content = {
   content_url: "",
   gender_id: 0,
 };
+
+export interface ContentData {
+  content: Content;
+  seasons: SeasonDTO[];
+}

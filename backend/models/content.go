@@ -16,6 +16,8 @@ type ContentDTO struct {
 	Content_Cover string `json:"content_cover"`
 	Content_Year  int    `json:"content_year"`
 	Gender        string `json:"gender"`
+	Season_Id     uint   `json:"season_id"`
+	Season_Name   string `json:"season_name"`
 }
 
 type ContentData struct {

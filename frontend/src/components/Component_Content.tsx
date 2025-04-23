@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import "../styles/Styles_Content.css";
+import { useContent } from "../store/useContent";
 
-export const Component_Content = () => {
-  const [season] = useState("1");
+export const Component_Content = ({ id }: { id: string }) => {
 
-  const episodes = Array(100).fill(`S ${season} - E1`);
+  const { getEpisode, getSeason, data_content } = useContent((state) => state);
+
+  useEffect(() => {
+    getSeason();
+    getEpisode();
+  }, [getSeason, getEpisode]);
+
+
+  //console.log(data_content[0].content)
 
   return (
     <div className="anime-viewer">
@@ -14,9 +22,9 @@ export const Component_Content = () => {
         </div>
 
         <div className="anime-info">
-          <h5>JUJUTSU KAISEN</h5>
-          <p>2025</p>
-          <p>Anime</p>
+          <h5>{data_content[0].content.content_title}</h5>
+          <p>{data_content[0].content.content_year}</p>
+          <p>{data_content[0].content.gender_id}</p>
           <select>
             <option>TEMPORADA 1</option>
           </select>
@@ -25,17 +33,20 @@ export const Component_Content = () => {
 
       <div className="episode-scroll">
         <div className="episode-grid">
-          {episodes.map((ep, index) => (
-            <div key={index} className="episode">
-              <div className="episode-image">
-                <img src="https://latanime.org/assets/img/serie/imagen/my-hero-academia-vigilantes-1744052990.jpg" />
-                <div className="play-button">
-                  <i className="bi bi-play-circle"></i>
+          {/* {
+
+
+            data_content[0].seasons[0].episodes.map((ep) => (
+              <div key={ep.episode_id} className="episode">
+                <div className="episode-image">
+                  <img src="https://latanime.org/assets/img/serie/imagen/my-hero-academia-vigilantes-1744052990.jpg" />
+                  <div className="play-button">
+                    <i className="bi bi-play-circle"></i>
+                  </div>
                 </div>
+                <p className="episode-title">{ep.episode_name}</p>
               </div>
-              <p className="episode-title">{ep}</p>
-            </div>
-          ))}
+            ))} */}
         </div>
       </div>
     </div>
