@@ -8,16 +8,16 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
     (state) => state
   );
 
-  console.log("data_content", data_content);
+  // console.log("data_content", data_content);
 
-  useEffect(() => {
-    getSeason(obj.content_title);
-    getEpisode(obj.content_title, obj.content_id);
-  }, [getSeason, getEpisode, obj.content_title, obj.content_id]);
+  // useEffect(() => {
+  //   getSeason(obj.content_title);
+  //   getEpisode(obj.content_title, obj.content_id);
+  // }, [getSeason, getEpisode, obj.content_title, obj.content_id]);
 
   return (
     <div className="anime-viewer">
-      <div className="anime-main">
+      {/* <div className="anime-main">
         <div className="anime-image">
           <img src={obj.content_cover} />
         </div>
@@ -34,7 +34,7 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
             ))}
           </select>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="episode-scroll">
         <div className="episode-grid">
