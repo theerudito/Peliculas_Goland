@@ -1,26 +1,30 @@
 import { create } from "zustand";
 import { _episodes, Episodes } from "../models/Episodes";
-import { _content, Content, ContentData, ContentDTO } from "../models/Contents";
+import {
+  _content,
+  Content,
+  ContentDataDTO,
+  ContentDTO,
+} from "../models/Contents";
 import {
   GET_Content_Epidodes,
   GET_Content_Season,
   GET_Content_Type,
 } from "../helpers/Fetching_Content";
 import { Content_Type_List } from "../helpers/Data";
-import { _seasonDTO, Season } from "../models/Seasons";
 
 type Data = {
   form_content: Content;
   form_Episode: Episodes;
   list_content: ContentDTO[];
-  data_content: ContentData[];
+  data_content: ContentDataDTO[];
   listEpisode: Episodes[];
-  listSeason: Season[];
+  listSeason: ContentDTO[];
   type_content: number;
   changeType: (type: number) => void;
   getContent: () => void;
   getSeason: (value: string) => void;
-  getEpisode: (id: number) => void;
+  getEpisode: (value: string, id: number) => void;
   addEpisode: (episode: Episodes) => void;
   removeEpisode: (id: number) => void;
   postContent: () => void;
@@ -33,12 +37,7 @@ export const useContent = create<Data>((set, get) => ({
   list_content: [],
   listEpisode: [],
   listSeason: [],
-  data_content: [
-    {
-      content: _content,
-      seasons: _seasonDTO,
-    },
-  ],
+  data_content: [],
 
   type_content: 1,
 
@@ -61,11 +60,17 @@ export const useContent = create<Data>((set, get) => ({
     });
   },
 
-  getEpisode: async (id: number) => {
-    const response = await GET_Content_Epidodes(id);
-    set({
-      data_content: Array.isArray(response) ? response : [],
-    });
+  getEpisode: async (value: string, id: number) => {
+    try {
+      const response = await GET_Content_Epidodes(value, id);
+
+      set({
+        data_content: Array.isArray(response) ? response : [],
+      });
+    } catch (error) {
+      console.error("Error al obtener episodios:", error);
+      set({ data_content: [] });
+    }
   },
 
   postContent: () => {},

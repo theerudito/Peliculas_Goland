@@ -18,6 +18,8 @@ export interface ContentDTO {
   content_year: number;
   content_url: string;
   content_gender: string;
+  season_id: number;
+  season_name: string;
 }
 
 export const _content: Content = {
@@ -38,9 +40,16 @@ export const _contentDTO: ContentDTO = {
   content_year: 0,
   content_url: "",
   content_gender: "",
+  season_id: 0,
+  season_name: "",
 };
 
 export interface ContentData {
   content: Content;
-  seasons: SeasonDTO;
+  seasons: SeasonDTO[];
+}
+
+export interface ContentDataDTO {
+  content: ContentDTO;
+  seasons: SeasonDTO[];
 }

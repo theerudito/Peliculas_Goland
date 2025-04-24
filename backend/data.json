@@ -1,44 +1,50 @@
-{
-  "content": {
-    "content_id": 1,
-    "content_title": "My Awesome Show",
-    "content_type": "Series",
-    "content_cover": "cover.jpg",
-    "content_year": 2023,
-    "gender": "Drama",
-    "season_id": 1,
-    "season_name": "Season 1"
-  },
-  "seasons": [
-    {
-      "season_id": 1,
-      "season_name": "Season 1",
-      "episodes": [
-        {
-          "episode_id": 1,
-          "episode_number": 1,
-          "episode_name": "The Beginning",
-          "episode_url": "https://example.com/episode1"
-        },
-        {
-          "episode_id": 2,
-          "episode_number": 2,
-          "episode_name": "The Continuation",
-          "episode_url": "https://example.com/episode2"
-        }
-      ]
+[
+  {
+    "content": {
+      "content_id": 13,
+      "content_title": "LOS 100",
+      "content_type": "ANIME",
+      "content_cover": "https://m.media-amazon.com/images/I/816bH+15OEL._SY466_.jpg",
+      "content_year": 2020,
+      "content_gender": "DRAMA"
     },
-    {
-      "season_id": 2,
-      "season_name": "Season 2",
-      "episodes": [
-        {
-          "episode_id": 3,
-          "episode_number": 1,
-          "episode_name": "The Return",
-          "episode_url": "https://example.com/episode3"
-        }
-      ]
-    }
-  ]
-}
+    "seasons": [
+      {
+        "season_id": 13,
+        "season_name": "TEMPORADA 1",
+        "episodes": [
+          {
+            "episode_id": 24,
+            "episode_number": 1,
+            "episode_name": "CAPITULO 1",
+            "episode_url": "https://example.com/episodes/1"
+          },
+          {
+            "episode_id": 25,
+            "episode_number": 2,
+            "episode_name": "CAPITULO 2",
+            "episode_url": "https://example.com/episodes/2"
+          },
+          {
+            "episode_id": 26,
+            "episode_number": 3,
+            "episode_name": "CAPITULO 3",
+            "episode_url": "https://example.com/episodes/2"
+          },
+          {
+            "episode_id": 27,
+            "episode_number": 4,
+            "episode_name": "CAPITULO 4",
+            "episode_url": "https://example.com/episodes/2"
+          },
+          {
+            "episode_id": 28,
+            "episode_number": 5,
+            "episode_name": "CAPITULO 5",
+            "episode_url": "https://example.com/episodes/2"
+          }
+        ]
+      }
+    ]
+  }
+]

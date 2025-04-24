@@ -6,11 +6,10 @@ export interface Episodes {
   episode_url: string;
 }
 
-export interface EpisodesDTO {
-  espisode_id: number;
-  season: string;
+export interface EpisodeDTO {
+  episode_id: number;
   episode_number: number;
-  episode_title: string;
+  episode_name: string;
   episode_url: string;
 }
 

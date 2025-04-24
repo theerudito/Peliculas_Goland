@@ -8,13 +8,12 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
     (state) => state
   );
 
-  console.log("di", obj.content_id);
+  console.log("data_content", data_content);
+
   useEffect(() => {
     getSeason(obj.content_title);
-    getEpisode(obj.content_id);
+    getEpisode(obj.content_title, obj.content_id);
   }, [getSeason, getEpisode, obj.content_title, obj.content_id]);
-
-  console.log("Season", data_content[0]);
 
   return (
     <div className="anime-viewer">
@@ -28,8 +27,8 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
           <p>{obj.content_year}</p>
           <p>{obj.content_gender}</p>
           <select>
-            {listSeason.map((item) => (
-              <option key={item.season_id} value={item.season_id}>
+            {listSeason.map((item, index) => (
+              <option key={index} value={item.season_id}>
                 {item.season_name}
               </option>
             ))}
@@ -37,9 +36,9 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
         </div>
       </div>
 
-      <div className="episode-scroll">
+      {/* <div className="episode-scroll">
         <div className="episode-grid">
-          {data_content[0].seasons.episodes.map((item, index) => (
+          {data_content[0].seasons[0].episodes.map((item, index) => (
             <div key={index} className="episode">
               <div className="episode-image">
                 <img src={obj.content_cover} />
@@ -51,7 +50,7 @@ export const Component_Content = ({ obj }: { obj: ContentDTO }) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -15,7 +15,6 @@ func Get_Episodies(c *fiber.Ctx) error {
 	episode.episode_name,
 	episode.episode_number,
 	episode.episode_url,
-	season.season_name
 	FROM episodes AS episode
 	INNER JOIN seasons AS season ON season.season_id = episode.season_id`)
 
@@ -34,7 +33,6 @@ func Get_Episodies(c *fiber.Ctx) error {
 			&episodie.Episode_Name,
 			&episodie.Episode_Number,
 			&episodie.Episode_Url,
-			&episodie.Season,
 		)
 
 		if err != nil {

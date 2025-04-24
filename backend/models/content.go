@@ -10,17 +10,23 @@ type Content struct {
 }
 
 type ContentDTO struct {
-	Content_Id    uint   `json:"content_id"`
-	Content_Title string `json:"content_title"`
-	Content_Type  string `json:"content_type"`
-	Content_Cover string `json:"content_cover"`
-	Content_Year  int    `json:"content_year"`
-	Gender        string `json:"gender"`
-	Season_Id     uint   `json:"season_id"`
-	Season_Name   string `json:"season_name"`
+	Content_Id     uint   `json:"content_id"`
+	Content_Title  string `json:"content_title"`
+	Content_Type   string `json:"content_type"`
+	Content_Cover  string `json:"content_cover"`
+	Content_Year   int    `json:"content_year"`
+	Content_Gender string `json:"content_gender"`
+	Season_Id      uint   `json:"season_id"`
+	Season_Name    string `json:"season_name"`
+}
+
+type ContentDataDTO struct {
+	Content ContentDTO  `json:"content"`
+	Seasons []SeasonDTO `json:"seasons"`
 }
 
 type ContentData struct {
-	Content Content `json:"content"`
-	Seasons Season  `json:"seasons"`
+	Content  Content    `json:"content"`
+	Seasons  Season     `json:"seasons"`
+	Episodie []Episodie `json:"episodes"`
 }

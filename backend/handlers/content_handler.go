@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"database/sql"
-	"log"
-	"net/url"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	db "github.com/theerudito/peliculas/database"
+	"github.com/theerudito/peliculas/helpers"
 	"github.com/theerudito/peliculas/models"
 )
 
@@ -21,12 +20,15 @@ func GetContent(c *fiber.Ctx) error {
 	content.content_title,
 	content.content_cover,
 	content.content_year,
+	season.season_id,
+	season.season_name,
 	gender.gender_name,
 	CASE
 			WHEN content.content_type = 1 THEN 'ANIME'
 			ELSE 'SERIE'
 	END AS type
 	FROM content_types content
+	INNER JOIN seasons AS season ON season.content_id = content.content_id 
 	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id`)
 
 	if err != nil {
@@ -41,7 +43,9 @@ func GetContent(c *fiber.Ctx) error {
 			&content.Content_Title,
 			&content.Content_Cover,
 			&content.Content_Year,
-			&content.Gender,
+			&content.Season_Id,
+			&content.Season_Name,
+			&content.Content_Gender,
 			&content.Content_Type)
 		if err != nil {
 			return err
@@ -64,12 +68,15 @@ func GetContentID(c *fiber.Ctx) error {
 		content.content_title,
 		content.content_cover,
 		content.content_year,
+		season.season_id,
+		season.season_name,
 		gender.gender_name,
 		CASE
 			WHEN content.content_type = 1 THEN 'ANIME'
 			ELSE 'SERIE'
 		END AS type
 	FROM content_types content
+	INNER JOIN seasons AS season ON season.content_id = content.content_id
 	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
 	WHERE content.content_id = ?
 `, pID).Scan(
@@ -77,7 +84,9 @@ func GetContentID(c *fiber.Ctx) error {
 		&dto.Content_Title,
 		&dto.Content_Cover,
 		&dto.Content_Year,
-		&dto.Gender,
+		&dto.Season_Id,
+		&dto.Season_Name,
+		&dto.Content_Gender,
 		&dto.Content_Type,
 	)
 
@@ -96,25 +105,28 @@ func GetContentID(c *fiber.Ctx) error {
 
 func GetContenType(c *fiber.Ctx) error {
 
-	value := c.Params("id")
+	value := (c.Params("id"))
 
 	var dto []models.ContentDTO
 
 	rows, err := db.DB.Query(`
-		SELECT
-		MIN(content.content_id) AS content_id,
-		content.content_title,
-		MIN(content.content_cover) AS content_cover,
-		MIN(content.content_year) AS content_year,
-		gender.gender_name,
-		CASE
+	SELECT
+	MIN(content.content_id) AS content_id,
+	content.content_title,
+	MIN(content.content_cover) AS content_cover,
+	MIN(content.content_year) AS content_year,
+	season.season_id,
+	season.season_name,
+	MIN(gender.gender_name) AS gender_name,
+	CASE
 		WHEN content.content_type = 1 THEN 'ANIME'
 		ELSE 'SERIE'
-		END AS type
-		FROM content_types content
-		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-		WHERE content_type = ?
-		GROUP BY content.content_title, gender.gender_name, content.content_type
+	END AS type
+	FROM content_types content
+	INNER JOIN seasons AS season ON season.content_id = content.content_id
+	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
+	WHERE content_type = ?
+	GROUP BY content.content_title, content.content_type
 	`, value)
 
 	if err != nil {
@@ -132,9 +144,12 @@ func GetContenType(c *fiber.Ctx) error {
 			&content.Content_Title,
 			&content.Content_Cover,
 			&content.Content_Year,
-			&content.Gender,
+			&content.Season_Id,
+			&content.Season_Name,
+			&content.Content_Gender,
 			&content.Content_Type,
 		)
+
 		if err != nil {
 			return err
 		}
@@ -152,30 +167,29 @@ func GetContenType(c *fiber.Ctx) error {
 
 func GetContentSeason(c *fiber.Ctx) error {
 
-	value, err := url.QueryUnescape(c.Params("value"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid parameter")
-	}
+	value := helpers.QuitarGuiones(c.Params("value"))
 
 	search := "%" + strings.ToUpper(value) + "%"
-
-	log.Println(search)
-	log.Println(value)
 
 	var dto []models.ContentDTO
 
 	rows, err := db.DB.Query(`
-		SELECT
-			content.content_id,
-			content.content_title,
-			content.content_cover,
-			content.content_year,
-			season.season_id,
-			season.season_name
-		FROM content_types AS content
-		INNER JOIN seasons AS season ON season.content_id = content.content_id
-		WHERE UPPER(content.content_title) LIKE ?
-		ORDER BY season.season_id;
+	SELECT
+	content.content_id,
+	content.content_title,
+	content.content_cover,
+	content.content_year,
+	season.season_id,
+	season.season_name,
+	CASE
+	WHEN content.content_type = 1 THEN 'ANIME'
+	ELSE 'SERIE'
+	END AS type,
+	gender.gender_name
+	FROM content_types AS content
+	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
+	INNER JOIN seasons AS season ON season.content_id = content.content_id
+	WHERE UPPER(content.content_title) LIKE ?
 	`,
 		search)
 
@@ -193,6 +207,8 @@ func GetContentSeason(c *fiber.Ctx) error {
 			&content.Content_Year,
 			&content.Season_Id,
 			&content.Season_Name,
+			&content.Content_Type,
+			&content.Content_Gender,
 		)
 		if err != nil {
 			return err
@@ -205,172 +221,44 @@ func GetContentSeason(c *fiber.Ctx) error {
 }
 
 func GetContentEpisode(c *fiber.Ctx) error {
+	value := helpers.QuitarGuiones(c.Params("value"))
+	idSeason := c.Params("id")
+	search := "%" + strings.ToUpper(value) + "%"
 
-	value := c.Params("id")
-
-	var dto []models.ContentData
-
-	rows, err := db.DB.Query(`
-	SELECT
-	content.content_id,
-	content.content_title,
-	content.content_type,
-	content.content_cover,
-	content.content_year,
-	content.gender_id,
-	season.season_id,
-	season.season_name,
-	episode.episode_id,
-	episode.episode_number,
-	episode.episode_name,
-	episode.episode_url
-	FROM content_types AS content
-	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-	LEFT JOIN seasons AS season ON season.content_id = content.content_id
-	LEFT JOIN episodes AS episode ON episode.season_id = season.season_id
-	WHERE content.content_id = ?
-	ORDER BY season.season_id, episode.episode_number
-	`, value)
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":   "Error al consultar la base de datos",
-			"details": err.Error(),
-		})
-	}
-	defer rows.Close()
-
-	// Map para agrupar por Season ID
-	contentMap := make(map[uint]*models.ContentData)
-
-	for rows.Next() {
-		var (
-			content     models.Content
-			season      models.Season
-			episode     models.Episodie
-			seasonID    sql.NullInt64
-			seasonName  sql.NullString
-			episodeID   sql.NullInt64
-			episodeNum  sql.NullInt64
-			episodeName sql.NullString
-			episodeURL  sql.NullString
-		)
-
-		err := rows.Scan(
-			&content.Content_Id,
-			&content.Content_Title,
-			&content.Content_Type,
-			&content.Content_Cover,
-			&content.Content_Year,
-			&content.Gender_Id,
-
-			&seasonID,
-			&seasonName,
-
-			&episodeID,
-			&episodeNum,
-			&episodeName,
-			&episodeURL,
-		)
-
-		if err != nil {
-			return err
-		}
-
-		// Validamos la Season
-		if seasonID.Valid {
-			season.Season_Id = uint(seasonID.Int64)
-			season.Season_Name = seasonName.String
-		}
-
-		// Validamos Episodio
-		if episodeID.Valid {
-			episode = models.Episodie{
-				Episode_Id:     uint(episodeID.Int64),
-				Episode_Number: int(episodeNum.Int64),
-				Episode_Name:   episodeName.String,
-				Episode_Url:    episodeURL.String,
-			}
-		}
-
-		// Agrupamos por Season ID
-		if existing, ok := contentMap[season.Season_Id]; ok {
-			if episodeID.Valid {
-				existing.Seasons.Episodes = append(existing.Seasons.Episodes, episode)
-			}
-		} else {
-			newData := models.ContentData{
-				Content: content,
-				Seasons: models.Season{
-					Season_Id:   season.Season_Id,
-					Season_Name: season.Season_Name,
-				},
-			}
-
-			if episodeID.Valid {
-				newData.Seasons.Episodes = append(newData.Seasons.Episodes, episode)
-			}
-
-			contentMap[season.Season_Id] = &newData
-		}
-	}
-
-	// Convertimos el mapa a slice
-	for _, v := range contentMap {
-		dto = append(dto, *v)
-	}
-
-	return c.JSON(dto)
-}
-
-func GetContentFull(c *fiber.Ctx) error {
-
-	value, err := url.QueryUnescape(c.Params("value"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid parameter")
-	}
-
-	search := "%" + value + "%"
-
-	idSeason := 13
-
-	log.Println(search)
-	log.Println(value)
-
-	var dto []models.ExampleData
+	var dto []models.ContentDataDTO
 
 	rows, err := db.DB.Query(`
 		SELECT 
-		ct.content_id,
-		ct.content_title,
-		CASE ct.content_type
-			WHEN 1 THEN 'Serie'
-			WHEN 2 THEN 'Anime'
-		END as content_type,
-		ct.content_cover,
-		ct.content_year,
-		g.gender_name,
-		
-		s.season_id,
-		s.season_name,
+			ct.content_id,
+			ct.content_title,
+			CASE ct.content_type
+				WHEN 1 THEN 'SERIE'
+				WHEN 2 THEN 'ANIME'
+			END as content_type,
+			ct.content_cover,
+			ct.content_year,
+			g.gender_name,
+			
+			s.season_id,
+			s.season_name,
 
-		e.episode_id,
-		e.episode_number,
-		e.episode_name,
-		e.episode_url
-	FROM 
-		content_types ct
-	JOIN 
-		genders g ON g.gender_id = ct.gender_id
-	JOIN 
-		seasons s ON s.content_id = ct.content_id
-	JOIN 
-		episodes e ON e.season_id = s.season_id
-	WHERE 
-		UPPER(ct.content_title) LIKE ?
-		AND s.season_id = ?
-	ORDER BY 
-		s.season_id, e.episode_number
+			e.episode_id,
+			e.episode_number,
+			e.episode_name,
+			e.episode_url
+		FROM 
+			content_types ct
+		JOIN 
+			genders g ON g.gender_id = ct.gender_id
+		JOIN 
+			seasons s ON s.content_id = ct.content_id
+		JOIN 
+			episodes e ON e.season_id = s.season_id
+		WHERE 
+			UPPER(ct.content_title) LIKE ?
+			AND s.season_id = ?
+		ORDER BY 
+			s.season_id, e.episode_number
 	`, search, idSeason)
 
 	if err != nil {
@@ -379,111 +267,100 @@ func GetContentFull(c *fiber.Ctx) error {
 			"details": err.Error(),
 		})
 	}
-
-	log.Println("Query executed successfully")
-	log.Println("Rows affected:", rows)
-
 	defer rows.Close()
 
-	contentMap := make(map[uint]*models.ExampleData)
+	contentMap := make(map[uint]*models.ContentDataDTO)
 
 	for rows.Next() {
 		var (
-			contentId     uint
+			contentID     uint
 			contentTitle  string
 			contentType   string
 			contentCover  string
 			contentYear   int
-			gender        string
-			seasonId      uint
+			genderName    string
+			seasonID      uint
 			seasonName    string
-			episodeId     uint
+			episodeID     uint
 			episodeNumber int
 			episodeName   string
-			episodeUrl    string
+			episodeURL    string
 		)
 
 		err := rows.Scan(
-			&contentId,
-			&contentTitle,
-			&contentType,
-			&contentCover,
-			&contentYear,
-			&gender,
-			&seasonId,
-			&seasonName,
-			&episodeId,
-			&episodeNumber,
-			&episodeName,
-			&episodeUrl,
+			&contentID, &contentTitle, &contentType, &contentCover, &contentYear, &genderName,
+			&seasonID, &seasonName,
+			&episodeID, &episodeNumber, &episodeName, &episodeURL,
 		)
+
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
+				"error":   "Error al escanear los resultados",
+				"details": err.Error(),
 			})
 		}
 
-		// Crear contenido si no existe
-		if _, ok := contentMap[contentId]; !ok {
-			contentMap[contentId] = &models.ExampleData{
-				Content: models.ExampleContent{
-					Content_Id:    contentId,
-					Content_Title: contentTitle,
-					Content_Type:  contentType,
-					Content_Cover: contentCover,
-					Content_Year:  contentYear,
-					Gender:        gender,
+		// Buscar o crear entrada del contenido
+		contentData, exists := contentMap[contentID]
+		if !exists {
+			contentData = &models.ContentDataDTO{
+				Content: models.ContentDTO{
+					Content_Id:     contentID,
+					Content_Title:  contentTitle,
+					Content_Type:   contentType,
+					Content_Cover:  contentCover,
+					Content_Year:   contentYear,
+					Content_Gender: genderName,
+					Season_Id:      seasonID,
+					Season_Name:    seasonName,
 				},
-				Seasons: []models.ExampleSeason{},
+				Seasons: []models.SeasonDTO{},
 			}
+			contentMap[contentID] = contentData
 		}
 
-		// Buscar o crear temporada
-		var season *models.ExampleSeason
-		for i := range contentMap[contentId].Seasons {
-			if contentMap[contentId].Seasons[i].Season_Id == seasonId {
-				season = &contentMap[contentId].Seasons[i]
+		// Buscar la temporada dentro del contenido
+		var season *models.SeasonDTO
+		for i := range contentData.Seasons {
+			if contentData.Seasons[i].Season_Id == seasonID {
+				season = &contentData.Seasons[i]
 				break
 			}
 		}
+
+		// Si no existe, la creamos
 		if season == nil {
-			newSeason := models.ExampleSeason{
-				Season_Id:   seasonId,
+			newSeason := models.SeasonDTO{
+				Season_Id:   seasonID,
 				Season_Name: seasonName,
-				Episodes:    []models.ExampleEpisodie{},
+				Episodes:    []models.EpisodieDTO{},
 			}
-			contentMap[contentId].Seasons = append(contentMap[contentId].Seasons, newSeason)
-			season = &contentMap[contentId].Seasons[len(contentMap[contentId].Seasons)-1]
+			contentData.Seasons = append(contentData.Seasons, newSeason)
+			season = &contentData.Seasons[len(contentData.Seasons)-1]
 		}
 
-		// Agregar episodio
-		season.Episodes = append(season.Episodes, models.ExampleEpisodie{
-			Episode_Id:     episodeId,
+		// Agregar episodio a la temporada
+		season.Episodes = append(season.Episodes, models.EpisodieDTO{
+			Episode_Id:     episodeID,
 			Episode_Number: episodeNumber,
 			Episode_Name:   episodeName,
-			Episode_Url:    episodeUrl,
+			Episode_Url:    episodeURL,
 		})
 	}
 
-	// Convertir a slice
+	// Convertir el mapa a slice
 	for _, v := range contentMap {
 		dto = append(dto, *v)
 	}
 
-	if len(dto) == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "No se encontraron coincidencias",
-		})
-	}
-
 	return c.JSON(dto)
-
 }
 
 func FindContent(c *fiber.Ctx) error {
-	value := c.Params("value")
 
-	search := "%" + strings.ToUpper(value) + "%"
+	value := helpers.QuitarGuiones(c.Params("value"))
+
+	search := "%" + strings.ToUpper(value) + "%	"
 
 	var dto []models.ContentDTO
 
@@ -493,12 +370,15 @@ func FindContent(c *fiber.Ctx) error {
 			content.content_title,
 			content.content_cover,
 			content.content_year,
+			season.season_id,
+			season.season_name,
 			gender.gender_name,
 			CASE
 				WHEN content.content_type = 1 THEN 'ANIME'
 				ELSE 'SERIE'
 			END AS type
 		FROM content_types content
+		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
 		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
 		WHERE UPPER(content.content_title) LIKE ?
 		AND content.content_type = ?
@@ -521,7 +401,9 @@ func FindContent(c *fiber.Ctx) error {
 			&content.Content_Title,
 			&content.Content_Cover,
 			&content.Content_Year,
-			&content.Gender,
+			&content.Season_Id,
+			&content.Season_Name,
+			&content.Content_Gender,
 			&content.Content_Type,
 		)
 		if err != nil {
@@ -591,7 +473,7 @@ func PostContent(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error obteniendo season_id", "details": err.Error()})
 	}
 
-	for _, ep := range content.Seasons.Episodes {
+	for _, ep := range content.Episodie {
 		_, err := tx.Exec(`
 			INSERT INTO episodes (episode_number, episode_name, episode_url, season_id)
 			VALUES (?, ?, ?, ?)`,
@@ -614,50 +496,6 @@ func PostContent(c *fiber.Ctx) error {
 }
 
 func PutContent(c *fiber.Ctx) error {
-
-	// var content models.ContenData
-
-	// if err := c.BodyParser(&content); err != nil {
-	// 	return c.Status(400).JSON(fiber.Map{"error": "Error al parsear JSON"})
-	// }
-
-	// tx, err := db.DB.Begin()
-	// if err != nil {
-	// 	return c.Status(500).JSON(fiber.Map{"error": "Error iniciando transacción"})
-	// }
-
-	// _, err = tx.Exec(`
-	// 	UPDATE content_types SET content_title = ?, content_type_id = ?, content_cover = ?, content_year = ?, gender_id = ?
-	// 	WHERE content_id=?`,
-	// 	strings.ToUpper(content.Content_Title),
-	// 	content.Content_Type_Id,
-	// 	content.Content_Cover,
-	// 	content.Content_Year,
-	// 	content.Gender_Id,
-	// )
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return c.Status(500).JSON(fiber.Map{"error": "Error actualizando contenido"})
-	// }
-
-	// for _, ep := range content.Seasons[0].Episodes {
-	// 	_, err := tx.Exec(`
-	// 		UPDATE episodes
-	// 		SET episode_number=?, episode_name=?, episode_url=?
-	// 		WHERE episode_id=? AND season_id=?`,
-	// 		ep.Episode_Number,
-	// 		ep.Episode_Name,
-	// 		ep.Episode_Url,
-	// 		ep.Episode_Id,
-	// 		ep.Season_Id,
-	// 	)
-	// 	if err != nil {
-	// 		tx.Rollback()
-	// 		return c.Status(500).JSON(fiber.Map{"error": "Error actualizando episodios"})
-	// 	}
-	// }
-
-	// tx.Commit()
 
 	return c.Status(200).JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
 
