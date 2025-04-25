@@ -35,15 +35,15 @@ func SetupRoutes(app *fiber.App) {
 	v1.Get("/content/content-type/:id", handlers.GET_Content_Type)
 	v1.Get("/content/full_content/:id", handlers.GET_Full_Content)
 	v1.Post("/content", handlers.POST_Content)
-	v1.Put("/content", handlers.PUT_Content)
+	v1.Put("/content/:id", handlers.PUT_Content)
 	v1.Delete("/content/:id", handlers.DELETE_Content)
 
 	// SEASONS
 	v1.Get("/season", handlers.GET_Season)
-	v1.Get("/season", handlers.GET_Season_ID)
-	v1.Get("/season", handlers.POST_Season)
-	v1.Get("/season", handlers.PUT_Season)
-	v1.Get("/season", handlers.DELETE_Season)
+	v1.Get("/season/:id", handlers.GET_Season_ID)
+	v1.Post("/season", handlers.POST_Season)
+	v1.Put("/season/:id", handlers.PUT_Season)
+	v1.Delete("/season/:id", handlers.DELETE_Season)
 
 	// GENDER
 	v1.Get("/gender", handlers.GET_Gender)
