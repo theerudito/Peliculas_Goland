@@ -1,11 +1,12 @@
+-- GENEROS
 CREATE TABLE
-  IF NOT EXISTS genders (
+  IF NOT EXISTS gender (
     gender_id INTEGER PRIMARY KEY AUTOINCREMENT,
     gender_name TEXT NOT NULL UNIQUE
   );
 
 INSERT INTO
-  genders (gender_name)
+  gender (gender_name)
 VALUES
   ('DRAMA'),
   ('COMEDIA'),
@@ -38,14 +39,15 @@ VALUES
   ('RELIGIOSO'),
   ('EXPERIMENTAL');
 
+-- TEMPORADAS
 CREATE TABLE
-  IF NOT EXISTS seasons (
+  IF NOT EXISTS season (
     season_id INTEGER PRIMARY KEY AUTOINCREMENT,
     season_name TEXT NOT NULL
   );
 
 INSERT INTO
-  seasons (season_name)
+  season (season_name)
 VALUES
   ('TEMPORADA 1'),
   ('TEMPORADA 2'),
@@ -63,10 +65,10 @@ VALUES
   ('TEMPORADA 14'),
   ('TEMPORADA 15');
 
--- PELÍCULAS (con cover y url como BLOBs)
+-- PELÍCULAS 
 CREATE TABLE
-  IF NOT EXISTS movies (
-    movie_movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  IF NOT EXISTS movie (
+    movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
     movie_title TEXT NOT NULL,
     movie_year INTEGER NOT NULL,
     movie_cover TEXT NOT NULL,
@@ -76,7 +78,7 @@ CREATE TABLE
   );
 
 INSERT INTO
-  movies (
+  movie (
     movie_title,
     movie_year,
     movie_cover,
@@ -108,7 +110,7 @@ VALUES
 
 -- TIPOS DE CONTENIDO (Series, Animes, etc.)
 CREATE TABLE
-  IF NOT EXISTS content_types (
+  IF NOT EXISTS content_type (
     content_id INTEGER PRIMARY KEY AUTOINCREMENT,
     content_title TEXT NOT NULL,
     content_type INTEGER NOT NULL,
@@ -119,7 +121,7 @@ CREATE TABLE
   );
 
 INSERT INTO
-  content_types (
+  content_type (
     content_title,
     content_type,
     content_cover,
@@ -144,7 +146,7 @@ VALUES
 
 -- EPISODIOS DE TEMPORADAS
 CREATE TABLE
-  IF NOT EXISTS episodes (
+  IF NOT EXISTS episode (
     episode_id INTEGER PRIMARY KEY AUTOINCREMENT,
     episode_number INTEGER NOT NULL,
     episode_name TEXT NOT NULL,
@@ -156,7 +158,7 @@ CREATE TABLE
   );
 
 INSERT INTO
-  episodes (
+  episode (
     episode_number,
     episode_name,
     episode_url,
