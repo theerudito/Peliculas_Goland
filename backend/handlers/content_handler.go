@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -354,6 +355,112 @@ func GetContentEpisode(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto)
+}
+
+func GetFullContent(c *fiber.Ctx) error {
+
+	title := helpers.QuitarGuiones(c.Params("title"))
+	search := "%" + strings.ToUpper(title) + "%"
+
+	// Inicializamos solo un content (ya que todos tienen el mismo título)
+	var content models.Example_FullContentDTO
+	primero := true
+
+	// Traer todos los content_id que comparten el mismo título
+	rows, err := db.DB.Query(`
+		SELECT
+		c.content_id,
+		c.content_title,
+		CASE c.content_type
+				WHEN 1 THEN 'SERIE'
+				WHEN 2 THEN 'ANIME'
+			END AS content_type,
+		c.content_cover,
+		c.content_year,
+		g.gender_name
+		FROM content_types AS c
+		INNER JOIN genders AS g ON g.gender_id = c.gender_id
+		WHERE UPPER(content_title) LIKE ?
+	`, search)
+	if err != nil {
+		log.Println("❌ Error en query:", err)
+		return c.Status(500).JSON(fiber.Map{"error": "Error en la base de datos"})
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tmpContent models.Example_FullContentDTO
+		if err := rows.Scan(
+			&tmpContent.Content_Id,
+			&tmpContent.Content_Title,
+			&tmpContent.Content_Type,
+			&tmpContent.Content_Cover,
+			&tmpContent.Content_Year,
+			&tmpContent.Content_Gender,
+		); err != nil {
+			continue
+		}
+
+		// Setear info principal del contenido solo una vez
+		if primero {
+			content.Content_Id = tmpContent.Content_Id
+			content.Content_Title = tmpContent.Content_Title
+			content.Content_Type = tmpContent.Content_Type
+			content.Content_Cover = tmpContent.Content_Cover
+			content.Content_Year = tmpContent.Content_Year
+			content.Content_Gender = tmpContent.Content_Gender
+			primero = false
+		}
+
+		// Buscar temporadas de ese content_id
+		seasonsRows, err := db.DB.Query(`
+			SELECT season_id, season_name
+			FROM seasons
+			WHERE content_id = ?
+		`, tmpContent.Content_Id)
+		if err != nil {
+			continue
+		}
+
+		for seasonsRows.Next() {
+			var season models.Example_SeasonDTO
+			if err := seasonsRows.Scan(&season.Season_Id, &season.Season_Name); err != nil {
+				continue
+			}
+
+			// Buscar episodios de esta temporada
+			episodesRows, err := db.DB.Query(`
+				SELECT episode_id, episode_number, episode_name, episode_url
+				FROM episodes
+				WHERE season_id = ?
+				ORDER BY episode_number ASC
+			`, season.Season_Id)
+			if err != nil {
+				continue
+			}
+
+			for episodesRows.Next() {
+				var ep models.Example_EpisodeDTO
+				if err := episodesRows.Scan(&ep.Episode_Id, &ep.Episode_Number, &ep.Episode_Name, &ep.Episode_Url); err != nil {
+					continue
+				}
+				season.Episodes = append(season.Episodes, ep)
+			}
+			episodesRows.Close()
+
+			// Agregar temporada a la serie principal
+			content.Seasons = append(content.Seasons, season)
+		}
+		seasonsRows.Close()
+	}
+
+	if primero {
+		// nunca encontró contenido
+		return c.Status(404).JSON(fiber.Map{"error": "Contenido no encontrado"})
+	}
+
+	return c.JSON(content)
+
 }
 
 func FindContent(c *fiber.Ctx) error {

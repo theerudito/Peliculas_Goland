@@ -16,10 +16,8 @@ export interface ContentDTO {
   content_type: string;
   content_cover: string;
   content_year: number;
-  content_url: string;
   content_gender: string;
-  season_id: number;
-  season_name: string;
+  seasons: SeasonDTO[];
 }
 
 export const _content: Content = {
@@ -38,18 +36,7 @@ export const _contentDTO: ContentDTO = {
   content_type: "",
   content_cover: "",
   content_year: 0,
-  content_url: "",
   content_gender: "",
-  season_id: 0,
-  season_name: "",
+  seasons: [] as SeasonDTO[],
 };
 
-export interface ContentData {
-  content: Content;
-  seasons: SeasonDTO[];
-}
-
-export interface ContentDataDTO {
-  content: ContentDTO;
-  seasons: SeasonDTO[];
-}

@@ -28,6 +28,7 @@ func SetupRoutes(app *fiber.App) {
 	v1.Delete("/movie/:id", handlers.DELETE_Movie)
 
 	// CONTENT
+
 	v1.Get("/content", handlers.GET_Content)
 	v1.Get("/content/:id", handlers.GET_Content_ID)
 	v1.Get("/content/find/:value", handlers.GET_Find_Content)
