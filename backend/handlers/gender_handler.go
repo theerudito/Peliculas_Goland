@@ -6,7 +6,7 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func Get_Gender(c *fiber.Ctx) error {
+func GET_Gender(c *fiber.Ctx) error {
 
 	var dto []models.Gender
 
@@ -40,7 +40,7 @@ func Get_Gender(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
-func Get_Gender_ID(c *fiber.Ctx) error {
+func GET_Gender_ID(c *fiber.Ctx) error {
 
 	var dto []models.Gender
 
@@ -74,4 +74,16 @@ func Get_Gender_ID(c *fiber.Ctx) error {
 
 	return c.JSON(dto)
 
+}
+
+func POST_Gender(c *fiber.Ctx) error {
+	return nil
+}
+
+func PUT_Gender(c *fiber.Ctx) error {
+	return nil
+}
+
+func DELETE_Gender(c *fiber.Ctx) error {
+	return nil
 }

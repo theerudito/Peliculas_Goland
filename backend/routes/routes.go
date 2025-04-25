@@ -28,11 +28,10 @@ func SetupRoutes(app *fiber.App) {
 	v1.Delete("/movie/:id", handlers.DELETE_Movie)
 
 	// CONTENT
-
 	v1.Get("/content", handlers.GET_Content)
 	v1.Get("/content/:id", handlers.GET_Content_ID)
 	v1.Get("/content/find/:value", handlers.GET_Find_Content)
-	v1.Get("/content/content-type/:id", handlers.GET_Content_Type)
+	v1.Get("/content/type_content/:id", handlers.GET_Content_Type)
 	v1.Get("/content/full_content/:id", handlers.GET_Full_Content)
 	v1.Post("/content", handlers.POST_Content)
 	v1.Put("/content/:id", handlers.PUT_Content)
@@ -58,5 +57,8 @@ func SetupRoutes(app *fiber.App) {
 	v1.Post("/episode", handlers.POST_Episode)
 	v1.Put("/episode/:id", handlers.PUT_Episode)
 	v1.Delete("/episode/id", handlers.DELETE_Episode)
+
+	// LOGIN
+	v1.Post("/login", handlers.GET_Episode)
 
 }

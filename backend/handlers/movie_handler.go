@@ -11,7 +11,7 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func GetMovies(c *fiber.Ctx) error {
+func GET_Movie(c *fiber.Ctx) error {
 
 	var dto []models.MovieDTO
 
@@ -52,7 +52,7 @@ func GetMovies(c *fiber.Ctx) error {
 
 }
 
-func GetMoviebyid(c *fiber.Ctx) error {
+func GET_Movie_ID(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
@@ -90,7 +90,7 @@ func GetMoviebyid(c *fiber.Ctx) error {
 
 }
 
-func FindMovie(c *fiber.Ctx) error {
+func GET_Find_Movie(c *fiber.Ctx) error {
 
 	value := c.Params("value")
 
@@ -137,7 +137,7 @@ func FindMovie(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
-func PostMovie(c *fiber.Ctx) error {
+func POST_Movie(c *fiber.Ctx) error {
 
 	var body map[string]interface{}
 
@@ -185,7 +185,7 @@ func PostMovie(c *fiber.Ctx) error {
 	return c.Status(201).JSON(fiber.Map{"message": "Contenido creado correctamente 🚀"})
 }
 
-func PutMovies(c *fiber.Ctx) error {
+func PUT_Movie(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
@@ -213,7 +213,7 @@ func PutMovies(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
 }
 
-func DeleteMovies(c *fiber.Ctx) error {
+func DELETE_Movie(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 

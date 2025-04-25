@@ -6,7 +6,7 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func Get_Episodies(c *fiber.Ctx) error {
+func GET_Episode(c *fiber.Ctx) error {
 
 	var dto []models.EpisodieDTO
 
@@ -45,4 +45,20 @@ func Get_Episodies(c *fiber.Ctx) error {
 
 	return c.JSON(dto)
 
+}
+
+func GET_Episode_ID(c *fiber.Ctx) error {
+	return nil
+}
+
+func POST_Episode(c *fiber.Ctx) error {
+	return nil
+}
+
+func PUT_Episode(c *fiber.Ctx) error {
+	return nil
+}
+
+func DELETE_Episode(c *fiber.Ctx) error {
+	return nil
 }

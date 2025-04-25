@@ -6,7 +6,7 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func Get_Seasons(c *fiber.Ctx) error {
+func GET_Season(c *fiber.Ctx) error {
 
 	var dto []models.SeasonDTO
 
@@ -41,7 +41,7 @@ func Get_Seasons(c *fiber.Ctx) error {
 
 }
 
-func Get_Season_ID(c *fiber.Ctx) error {
+func GET_Season_ID(c *fiber.Ctx) error {
 
 	var dto []models.Season
 
@@ -75,4 +75,16 @@ func Get_Season_ID(c *fiber.Ctx) error {
 
 	return c.JSON(dto)
 
+}
+
+func POST_Season(c *fiber.Ctx) error {
+	return nil
+}
+
+func PUT_Season(c *fiber.Ctx) error {
+	return nil
+}
+
+func DELETE_Season(c *fiber.Ctx) error {
+	return nil
 }
