@@ -1,4 +1,3 @@
--- GÉNEROS
 CREATE TABLE
   IF NOT EXISTS genders (
     gender_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,6 +37,31 @@ VALUES
   ('POLITICO'),
   ('RELIGIOSO'),
   ('EXPERIMENTAL');
+
+CREATE TABLE
+  IF NOT EXISTS seasons (
+    season_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    season_name TEXT NOT NULL
+  );
+
+INSERT INTO
+  seasons (season_name)
+VALUES
+  ('TEMPORADA 1'),
+  ('TEMPORADA 2'),
+  ('TEMPORADA 3'),
+  ('TEMPORADA 4'),
+  ('TEMPORADA 5'),
+  ('TEMPORADA 6'),
+  ('TEMPORADA 7'),
+  ('TEMPORADA 8'),
+  ('TEMPORADA 9'),
+  ('TEMPORADA 10'),
+  ('TEMPORADA 11'),
+  ('TEMPORADA 12'),
+  ('TEMPORADA 13'),
+  ('TEMPORADA 14'),
+  ('TEMPORADA 15');
 
 -- PELÍCULAS (con cover y url como BLOBs)
 CREATE TABLE
@@ -87,7 +111,7 @@ CREATE TABLE
   IF NOT EXISTS content_types (
     content_id INTEGER PRIMARY KEY AUTOINCREMENT,
     content_title TEXT NOT NULL,
-    content_type INTEGER NOT NULL, -- 1: Serie, 2: Anime
+    content_type INTEGER NOT NULL,
     content_cover TEXT NOT NULL,
     content_year INTEGER NOT NULL,
     gender_id INTEGER NOT NULL,
@@ -111,27 +135,12 @@ VALUES
     1
   ),
   (
-    'VIKING',
+    'LOS 100',
     2,
-    'https://imgs.search.brave.com/PuDz7brkyKhgHiVS4oExLR_ohxIm_VYo7f1ea72C_WM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1Qk9URm1abUV4/WVRFdFltRTBNaTAw/TXpSbUxXRTRaRFl0/T1RoaU56TmxPVEl5/T0RsalhrRXlYa0Zx/Y0djQC5qcGc',
-    2024,
-    2
+    'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/the100.png',
+    2010,
+    1
   );
-
--- TEMPORADAS DE SERIES O ANIMES
-CREATE TABLE
-  IF NOT EXISTS seasons (
-    season_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    season_name TEXT NOT NULL,
-    content_id INTEGER NOT NULL,
-    FOREIGN KEY (content_id) REFERENCES content_types (content_id) ON DELETE CASCADE
-  );
-
-INSERT INTO
-  seasons (season_name, content_id)
-VALUES
-  ('TEMPORADA 1', 1),
-  ('TEMPORADA 2', 2);
 
 -- EPISODIOS DE TEMPORADAS
 CREATE TABLE
@@ -141,7 +150,9 @@ CREATE TABLE
     episode_name TEXT NOT NULL,
     episode_url TEXT NOT NULL,
     season_id INTEGER NOT NULL,
-    FOREIGN KEY (season_id) REFERENCES seasons (season_id) ON DELETE CASCADE
+    content_id INTEGER NOT NULL,
+    FOREIGN KEY (season_id) REFERENCES seasons (season_id),
+    FOREIGN KEY (content_id) REFERENCES content_types (content_id)
   );
 
 INSERT INTO
@@ -149,24 +160,70 @@ INSERT INTO
     episode_number,
     episode_name,
     episode_url,
-    season_id
+    season_id,
+    content_id
   )
 VALUES
   (
     1,
     'Capitulo 1',
     'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
-    1
-  ),
-  (
     1,
-    'Capitulo 1',
-    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
     1
   ),
   (
     2,
     'Capitulo 2',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
+    1,
+    1
+  ),
+  (
+    3,
+    'Capitulo 3',
     'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
+    1,
+    1
+  ),
+  (
+    1,
+    'Capitulo 1',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
+    2,
+    2
+  ),
+  (
+    2,
+    'Capitulo 2',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
+    2,
+    2
+  ),
+  (
+    3,
+    'Capitulo 3',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
+    2,
+    2
+  ),
+  (
+    4,
+    'Capitulo 4',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
+    2,
+    2
+  ),
+  (
+    5,
+    'Capitulo 5',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
+    2,
+    2
+  ),
+  (
+    6,
+    'Capitulo 6',
+    'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
+    2,
     2
   );

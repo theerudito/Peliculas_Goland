@@ -20,31 +20,42 @@ func SetupRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	// MOVIES
-	v1.Get("/movies", handlers.GetMovies)
-	v1.Get("/movies/:id", handlers.GetMoviebyid)
-	v1.Get("/movies/find/:value", handlers.FindMovie)
-	v1.Post("/movies", handlers.PostMovie)
-	v1.Put("/movies/:id", handlers.PutMovies)
-	v1.Delete("/movies/:id", handlers.DeleteMovies)
+	v1.Get("/movie", handlers.GET_Movie)
+	v1.Get("/movie/:id", handlers.GET_Movie_ID)
+	v1.Get("/movie/find/:value", handlers.GET_Find_Movie)
+	v1.Post("/movie", handlers.POST_Movie)
+	v1.Put("/movie/:id", handlers.PUT_Movie)
+	v1.Delete("/movie/:id", handlers.DELETE_Movie)
 
 	// CONTENT
-	v1.Get("/contents", handlers.GetContent)
-	v1.Get("/contents/:id", handlers.GetContentID)
-	v1.Get("/contents/find/:value", handlers.FindContent)
-	v1.Get("/contents/content-type/:id", handlers.GetContenType)
-	v1.Get("/contents/season/:value", handlers.GetContentSeason)
-	v1.Get("/contents/episodes/:value/:id", handlers.GetContentEpisode)
-	v1.Post("/contents", handlers.PostContent)
-	v1.Put("/contents", handlers.PutContent)
-	v1.Delete("/contents/:id", handlers.DeleteContent)
+	v1.Get("/content", handlers.GET_Content)
+	v1.Get("/content/:id", handlers.GET_Content_ID)
+	v1.Get("/content/find/:value", handlers.GET_Find_Content)
+	v1.Get("/content/content-type/:id", handlers.GET_Content_Type)
+	v1.Get("/content/full_content/:id", handlers.GET_Full_Content)
+	v1.Post("/content", handlers.POST_Content)
+	v1.Put("/content", handlers.PUT_Content)
+	v1.Delete("/content/:id", handlers.DELETE_Content)
 
 	// SEASONS
-	v1.Get("/seasons", handlers.Get_Seasons)
+	v1.Get("/season", handlers.GET_Season)
+	v1.Get("/season", handlers.GET_Season_ID)
+	v1.Get("/season", handlers.POST_Season)
+	v1.Get("/season", handlers.PUT_Season)
+	v1.Get("/season", handlers.DELETE_Season)
 
 	// GENDER
-	v1.Get("/genders", handlers.Get_Gender)
+	v1.Get("/gender", handlers.GET_Gender)
+	v1.Get("/gender/:id", handlers.GET_Gender_ID)
+	v1.Post("/gender", handlers.POST_Gender)
+	v1.Put("/gender/:id", handlers.PUT_Gender)
+	v1.Delete("/gender/:id", handlers.DELETE_Gender)
 
-	// EPISODIES
-	v1.Get("/episodes", handlers.Get_Episodies)
+	// EPISODES
+	v1.Get("/episode", handlers.GET_Episode)
+	v1.Get("/episode/:id", handlers.GET_Episode_ID)
+	v1.Post("/episode", handlers.POST_Episode)
+	v1.Put("/episode/:id", handlers.PUT_Episode)
+	v1.Delete("/episode/id", handlers.DELETE_Episode)
 
 }
