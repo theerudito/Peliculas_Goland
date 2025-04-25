@@ -16,16 +16,15 @@ func GET_Movie(c *fiber.Ctx) error {
 	var dto []models.MovieDTO
 
 	rows, err := db.DB.Query(`
-		SELECT 
-			movie.movie_movie_id, 
-			movie.movie_title, 
-			movie.movie_year,
-			movie.movie_cover, 
-			movie.movie_url, 
-			gender.gender_name
-		FROM movies AS movie
-		INNER JOIN genders AS gender 
-			ON movie.gender_id = gender.gender_id
+		SELECT
+		m.movie_id,
+		m.movie_title,
+		m.movie_year,
+		m.movie_cover,
+		m.movie_url,
+		g.gender_name
+		FROM movie AS m
+		INNER JOIN gender AS g ON m.gender_id = g.gender_id
 	`)
 	if err != nil {
 		return err
@@ -59,17 +58,16 @@ func GET_Movie_ID(c *fiber.Ctx) error {
 	var movie models.MovieDTO
 
 	err := db.DB.QueryRow(`
-		SELECT 
-			movie.movie_movie_id,
-			movie.movie_title,
-			movie.movie_year,
-			movie.movie_cover,
-			movie.movie_url,
-			gender.gender_name
-		FROM movies AS movie
-		INNER JOIN genders AS gender 
-			ON movie.gender_id = gender.gender_id
-		WHERE movie.movie_movie_id = ?
+		SELECT
+		m.movie_id,
+		m.movie_title,
+		m.movie_year,
+		m.movie_cover,
+		m.movie_url,
+		g.gender_name
+		FROM movie AS m
+		INNER JOIN gender AS g ON m.gender_id = g.gender_id
+		WHERE g.gender_id = ?
 	`, id).Scan(
 		&movie.Movie_Movie_Id,
 		&movie.Movie_Title,
