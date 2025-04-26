@@ -16,42 +16,53 @@ func GET_Content(c *fiber.Ctx) error {
 
 	rows, err := db.DB.Query(`
 	SELECT
-	content.content_id,
-	content.content_title,
-	content.content_cover,
-	content.content_year,
-	season.season_id,
-	season.season_name,
-	gender.gender_name,
+	c.content_id,
+	c.content_title,
+	c.content_cover,
+	c.content_year,
+	g.gender_name,
 	CASE
-			WHEN content.content_type = 1 THEN 'ANIME'
-			ELSE 'SERIE'
+	WHEN c.content_type = 1 THEN 'ANIME'
+	ELSE 'SERIE'
 	END AS type
-	FROM content_types content
-	INNER JOIN seasons AS season ON season.content_id = content.content_id 
-	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id`)
+	FROM content_type c
+	INNER JOIN gender AS g ON g.gender_id = c.gender_id`)
 
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al ejecutar la consulta",
+		})
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
+
 		var content models.ContentDTO
+
 		err := rows.Scan(
 			&content.Content_Id,
 			&content.Content_Title,
 			&content.Content_Cover,
 			&content.Content_Year,
-			&content.Season_Id,
-			&content.Season_Name,
 			&content.Content_Gender,
 			&content.Content_Type)
+
 		if err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al leer los registros",
+			})
 		}
+
 		dto = append(dto, content)
 	}
+
+	if len(dto) == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "No se encontraron registros",
+		})
+	}
+
 	return c.JSON(dto)
 
 }
@@ -60,170 +71,119 @@ func GET_Content_ID(c *fiber.Ctx) error {
 
 	var dto models.ContentDTO
 
-	pID := c.Params("id")
-
-	err := db.DB.QueryRow(`
-	SELECT
-		content.content_id,
-		content.content_title,
-		content.content_cover,
-		content.content_year,
-		season.season_id,
-		season.season_name,
-		gender.gender_name,
-		CASE
-			WHEN content.content_type = 1 THEN 'ANIME'
-			ELSE 'SERIE'
-		END AS type
-	FROM content_types content
-	INNER JOIN seasons AS season ON season.content_id = content.content_id
-	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-	WHERE content.content_id = ?
-`, pID).Scan(
-		&dto.Content_Id,
-		&dto.Content_Title,
-		&dto.Content_Cover,
-		&dto.Content_Year,
-		&dto.Season_Id,
-		&dto.Season_Name,
-		&dto.Content_Gender,
-		&dto.Content_Type,
-	)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"message": "Contenido no encontrado ❌",
-			})
-		}
-		return err
-	}
-
-	return c.JSON(dto)
-
-}
-
-func GetContenType(c *fiber.Ctx) error {
-
-	value := (c.Params("id"))
-
-	var dto []models.ContentDTO
+	id := c.Params("id")
 
 	rows, err := db.DB.Query(`
 	SELECT
-	MIN(content.content_id) AS content_id,
-	content.content_title,
-	MIN(content.content_cover) AS content_cover,
-	MIN(content.content_year) AS content_year,
-	season.season_id,
-	season.season_name,
-	MIN(gender.gender_name) AS gender_name,
+	c.content_id,
+	c.content_title,
+	c.content_cover,
+	c.content_year,
+	g.gender_name,
 	CASE
-		WHEN content.content_type = 1 THEN 'ANIME'
-		ELSE 'SERIE'
+	WHEN c.content_type = 1 THEN 'ANIME'
+	ELSE 'SERIE'
 	END AS type
-	FROM content_types content
-	INNER JOIN seasons AS season ON season.content_id = content.content_id
-	INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-	WHERE content_type = ?
-	GROUP BY content.content_title, content.content_type
-	`, value)
+	FROM content_type c
+	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+	WHERE c.content_id = ?
+`, id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":   "Error al consultar la base de datos",
-			"details": err.Error(),
+			"error": "Error al ejecutar la consulta",
 		})
 	}
+
 	defer rows.Close()
 
+	found := false
+
 	for rows.Next() {
-		var content models.ContentDTO
 		err := rows.Scan(
-			&content.Content_Id,
-			&content.Content_Title,
-			&content.Content_Cover,
-			&content.Content_Year,
-			&content.Season_Id,
-			&content.Season_Name,
-			&content.Content_Gender,
-			&content.Content_Type,
+			&dto.Content_Id,
+			&dto.Content_Title,
+			&dto.Content_Cover,
+			&dto.Content_Year,
+			&dto.Content_Gender,
+			&dto.Content_Type,
 		)
 
 		if err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al leer los registros",
+			})
 		}
-		dto = append(dto, content)
+
+		found = true
 	}
 
-	if len(dto) == 0 {
+	if !found {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "No se encontró contenido para el tipo especificado",
+			"error": "No se encontraron registros",
 		})
 	}
 
 	return c.JSON(dto)
+
 }
 
 func GET_Find_Content(c *fiber.Ctx) error {
 
 	value := helpers.QuitarGuiones(c.Params("value"))
 
-	search := "%" + strings.ToUpper(value) + "%	"
+	search := "%" + strings.ToUpper(value) + "%"
+
+	id := c.Params("id")
 
 	var dto []models.ContentDTO
 
 	rows, err := db.DB.Query(`
-		SELECT
-			content.content_id,
-			content.content_title,
-			content.content_cover,
-			content.content_year,
-			season.season_id,
-			season.season_name,
-			gender.gender_name,
-			CASE
-				WHEN content.content_type = 1 THEN 'ANIME'
-				ELSE 'SERIE'
-			END AS type
-		FROM content_types content
-		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-		INNER JOIN genders AS gender ON gender.gender_id = content.gender_id
-		WHERE UPPER(content.content_title) LIKE ?
-		AND content.content_type = ?
-		GROUP BY content.content_title, gender.gender_name, content.content_type
-
-	`, search)
+	SELECT
+	c.content_id,
+	c.content_title,
+	c.content_cover,
+	c.content_year,
+	g.gender_name,
+	CASE
+	WHEN c.content_type = 1 THEN 'ANIME'
+	ELSE 'SERIE'
+	END AS type
+	FROM content_type c
+	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+	WHERE c.content_title LIKE ? AND c.content_type = ?
+	`, search, id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":   "Error al buscar contenido",
-			"details": err.Error(),
+			"error": "Error al ejecutar la consulta",
 		})
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var content models.ContentDTO
+
 		err := rows.Scan(
 			&content.Content_Id,
 			&content.Content_Title,
 			&content.Content_Cover,
 			&content.Content_Year,
-			&content.Season_Id,
-			&content.Season_Name,
 			&content.Content_Gender,
 			&content.Content_Type,
 		)
 		if err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al leer los registros",
+			})
 		}
+
 		dto = append(dto, content)
 	}
 
 	if len(dto) == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "No se encontró contenido con ese título ❌",
+			"error": "No se encontraron registros",
 		})
 	}
 
@@ -232,175 +192,482 @@ func GET_Find_Content(c *fiber.Ctx) error {
 
 func GET_Content_Type(c *fiber.Ctx) error {
 
-	return c.Status(200).JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
+	id := (c.Params("id"))
 
+	var dto []models.ContentDTO
+
+	rows, err := db.DB.Query(`
+	SELECT
+	c.content_id,
+	c.content_title,
+	c.content_cover,
+	c.content_year,
+	g.gender_name,
+	CASE
+	WHEN c.content_type = 1 THEN 'ANIME'
+	ELSE 'SERIE'
+	END AS type
+	FROM content_type c
+	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+	WHERE c.content_type = ?
+	GROUP BY c.content_title, c.content_type
+	`, id)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al ejecutar la consulta",
+		})
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var content models.ContentDTO
+		err := rows.Scan(
+			&content.Content_Id,
+			&content.Content_Title,
+			&content.Content_Cover,
+			&content.Content_Year,
+			&content.Content_Gender,
+			&content.Content_Type,
+		)
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al leer los registros",
+			})
+		}
+
+		dto = append(dto, content)
+	}
+
+	if len(dto) == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "No se encontraron registros",
+		})
+	}
+
+	return c.JSON(dto)
 }
 
 func GET_Full_Content(c *fiber.Ctx) error {
 
-	return c.Status(200).JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
+	id := c.Params("id")
+
+	var content models.ContentDTO
+	seasonsMap := make(map[uint]*models.SeasonDTO)
+
+	rows, err := db.DB.Query(`
+		SELECT
+			c.content_id,
+			c.content_title,
+			c.content_cover,
+			c.content_year,
+			CASE
+				WHEN c.content_type = 1 THEN 'ANIME'
+				ELSE 'SERIE'
+			END AS type,
+			e.episode_id,
+			e.episode_number,
+			e.episode_name,
+			e.episode_url,
+			s.season_id,
+			s.season_name,
+			g.gender_name
+		FROM episode AS e
+		LEFT JOIN season AS s ON s.season_id = e.season_id
+		LEFT JOIN content_type AS c ON c.content_id = e.content_id
+		LEFT JOIN gender g ON c.gender_id = g.gender_id
+		WHERE c.content_id = ?
+		ORDER BY s.season_id, e.episode_number
+	`, id)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al ejecutar la consulta",
+		})
+	}
+	defer rows.Close()
+
+	found := false // 👈 controlamos si se encontraron registros
+
+	for rows.Next() {
+		var (
+			contentID     uint
+			contentTitle  string
+			contentCover  string
+			contentYear   int
+			contentType   string
+			episodeID     uint
+			episodeNumber int
+			episodeName   string
+			episodeURL    string
+			seasonID      uint
+			seasonName    string
+			genderName    string
+		)
+
+		err := rows.Scan(
+			&contentID,
+			&contentTitle,
+			&contentCover,
+			&contentYear,
+			&contentType,
+			&episodeID,
+			&episodeNumber,
+			&episodeName,
+			&episodeURL,
+			&seasonID,
+			&seasonName,
+			&genderName,
+		)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error leyendo registros",
+			})
+		}
+
+		if content.Content_Id == 0 {
+			content = models.ContentDTO{
+				Content_Id:     contentID,
+				Content_Title:  contentTitle,
+				Content_Cover:  contentCover,
+				Content_Year:   contentYear,
+				Content_Type:   contentType,
+				Content_Gender: genderName,
+			}
+		}
+
+		season, exists := seasonsMap[seasonID]
+		if !exists {
+			season = &models.SeasonDTO{
+				Season_Id:   seasonID,
+				Season_Name: seasonName,
+			}
+			seasonsMap[seasonID] = season
+		}
+
+		season.Episodes = append(season.Episodes, models.EpisodieDTO{
+			Episode_Id:     episodeID,
+			Episode_Number: episodeNumber,
+			Episode_Name:   episodeName,
+			Episode_Url:    episodeURL,
+		})
+
+		found = true // 👈 aquí marcamos que encontramos algo
+	}
+
+	// 👇 Despues de leer todo, verificamos si no encontró nada
+	if !found {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "No se encontraron registros",
+		})
+	}
+
+	// Armamos seasons
+	var seasons []models.SeasonDTO
+	for _, season := range seasonsMap {
+		seasons = append(seasons, *season)
+	}
+
+	contentData := models.ContentDataDTO{
+		Content: content,
+		Seasons: seasons,
+	}
+
+	return c.JSON(contentData)
 
 }
 
 func POST_Content(c *fiber.Ctx) error {
 
-	var content models.ContentData
+	var content models.Content
 
+	// 1. Parsear el JSON recibido
 	if err := c.BodyParser(&content); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Error al parsear JSON"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cuerpo de solicitud inválido",
+		})
 	}
 
-	tx, err := db.DB.Begin()
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Error iniciando transacción"})
+	// 2. Verificar si ya existe un contenido con el mismo título
+	var existingId int
+	err := db.DB.QueryRow(`
+		SELECT content_id 
+		FROM content_type 
+		WHERE UPPER(content_title) = ?
+	`,
+		strings.ToUpper(content.Content_Title),
+	).Scan(&existingId)
+
+	if err != nil && err != sql.ErrNoRows {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al verificar existencia del contenido",
+		})
 	}
 
-	res, err := tx.Exec(`
-	INSERT INTO content_types (content_title, content_type, content_cover, content_year, gender_id)
-	VALUES (?, ?, ?, ?, ?)`,
-		strings.ToUpper(content.Content.Content_Title),
-		content.Content.Content_Type,
-		content.Content.Content_Cover,
-		content.Content.Content_Year,
-		content.Content.Gender_Id,
+	if existingId != 0 {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"error": "Ya existe un contenido con ese título",
+		})
+	}
+
+	// 3. Insertar el nuevo contenido
+	_, err = db.DB.Exec(`
+		INSERT INTO content_type (content_title, content_type, content_cover, content_year, gender_id)
+		VALUES (?, ?, ?, ?, ?)
+	`,
+		strings.ToUpper(content.Content_Title),
+		content.Content_Type,
+		content.Content_Cover,
+		content.Content_Year,
+		content.Gender_Id,
 	)
-	if err != nil {
-		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{"error": "Error insertando contenido", "details": err.Error()})
-	}
-
-	contentID, err := res.LastInsertId()
 
 	if err != nil {
-		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{"error": "Error obteniendo content_id", "details": err.Error()})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al insertar el contenido",
+		})
 	}
 
-	res, err = tx.Exec(`
-		INSERT INTO seasons (season_name, content_id)
-		VALUES (?, ?)`,
-		strings.ToUpper(content.Seasons.Season_Name),
-		contentID,
-	)
-	if err != nil {
-		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{"error": "Error insertando temporada", "details": err.Error()})
-	}
+	// 4. Respuesta exitosa
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Contenido creado correctamente 🚀",
+	})
 
-	seasonID, err := res.LastInsertId()
-
-	if err != nil {
-		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{"error": "Error obteniendo season_id", "details": err.Error()})
-	}
-
-	for _, ep := range content.Episodie {
-		_, err := tx.Exec(`
-			INSERT INTO episodes (episode_number, episode_name, episode_url, season_id)
-			VALUES (?, ?, ?, ?)`,
-			ep.Episode_Number,
-			strings.ToUpper(ep.Episode_Name),
-			ep.Episode_Url,
-			seasonID,
-		)
-		if err != nil {
-			tx.Rollback()
-			return c.Status(500).JSON(fiber.Map{"error": "Error insertando episodio", "details": err.Error()})
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Error al confirmar transacción", "details": err.Error()})
-	}
-
-	return c.Status(201).JSON(fiber.Map{"message": "Contenido creado correctamente 🚀"})
 }
 
 func PUT_Content(c *fiber.Ctx) error {
 
-	return c.Status(200).JSON(fiber.Map{"message": "Contenido actualizado correctamente ✅"})
+	id := c.Params("id") // Id del contenido a actualizar
 
+	var content models.Content
+
+	// 1. Parsear el JSON
+	if err := c.BodyParser(&content); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cuerpo de solicitud inválido",
+		})
+	}
+
+	// 2. Verificar si ya existe otro contenido con el mismo título
+	var existingId int
+	err := db.DB.QueryRow(`
+		SELECT content_id 
+		FROM content_type 
+		WHERE UPPER(content_title) = ?
+		AND content_id != ?
+	`,
+		strings.ToUpper(content.Content_Title),
+		id,
+	).Scan(&existingId)
+
+	if err != nil && err != sql.ErrNoRows {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al verificar existencia del contenido",
+		})
+	}
+
+	if existingId != 0 {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"error": "Ya existe un contenido con ese título",
+		})
+	}
+
+	// 3. Actualizar el contenido
+	_, err = db.DB.Exec(`
+		UPDATE content_type SET
+			content_title = ?,
+			content_type = ?,
+			content_cover = ?,
+			content_year = ?,
+			gender_id = ?
+		WHERE content_id = ?
+	`,
+		strings.ToUpper(content.Content_Title),
+		content.Content_Type,
+		content.Content_Cover,
+		content.Content_Year,
+		content.Gender_Id,
+		id,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al actualizar el contenido",
+		})
+	}
+
+	// 4. Respuesta exitosa
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Contenido actualizado correctamente 🚀",
+	})
+}
+
+func POST_Content_Season(c *fiber.Ctx) error {
+
+	var data models.ContentSeason
+
+	// 1. Parsear el JSON recibido
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cuerpo de solicitud inválido",
+		})
+	}
+
+	// 2. Iniciar transacción
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al iniciar la transacción",
+		})
+	}
+
+	// 3. Insertar episodios
+	for _, episode := range data.Episodes {
+		_, err := tx.Exec(`
+			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
+			VALUES (?, ?, ?, ?, ?)
+		`,
+			episode.Episode_Number,
+			strings.ToUpper(episode.Episode_Name),
+			episode.Episode_Url,
+			data.Season_Id,
+			data.Content_Id,
+		)
+
+		if err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al insertar episodio",
+			})
+		}
+	}
+
+	// 4. Confirmar la transacción
+	if err := tx.Commit(); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al confirmar la transacción",
+		})
+	}
+
+	// 5. Respuesta exitosa
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Episodios creados correctamente 🚀",
+	})
+}
+
+func PUT_Content_Season(c *fiber.Ctx) error {
+
+	var data models.ContentSeason
+
+	// 1. Parsear el JSON recibido
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cuerpo de solicitud inválido",
+		})
+	}
+
+	// 2. Iniciar transacción
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al iniciar la transacción",
+		})
+	}
+
+	// 3. Insertar episodios
+	for _, episode := range data.Episodes {
+		_, err := tx.Exec(`
+			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
+			VALUES (?, ?, ?, ?, ?)
+		`,
+			episode.Episode_Number,
+			strings.ToUpper(episode.Episode_Name),
+			episode.Episode_Url,
+			data.Season_Id,
+			data.Content_Id,
+		)
+
+		if err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error al insertar episodio",
+			})
+		}
+	}
+
+	// 4. Confirmar transacción
+	if err := tx.Commit(); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al confirmar la transacción",
+		})
+	}
+
+	// 5. Respuesta exitosa
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Episodios creados correctamente 🚀",
+	})
 }
 
 func DELETE_Content(c *fiber.Ctx) error {
 
-	contentID := c.Params("id")
-
-	if contentID == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "Falta content_id"})
-	}
+	id := c.Params("id")
 
 	tx, err := db.DB.Begin()
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Error iniciando transacción"})
-	}
-
-	_, err = tx.Exec(`
-		DELETE FROM episodes
-		WHERE EXISTS (
-			SELECT 1 FROM seasons 
-			WHERE seasons.season_id = episodes.season_id 
-			AND seasons.content_id = ?
-		)
-	`, contentID)
-	if err != nil {
-		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{
-			"error":   "Error borrando episodios",
-			"details": err.Error(),
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al iniciar la transacción",
 		})
 	}
 
 	_, err = tx.Exec(`
-		DELETE FROM seasons
+		DELETE FROM episode
 		WHERE content_id = ?
-	`, contentID)
+	`, id)
+
 	if err != nil {
 		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{
-			"error":   "Error borrando temporadas",
-			"details": err.Error(),
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al eliminar episodios asociados",
 		})
 	}
 
-	res, err := tx.Exec(`
-		DELETE FROM content_types
+	result, err := tx.Exec(`
+		DELETE FROM content_type
 		WHERE content_id = ?
-	`, contentID)
+	`, id)
+
 	if err != nil {
 		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{
-			"error":   "Error borrando contenido",
-			"details": err.Error(),
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al eliminar el contenido",
 		})
 	}
 
-	rowsAffected, err := res.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		tx.Rollback()
-		return c.Status(500).JSON(fiber.Map{
-			"error":   "Error al obtener filas afectadas",
-			"details": err.Error(),
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al confirmar eliminación",
 		})
 	}
 
 	if rowsAffected == 0 {
 		tx.Rollback()
-		return c.Status(404).JSON(fiber.Map{
-			"error":      "Contenido no encontrado ❌",
-			"content_id": contentID,
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "No se encontró el contenido para eliminar",
 		})
 	}
 
 	if err := tx.Commit(); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error":   "Error al confirmar transacción",
-			"details": err.Error(),
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al confirmar la transacción",
 		})
 	}
 
-	return c.Status(200).JSON(fiber.Map{
-		"message": "Contenido eliminado correctamente 🗑️",
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Contenido y episodios eliminados correctamente 🚀",
 	})
 
 }

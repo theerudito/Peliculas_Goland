@@ -117,7 +117,7 @@ func POST_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("INSERT INTO season (season_title) VALUES (?)", season.Season_Name)
+	_, err := db.DB.Exec("INSERT INTO season (season_name) VALUES (?)", season.Season_Name)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -136,6 +136,7 @@ func PUT_Season(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	var season models.Season
+
 	if err := c.BodyParser(&season); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cuerpo de solicitud inválido",
@@ -145,6 +146,7 @@ func PUT_Season(c *fiber.Ctx) error {
 	row := db.DB.QueryRow("SELECT season_id FROM season WHERE season_id = ?", id)
 
 	var existingId int
+
 	if err := row.Scan(&existingId); err != nil {
 		if err == sql.ErrNoRows {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -176,7 +178,9 @@ func DELETE_Season(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	row := db.DB.QueryRow("SELECT season_id FROM season WHERE season_id = ?", id)
+
 	var existingId int
+
 	if err := row.Scan(&existingId); err != nil {
 		if err == sql.ErrNoRows {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -189,6 +193,7 @@ func DELETE_Season(c *fiber.Ctx) error {
 	}
 
 	_, err := db.DB.Exec("DELETE FROM season WHERE season_id = ?", id)
+
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "No se pudo eliminar el registro",
