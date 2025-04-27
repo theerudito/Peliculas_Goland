@@ -1,3 +1,19 @@
+-- USER
+CREATE TABLE
+  IF NOT EXISTS login (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
+  );
+
+INSERT INTO
+  Login (username, password)
+VALUES
+  (
+    'THE BOSS',
+    'Bcf34Lq3YDgyFzmOgQGx6A1laMs5aaf1nzF+UzGTZpEu/A4='
+  );
+
 -- GENEROS
 CREATE TABLE
   IF NOT EXISTS gender (

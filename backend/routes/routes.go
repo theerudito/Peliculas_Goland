@@ -58,6 +58,6 @@ func SetupRoutes(app *fiber.App) {
 	v1.Get("/episode/:id", handlers.GET_Episode_ID)
 
 	// LOGIN
-	v1.Post("/login", handlers.GET_Episode)
+	v1.Post("/login", handlers.POST_Login)
 
 }

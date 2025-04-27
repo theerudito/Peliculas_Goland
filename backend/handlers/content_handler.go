@@ -383,14 +383,12 @@ func POST_Content(c *fiber.Ctx) error {
 
 	var content models.Content
 
-	// 1. Parsear el JSON recibido
 	if err := c.BodyParser(&content); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cuerpo de solicitud inválido",
 		})
 	}
 
-	// 2. Verificar si ya existe un contenido con el mismo título
 	var existingId int
 	err := db.DB.QueryRow(`
 		SELECT content_id 
@@ -412,7 +410,6 @@ func POST_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	// 3. Insertar el nuevo contenido
 	_, err = db.DB.Exec(`
 		INSERT INTO content_type (content_title, content_type, content_cover, content_year, gender_id)
 		VALUES (?, ?, ?, ?, ?)
@@ -430,7 +427,6 @@ func POST_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	// 4. Respuesta exitosa
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Contenido creado correctamente 🚀",
 	})
@@ -439,18 +435,16 @@ func POST_Content(c *fiber.Ctx) error {
 
 func PUT_Content(c *fiber.Ctx) error {
 
-	id := c.Params("id") // Id del contenido a actualizar
+	id := c.Params("id")
 
 	var content models.Content
 
-	// 1. Parsear el JSON
 	if err := c.BodyParser(&content); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cuerpo de solicitud inválido",
 		})
 	}
 
-	// 2. Verificar si ya existe otro contenido con el mismo título
 	var existingId int
 	err := db.DB.QueryRow(`
 		SELECT content_id 
@@ -474,7 +468,6 @@ func PUT_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	// 3. Actualizar el contenido
 	_, err = db.DB.Exec(`
 		UPDATE content_type SET
 			content_title = ?,
@@ -498,7 +491,6 @@ func PUT_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	// 4. Respuesta exitosa
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Contenido actualizado correctamente 🚀",
 	})
@@ -508,14 +500,12 @@ func POST_Content_Season(c *fiber.Ctx) error {
 
 	var data models.ContentSeason
 
-	// 1. Parsear el JSON recibido
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cuerpo de solicitud inválido",
 		})
 	}
 
-	// 2. Iniciar transacción
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -523,7 +513,6 @@ func POST_Content_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	// 3. Insertar episodios
 	for _, episode := range data.Episodes {
 		_, err := tx.Exec(`
 			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
@@ -544,14 +533,12 @@ func POST_Content_Season(c *fiber.Ctx) error {
 		}
 	}
 
-	// 4. Confirmar la transacción
 	if err := tx.Commit(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al confirmar la transacción",
 		})
 	}
 
-	// 5. Respuesta exitosa
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Episodios creados correctamente 🚀",
 	})
@@ -561,14 +548,12 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 
 	var data models.ContentSeason
 
-	// 1. Parsear el JSON recibido
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cuerpo de solicitud inválido",
 		})
 	}
 
-	// 2. Iniciar transacción
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -576,7 +561,18 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	// 3. Insertar episodios
+	_, err = tx.Exec(`
+		DELETE FROM episode
+		WHERE season_id = ? AND content_id = ?
+	`, data.Season_Id, data.Content_Id)
+
+	if err != nil {
+		tx.Rollback()
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error al eliminar episodios existentes",
+		})
+	}
+
 	for _, episode := range data.Episodes {
 		_, err := tx.Exec(`
 			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
@@ -592,21 +588,19 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 		if err != nil {
 			tx.Rollback()
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Error al insertar episodio",
+				"error": "Error al insertar nuevo episodio",
 			})
 		}
 	}
 
-	// 4. Confirmar transacción
 	if err := tx.Commit(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al confirmar la transacción",
 		})
 	}
 
-	// 5. Respuesta exitosa
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Episodios creados correctamente 🚀",
+		"message": "Episodios actualizados correctamente 🚀",
 	})
 }
 
