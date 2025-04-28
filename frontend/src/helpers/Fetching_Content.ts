@@ -6,7 +6,7 @@ const url = "http://127.0.0.1:1000/api/v1";
 
 export const GET_Find_Content = async (value: number) => {
   try {
-    return (await axios.get(`${url}/contents/find/${value}`)).data;
+    return (await axios.get(`${url}/content/find/${value}`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
@@ -15,7 +15,7 @@ export const GET_Find_Content = async (value: number) => {
 
 export const GET_Content_Type = async (value: number) => {
   try {
-    return (await axios.get(`${url}/contents/content-type/${value}`)).data;
+    return (await axios.get(`${url}/content/type_content/${value}`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
@@ -24,8 +24,7 @@ export const GET_Content_Type = async (value: number) => {
 
 export const GET_Content_Season = async (value: string) => {
   try {
-    return (await axios.get(`${url}/contents/season/${AddGuiones(value)}`))
-      .data;
+    return (await axios.get(`${url}/content/season/${AddGuiones(value)}`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;

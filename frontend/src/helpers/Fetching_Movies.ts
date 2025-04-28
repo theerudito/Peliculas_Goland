@@ -5,7 +5,7 @@ const url = "http://127.0.0.1:1000/api/v1";
 
 export const GET_Movies = async () => {
   try {
-    return (await axios.get(`${url}/movies`)).data;
+    return (await axios.get(`${url}/movie`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
