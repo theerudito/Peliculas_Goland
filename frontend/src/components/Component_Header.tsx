@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Modal_Auth } from "../modals/Modal_Auth";
-import { Modal_Content } from "../modals/Modal_Content";
 import { Modal_Movie } from "../modals/Modal_Movie";
 import { useContent } from "../store/useContent";
 import { useModal } from "../store/useModal";
 import "../styles/Styles_Header.css";
 import { Link } from "react-router-dom";
+import { Modal_Episodes } from "../modals/Modal_Episodes";
 
 export const Component_Header = () => {
   const [userIn] = useState(false);
@@ -53,7 +53,7 @@ export const Component_Header = () => {
           )}
         </div>
       </div>
-      <Modal_Content />
+      <Modal_Episodes />
       <Modal_Movie />
       <Modal_Auth />
     </>

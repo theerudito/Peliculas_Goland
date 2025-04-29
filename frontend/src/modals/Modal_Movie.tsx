@@ -56,55 +56,67 @@ export const Modal_Movie = () => {
       {_modal_Movie && (
         <div className="container_modal">
           <div className="container-modal-body">
+
             <div className="container-modal-header">
-              <p>ADD MOVIE</p>
+              <p>AÑADIR PELICULAS</p>
               <i className="bi bi-x-lg" onClick={() => handleCloseModal()}></i>
             </div>
+
             <div className="container-modal-input">
+
               <input
                 className="input"
                 type="text"
-                placeholder="TITLE"
+                placeholder="TITULO"
                 name="movie_title"
                 value={form_movie.movie_title}
                 onChange={handleChangeInput}
               />
-              <input
-                className="input"
-                type="number"
-                name="movie_year"
-                placeholder="YEAR"
-                value={form_movie.movie_year}
-                onChange={handleChangeInput}
-              />
+
+              <select>
+                <option>2025</option>
+              </select>
+
               <input
                 className="input"
                 type="text"
-                placeholder="COVER"
+                placeholder="URL IMAGEN"
                 name="movie_cover"
                 value={form_movie.movie_cover}
                 onChange={handleChangeInput}
               />
+
               <input
                 className="input"
                 type="text"
-                placeholder="URL"
+                placeholder="URL PELICULA"
                 value={form_movie.movie_url}
                 name="movie_url"
                 onChange={handleChangeInput}
               />
-              <select
-                name="gender_id"
-                onChange={handleChangeSelect}
-                value={form_gender.gender_id}
-              >
-                {gender_list.map((item) => (
-                  <option key={item.gender_id} value={item.gender_id}>
-                    {item.gender_name}
-                  </option>
-                ))}
-              </select>
-              <button onClick={() => sendData()}>ADD</button>
+
+              <div className="contenedor_select">
+
+                <select
+                  name="gender_id"
+                  onChange={handleChangeSelect}
+                  value={form_gender.gender_id}
+                >
+                  {gender_list.map((item) => (
+                    <option key={item.gender_id} value={item.gender_id}>
+                      {item.gender_name}
+                    </option>
+                  ))}
+                </select>
+
+                <div>
+                  <i className="bi bi-plus-circle"></i>
+                </div>
+
+              </div>
+
+              <button onClick={() => sendData()}><i className="bi bi-floppy"></i> GUARDAR</button>
+
             </div>
           </div>
         </div>
