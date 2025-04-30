@@ -6,7 +6,7 @@ import { Movies } from "../models/Movies";
 
 export const Modal_Movie = () => {
   const { getMovies, reset } = useMovies((state) => state);
-  const { _modal_Movie, OpenModal_Movie } = useModal((state) => state);
+  const { _modal_movie, OpenModal_Movie, OpenModal_Gender } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, form_gender } = useData((state) => state);
 
@@ -53,7 +53,7 @@ export const Modal_Movie = () => {
 
   return (
     <div>
-      {_modal_Movie && (
+      {_modal_movie && (
         <div className="container_modal">
           <div className="container-modal-body">
 
@@ -109,7 +109,7 @@ export const Modal_Movie = () => {
                   ))}
                 </select>
 
-                <div>
+                <div onClick={() => OpenModal_Gender(true)}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 

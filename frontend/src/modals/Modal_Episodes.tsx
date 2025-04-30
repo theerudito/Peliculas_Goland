@@ -15,7 +15,7 @@ export const Modal_Episodes = () => {
   } = useData((state) => state);
   const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } =
     useContent((state) => state);
-  const { OpenModal_Content, _modal_Content } = useModal((state) => state);
+  const { _modal_episodes, OpenModal_Episodes, OpenModal_Season, OpenModal_Content } = useModal((state) => state);
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
@@ -53,7 +53,7 @@ export const Modal_Episodes = () => {
 
   return (
     <div>
-      {_modal_Content && (
+      {_modal_episodes && (
         <div className="container_modal">
 
           <div className="container-modal-body">
@@ -64,7 +64,7 @@ export const Modal_Episodes = () => {
 
               <i
                 className="bi bi-x-lg"
-                onClick={() => OpenModal_Content(false)}
+                onClick={() => OpenModal_Episodes(false)}
               ></i>
 
             </div>
@@ -77,7 +77,7 @@ export const Modal_Episodes = () => {
                   <option>LOS 100</option>
                 </select>
 
-                <div>
+                <div onClick={() => OpenModal_Content(true)}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 
@@ -89,7 +89,7 @@ export const Modal_Episodes = () => {
                   <option>TEMPORADA 1</option>
                 </select>
 
-                <div>
+                <div onClick={() => OpenModal_Season(true)}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 
