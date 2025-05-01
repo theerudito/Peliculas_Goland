@@ -1,21 +1,16 @@
-import { _season } from "../models/Seasons";
+import { useEffect } from "react";
 import { useContent } from "../store/useContent";
 import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
 import "../styles/Styles_Modal.css";
 
 export const Modal_Episodes = () => {
-  const {
-    gender_list,
-    form_gender,
-    season_list,
-    form_season,
-    type_list,
-    form_type,
-  } = useData((state) => state);
-  const { listEpisode, form_Episode, form_content, addEpisode, removeEpisode } =
+  const { list_content, getContent } =
     useContent((state) => state);
   const { _modal_episodes, OpenModal_Episodes, OpenModal_Season, OpenModal_Content } = useModal((state) => state);
+  const { season_list, getSeason } = useData((state) => state);
+
+
 
   const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const { name, value } = e.target;
@@ -51,6 +46,12 @@ export const Modal_Episodes = () => {
 
   const SendData = () => { };
 
+
+  useEffect(() => {
+    getSeason()
+    getContent()
+  }, [getSeason, getContent])
+
   return (
     <div>
       {_modal_episodes && (
@@ -74,7 +75,12 @@ export const Modal_Episodes = () => {
               <div className="contenedor_select">
 
                 <select>
-                  <option>LOS 100</option>
+                  {
+                    list_content.map((item) => (
+                      <option key={item.content_id}>{item.content_title}</option>
+                    ))
+                  }
+
                 </select>
 
                 <div onClick={() => OpenModal_Content(true)}>
@@ -86,7 +92,12 @@ export const Modal_Episodes = () => {
               <div className="contenedor_select">
 
                 <select>
-                  <option>TEMPORADA 1</option>
+                  {
+                    season_list.map((item) => (
+                      <option key={item.season_id}>{item.season_name}</option>
+                    ))
+                  }
+
                 </select>
 
                 <div onClick={() => OpenModal_Season(true)}>

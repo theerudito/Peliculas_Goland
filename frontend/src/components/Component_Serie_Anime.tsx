@@ -6,7 +6,7 @@ import { Component_Content } from "./Component_Content";
 import { _contentDTO, ContentDTO } from "../models/Contents";
 
 export const Component_Serie_Anime = () => {
-  const { list_content, getContent } = useContent((state) => state);
+  const { list_content_type, getContent_Type } = useContent((state) => state);
 
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -20,8 +20,8 @@ export const Component_Serie_Anime = () => {
   };
 
   useEffect(() => {
-    getContent();
-  }, [getContent]);
+    getContent_Type();
+  }, [getContent_Type]);
 
   return (
     <div className="app-container">
@@ -30,7 +30,7 @@ export const Component_Serie_Anime = () => {
           <div className="container-body">
             {isPlaying === true ? (
               <>
-                {list_content.map((item) => (
+                {list_content_type.map((item) => (
                   <div key={item.content_id} className="container-card">
                     <img
                       src={

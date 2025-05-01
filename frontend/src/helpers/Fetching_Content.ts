@@ -3,9 +3,9 @@ import { ContentDTO } from "../models/Contents";
 import { AddGuiones } from "./Añadir_Guiones";
 import { url_base } from "./Initial";
 
-export const GET_Find_Content = async (value: number) => {
+export const GET_Content = async () => {
   try {
-    return (await axios.get(`${url_base}/content/find/${value}`)).data;
+    return (await axios.get(`${url_base}/content`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;
@@ -15,6 +15,15 @@ export const GET_Find_Content = async (value: number) => {
 export const GET_Content_Type = async (value: number) => {
   try {
     return (await axios.get(`${url_base}/content/type_content/${value}`)).data;
+  } catch (error) {
+    console.error("GET failed:", error);
+    throw error;
+  }
+};
+
+export const GET_Find_Content = async (value: number) => {
+  try {
+    return (await axios.get(`${url_base}/content/find/${value}`)).data;
   } catch (error) {
     console.error("GET failed:", error);
     throw error;

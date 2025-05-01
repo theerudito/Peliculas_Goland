@@ -1,7 +1,18 @@
+import { useEffect } from "react";
 import { useModal } from "../store/useModal";
+import { useData } from "../store/useData";
 
 export const Modal_Content = () => {
   const { _modal_content, OpenModal_Content, OpenModal_Gender } = useModal((state) => state);
+  const { gender_list, getGender, year_list, getYear, type_list, getType } = useData((state) => state);
+
+
+  useEffect(() => {
+    getGender()
+    getYear()
+    getType()
+  }, [getGender, getYear, getType])
+
   return (
     <div>
       {
@@ -22,8 +33,11 @@ export const Modal_Content = () => {
               />
 
               <select>
-                <option value={1}>ANIME</option>
-                <option value={2}>SERIE</option>
+                {
+                  type_list.map((item) => (
+                    <option value={item.content_type_id}>{item.content_type_title}</option>
+                  ))
+                }
               </select>
 
               <input
@@ -32,16 +46,22 @@ export const Modal_Content = () => {
                 placeholder="URL IMAGEN"
               />
 
-              <input
-                className="input"
-                type="number"
-                placeholder="AÑO"
-              />
+              <select>
+                {
+                  year_list.map((item) => (
+                    <option key={item.id_year}>{item.year}</option>
+                  ))
+                }
+              </select>
 
               <div className="contenedor_select">
 
                 <select>
-                  <option>DRAMA</option>
+                  {
+                    gender_list.map((item) => (
+                      <option key={item.gender_id}>{item.gender_name}</option>
+                    ))
+                  }
                 </select>
 
                 <div onClick={() => OpenModal_Gender(true)}>

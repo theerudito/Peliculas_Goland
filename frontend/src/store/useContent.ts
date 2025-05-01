@@ -7,6 +7,7 @@ import {
   ContentDTO,
 } from "../models/Contents";
 import {
+  GET_Content,
   GET_Content_Epidodes,
   GET_Content_Season,
   GET_Content_Type,
@@ -16,18 +17,22 @@ import { Content_Type_List } from "../helpers/Data";
 type Data = {
   form_content: Content;
   form_Episode: Episodes;
+  list_content_type: ContentDTO[];
   list_content: ContentDTO[];
   data_content: ContentDataDTO[];
   listEpisode: Episodes[];
   listSeason: ContentDTO[];
   type_content: number;
+
   changeType: (type: number) => void;
+  getContent_Type: () => void;
   getContent: () => void;
   getSeason: (value: string) => void;
   getEpisode: (value: string, id: number) => void;
   addEpisode: (episode: Episodes) => void;
   removeEpisode: (id: number) => void;
   postContent: () => void;
+
   reset: () => void;
 };
 
@@ -35,6 +40,7 @@ export const useContent = create<Data>((set, get) => ({
   form_content: _content,
   form_Episode: _episodes,
   list_content: [],
+  list_content_type: [],
   listEpisode: [],
   listSeason: [],
   data_content: [],
@@ -43,11 +49,18 @@ export const useContent = create<Data>((set, get) => ({
 
   changeType: (type) => {
     set({ type_content: type });
-    get().getContent();
+    get().getContent_Type();
+  },
+
+  getContent_Type: async () => {
+    const response = await GET_Content_Type(get().type_content);
+    set({
+      list_content_type: response === null ? Content_Type_List : response,
+    });
   },
 
   getContent: async () => {
-    const response = await GET_Content_Type(get().type_content);
+    const response = await GET_Content();
     set({
       list_content: response === null ? Content_Type_List : response,
     });

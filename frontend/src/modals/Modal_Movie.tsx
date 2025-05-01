@@ -3,12 +3,14 @@ import { useModal } from "../store/useModal";
 import { useMovies } from "../store/useMovies";
 import { useData } from "../store/useData";
 import { Movies } from "../models/Movies";
+import { useEffect } from "react";
 
 export const Modal_Movie = () => {
   const { getMovies, reset } = useMovies((state) => state);
   const { _modal_movie, OpenModal_Movie, OpenModal_Gender } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
-  const { gender_list, form_gender } = useData((state) => state);
+  const { gender_list, getGender, getYear, year_list } = useData((state) => state);
+
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,12 +25,12 @@ export const Modal_Movie = () => {
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    useData.setState((state) => ({
-      form_gender: {
-        ...state.form_gender,
-        [name as keyof typeof state.form_gender]: value,
-      },
-    }));
+    // useData.setState((state) => ({
+    //   form_gender: {
+    //     ...state.form_gender,
+    //     [name as keyof typeof state.form_gender]: value,
+    //   },
+    // }));
   };
 
   function handleCloseModal() {
@@ -44,12 +46,17 @@ export const Modal_Movie = () => {
       movie_year: Number(movie_year),
       movie_url,
       movie_cover,
-      gender_id: Number(form_gender.gender_id),
+      gender_id: 1 //Number(form_gender.gender_id),
     };
     postMovies(obj);
     handleCloseModal();
     getMovies();
   }
+
+  useEffect(() => {
+    getGender()
+    getYear()
+  }, [getGender, getYear])
 
   return (
     <div>
@@ -74,7 +81,12 @@ export const Modal_Movie = () => {
               />
 
               <select>
-                <option>2025</option>
+                {
+                  year_list.map((item) => (
+                    <option key={item.id_year}>{item.year}</option>
+                  ))
+                }
+
               </select>
 
               <input
@@ -100,7 +112,6 @@ export const Modal_Movie = () => {
                 <select
                   name="gender_id"
                   onChange={handleChangeSelect}
-                  value={form_gender.gender_id}
                 >
                   {gender_list.map((item) => (
                     <option key={item.gender_id} value={item.gender_id}>
