@@ -25,7 +25,7 @@ export const Component_Movie = () => {
           {playing === false ? (
             <div className="container-body">
               {list_movies.map((item) => (
-                <div key={item.movie_movie_id} className="container-card">
+                <div key={item.movie_id} className="container-card">
                   <img
                     src={item.movie_cover === "" ? cover : item.movie_cover}
                     alt={cover}

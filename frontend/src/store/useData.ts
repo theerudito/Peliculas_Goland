@@ -3,38 +3,87 @@ import { _gender, Genders } from "../models/Gender";
 import { _season, Season } from "../models/Seasons";
 import { Content_Type } from "../models/Content_Type";
 import { Gender_List, Season_List } from "../helpers/Data";
-import { GET_Gender, GET_Season } from "../helpers/Fetching_Data";
+import {
+  GET_Gender,
+  GET_Season,
+  POST_Gender,
+  POST_Season,
+} from "../helpers/Fetching_Data";
 import { YearDTO } from "../models/Years";
 
 type Data = {
+  // LISTADO
   gender_list: Genders[];
   season_list: Season[];
   year_list: YearDTO[];
   type_list: Content_Type[];
 
+  // FUNCIONES
   getSeason: () => void;
+  postSeason: (obj: Season) => void;
+  postGender: (obj: Genders) => void;
   getGender: () => void;
   getYear: () => void;
   getType: () => void;
   reset: () => void;
+
+  // FORMULARIOS
+  form_gender: Genders;
+  form_season: Season;
 };
 
-export const useData = create<Data>()((set) => ({
+export const useData = create<Data>()((set, get) => ({
+  // LISTADO
   gender_list: Gender_List,
   season_list: Season_List,
-  form_gender: _gender,
-  form_season: _season,
   year_list: [],
   type_list: [],
 
+  // FUNCIONES
   getGender: async () => {
     const response = await GET_Gender();
-    set({ gender_list: response });
+    if (response.data && Array.isArray(response.data)) {
+      set({
+        gender_list: response.data.length === 0 ? [] : response.data,
+      });
+    } else {
+      set({ gender_list: [] });
+    }
+  },
+
+  postGender: async (obj: Genders) => {
+    const result = await POST_Gender(obj);
+
+    if (result.success === true) {
+      get().reset();
+      get().getGender();
+      return result.data;
+    }
+
+    return result.error;
   },
 
   getSeason: async () => {
     const response = await GET_Season();
-    set({ season_list: response });
+    if (response.data && Array.isArray(response.data)) {
+      set({
+        season_list: response.data.length === 0 ? [] : response.data,
+      });
+    } else {
+      set({ season_list: [] });
+    }
+  },
+
+  postSeason: async (obj: Season) => {
+    const result = await POST_Season(obj);
+
+    if (result.success === true) {
+      get().reset();
+      get().getSeason();
+      return result.data;
+    }
+
+    return result.error;
   },
 
   getYear: () => {
@@ -60,5 +109,9 @@ export const useData = create<Data>()((set) => ({
     set({ type_list: type });
   },
 
-  reset: () => set({ gender_list: [], season_list: [] }),
+  reset: () => set({ form_gender: _gender, form_season: _season }),
+
+  // FORMULARIOS
+  form_gender: _gender,
+  form_season: _season,
 }));

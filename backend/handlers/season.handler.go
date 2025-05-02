@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	db "github.com/theerudito/peliculas/database"
@@ -101,7 +102,7 @@ func POST_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT season_id FROM season WHERE season_name = ?", season.Season_Name)
+	row := db.DB.QueryRow("SELECT season_id FROM season WHERE season_name = ?", strings.ToUpper(season.Season_Name))
 
 	var existingId int
 
@@ -117,7 +118,7 @@ func POST_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("INSERT INTO season (season_name) VALUES (?)", season.Season_Name)
+	_, err := db.DB.Exec("INSERT INTO season (season_name) VALUES (?)", strings.ToUpper(season.Season_Name))
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -159,7 +160,7 @@ func PUT_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("UPDATE season SET season_name = ? WHERE season_id = ?", season.Season_Name, id)
+	_, err := db.DB.Exec("UPDATE season SET season_name = ? WHERE season_id = ?", strings.ToUpper(season.Season_Name), id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

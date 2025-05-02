@@ -35,7 +35,7 @@ export const Modal_Content = () => {
               <select>
                 {
                   type_list.map((item) => (
-                    <option value={item.content_type_id}>{item.content_type_title}</option>
+                    <option key={item.content_type_id} value={item.content_type_id}>{item.content_type_title}</option>
                   ))
                 }
               </select>
@@ -49,7 +49,7 @@ export const Modal_Content = () => {
               <select>
                 {
                   year_list.map((item) => (
-                    <option key={item.id_year}>{item.year}</option>
+                    <option key={item.id_year} value={item.year}>{item.year}</option>
                   ))
                 }
               </select>

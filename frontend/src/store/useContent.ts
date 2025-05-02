@@ -1,25 +1,17 @@
 import { create } from "zustand";
 import { _episodes, Episodes } from "../models/Episodes";
-import {
-  _content,
-  Content,
-  ContentDataDTO,
-  ContentDTO,
-} from "../models/Contents";
+import { _content, Content, ContentDTO } from "../models/Contents";
 import {
   GET_Content,
-  GET_Content_Epidodes,
   GET_Content_Season,
   GET_Content_Type,
 } from "../helpers/Fetching_Content";
-import { Content_Type_List } from "../helpers/Data";
 
 type Data = {
   form_content: Content;
   form_Episode: Episodes;
   list_content_type: ContentDTO[];
   list_content: ContentDTO[];
-  data_content: ContentDataDTO[];
   listEpisode: Episodes[];
   listSeason: ContentDTO[];
   type_content: number;
@@ -53,17 +45,27 @@ export const useContent = create<Data>((set, get) => ({
   },
 
   getContent_Type: async () => {
-    const response = await GET_Content_Type(get().type_content);
-    set({
-      list_content_type: response === null ? Content_Type_List : response,
-    });
+    const result = await GET_Content_Type(get().type_content);
+
+    if (result.data && Array.isArray(result.data)) {
+      set({
+        list_content_type: result.data.length === 0 ? [] : result.data,
+      });
+    } else {
+      set({ list_content_type: [] });
+    }
   },
 
   getContent: async () => {
-    const response = await GET_Content();
-    set({
-      list_content: response === null ? Content_Type_List : response,
-    });
+    const result = await GET_Content();
+
+    if (result.data && Array.isArray(result.data)) {
+      set({
+        list_content: result.data.length === 0 ? [] : result.data,
+      });
+    } else {
+      set({ list_content: [] });
+    }
   },
 
   getSeason: async (value: string) => {
@@ -73,18 +75,7 @@ export const useContent = create<Data>((set, get) => ({
     });
   },
 
-  getEpisode: async (value: string, id: number) => {
-    try {
-      const response = await GET_Content_Epidodes(value, id);
-
-      set({
-        data_content: Array.isArray(response) ? response : [],
-      });
-    } catch (error) {
-      console.error("Error al obtener episodios:", error);
-      set({ data_content: [] });
-    }
-  },
+  getEpisode: async () => {},
 
   postContent: () => {},
 

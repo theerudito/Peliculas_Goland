@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { Modal_Movie } from "../modals/Modal_Movie";
 import { useContent } from "../store/useContent";
 import { useModal } from "../store/useModal";
@@ -9,10 +9,12 @@ import { Modal_Content } from "../modals/Modal_Content";
 import { Modal_Login } from "../modals/Modal_Login";
 import { Modal_Season } from "../modals/Modal_Season";
 import { Modal_Gender } from "../modals/Modal_Gender";
+import { useAuth } from "../store/useAuth";
 
 export const Component_Header = () => {
-  const [userIn] = useState(false);
+
   const { changeType } = useContent((state) => state);
+  const { isLogin } = useAuth((state) => state);
   const { OpenModal_Login, OpenModal_Content, OpenModal_Movie, OpenModal_Episodes } = useModal(
     (state) => state
   );
@@ -50,7 +52,7 @@ export const Component_Header = () => {
             <i className="bi bi-film"></i>
           </div>
 
-          {userIn === true ? (
+          {isLogin === false ? (
             <div onClick={() => OpenModal_Login(true)}>
               <i className="bi bi-person-fill"></i>
             </div>
@@ -59,8 +61,11 @@ export const Component_Header = () => {
               <i className="bi bi-person-fill-check"></i>
             </div>
           )}
+
+
+
         </div>
-      </div>
+      </div >
 
       <Modal_Episodes />
       <Modal_Content />

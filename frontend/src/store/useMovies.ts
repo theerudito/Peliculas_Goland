@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { _movies, Movies, MoviesDTO } from "../models/Movies";
 import { GET_Movies, POST_Movie } from "../helpers/Fetching_Movies";
-import { Movies_List } from "../helpers/Data";
 
 type Data = {
   form_movie: Movies;
@@ -11,17 +10,32 @@ type Data = {
   reset: () => void;
 };
 
-export const useMovies = create<Data>((set) => ({
+export const useMovies = create<Data>((set, get) => ({
   form_movie: _movies,
   list_movies: [],
 
   getMovies: async () => {
-    const response = await GET_Movies();
-    set({ list_movies: response === null ? Movies_List : response });
+    const result = await GET_Movies();
+
+    if (result.data && Array.isArray(result.data)) {
+      set({
+        list_movies: result.data.length === 0 ? [] : result.data,
+      });
+    } else {
+      set({ list_movies: [] });
+    }
   },
 
   postMovies: async (obj: Movies) => {
-    await POST_Movie(obj);
+    const result = await POST_Movie(obj);
+
+    if (result.success === true) {
+      get().reset();
+      get().getMovies();
+      return result.data;
+    }
+
+    return result.error;
   },
 
   reset: () => set({ form_movie: _movies }),

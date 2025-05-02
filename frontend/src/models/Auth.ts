@@ -1,9 +1,9 @@
 export interface Users {
-  user: string;
+  username: string;
   password: string;
 }
 
 export const _users: Users = {
-  user: "",
+  username: "",
   password: "",
 };

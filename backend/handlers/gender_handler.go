@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	db "github.com/theerudito/peliculas/database"
@@ -84,7 +85,7 @@ func POST_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT gender_id FROM gender WHERE gender_name = ?", gender.Gender_Name)
+	row := db.DB.QueryRow("SELECT gender_id FROM gender WHERE gender_name = ?", strings.ToUpper(gender.Gender_Name))
 
 	var existingId int
 	if err := row.Scan(&existingId); err != nil && err != sql.ErrNoRows {
@@ -98,7 +99,7 @@ func POST_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("INSERT INTO gender (gender_name) VALUES (?)", gender.Gender_Name)
+	_, err := db.DB.Exec("INSERT INTO gender (gender_name) VALUES (?)", strings.ToUpper(gender.Gender_Name))
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -138,7 +139,7 @@ func PUT_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("UPDATE gender SET gender_name = ? WHERE gender_id = ?", gender.Gender_Name, id)
+	_, err := db.DB.Exec("UPDATE gender SET gender_name = ? WHERE gender_id = ?", strings.ToUpper(gender.Gender_Name), id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

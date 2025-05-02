@@ -1,29 +1,56 @@
-import axios from "axios";
 import { url_base } from "./Initial";
-
-export const GET_Content = async () => {
-  try {
-    return (await axios.get(`${url_base}/content`)).data;
-  } catch (error) {
-    console.error("GET failed:", error);
-    throw error;
-  }
-};
+import { Genders } from "../models/Gender";
+import { Season } from "../models/Seasons";
+import axios from "axios";
 
 export const GET_Gender = async () => {
   try {
-    return (await axios.get(`${url_base}/gender`)).data;
-  } catch (error) {
-    console.error("GET failed:", error);
-    throw error;
+    const response = await axios.get<Genders[]>(`${url_base}/gender`);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
+  }
+};
+
+export const POST_Gender = async (obj: Genders) => {
+  try {
+    const response = await axios.post(`${url_base}/gender`, obj);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
   }
 };
 
 export const GET_Season = async () => {
   try {
-    return (await axios.get(`${url_base}/season`)).data;
-  } catch (error) {
-    console.error("GET failed:", error);
-    throw error;
+    const response = await axios.get<Season[]>(`${url_base}/season`);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
+  }
+};
+
+export const POST_Season = async (obj: Season) => {
+  try {
+    const response = await axios.post(`${url_base}/season`, obj);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
   }
 };

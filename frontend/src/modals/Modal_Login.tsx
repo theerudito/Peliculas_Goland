@@ -1,7 +1,25 @@
+import { useAuth } from "../store/useAuth";
 import { useModal } from "../store/useModal";
 
 export const Modal_Login = () => {
   const { _modal_login, OpenModal_Login } = useModal((state) => state);
+  const { form_auth, postLogin } = useAuth((state) => state);
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    useAuth.setState((state) => ({
+      form_auth: {
+        ...state.form_auth,
+        [name]: value,
+      },
+    }));
+  };
+
+  const SendData = async () => {
+    await postLogin(form_auth)
+  }
+
   return (
     <div>
       {
@@ -13,9 +31,19 @@ export const Modal_Login = () => {
               <i className="bi bi-x-lg" onClick={() => OpenModal_Login(false)}></i>
             </div>
             <div className="container-modal-input">
-              <input placeholder='USARIO' />
-              <input placeholder='CONTRASEÑA' />
-              <button ><i className="bi bi-floppy"></i> INICIAR SECCION</button>
+              <input
+                type="text"
+                name="username"
+                value={form_auth.username}
+                onChange={handleChangeInput}
+                placeholder='USARIO' />
+              <input
+                type="password"
+                name="password"
+                value={form_auth.password}
+                onChange={handleChangeInput}
+                placeholder='CONTRASEÑA' />
+              <button onClick={() => SendData()}><i className="bi bi-floppy"></i> INICIAR SECCION</button>
             </div>
           </div>
         </div>

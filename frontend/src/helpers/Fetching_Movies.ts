@@ -1,21 +1,29 @@
 import axios from "axios";
-import { Movies } from "../models/Movies";
+import { Movies, MoviesDTO } from "../models/Movies";
 import { url_base } from "./Initial";
 
 export const GET_Movies = async () => {
   try {
-    return (await axios.get(`${url_base}/movie`)).data;
-  } catch (error) {
-    console.error("GET failed:", error);
-    throw error;
+    const response = await axios.get<MoviesDTO>(`${url_base}/movie`);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
   }
 };
 
 export const POST_Movie = async (obj: Movies) => {
   try {
-    return (await axios.post(`${url_base}/movies`, obj)).data;
-  } catch (error) {
-    console.error("POST failed:", error);
-    throw error;
+    const response = await axios.post(`${url_base}/movie`, obj);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
   }
 };
