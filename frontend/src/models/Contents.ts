@@ -6,7 +6,6 @@ export interface Content {
   content_type_id: number;
   content_cover: string;
   content_year: number;
-  content_url: string;
   gender_id: number;
 }
 
@@ -26,7 +25,6 @@ export const _content: Content = {
   content_type_id: 0,
   content_cover: "",
   content_year: 0,
-  content_url: "",
   gender_id: 0,
 };
 
@@ -39,4 +37,3 @@ export const _contentDTO: ContentDTO = {
   content_gender: "",
   seasons: [] as SeasonDTO[],
 };
-

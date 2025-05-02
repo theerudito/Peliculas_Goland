@@ -92,7 +92,7 @@ export const useData = create<Data>()((set, get) => ({
 
     for (let year = currentYear; year >= 1980; year--) {
       years.push({
-        id_year: year,
+        year_id: year,
         year: year,
       });
     }

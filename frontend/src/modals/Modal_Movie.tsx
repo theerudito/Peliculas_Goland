@@ -6,11 +6,9 @@ import { Movies } from "../models/Movies";
 import { useEffect } from "react";
 
 export const Modal_Movie = () => {
-  const { getMovies, reset } = useMovies((state) => state);
   const { _modal_movie, OpenModal_Movie, OpenModal_Gender } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, getGender, getYear, year_list } = useData((state) => state);
-
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,6 +21,7 @@ export const Modal_Movie = () => {
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
     const { name, value, selectedIndex, options } = e.target;
 
     useMovies.setState((state) => {
@@ -52,7 +51,7 @@ export const Modal_Movie = () => {
     const currentYear = new Date().getFullYear();
 
     const obj: Movies = {
-      movie_movie_id: 0,
+      movie_id: 0,
       movie_title,
       movie_year: movie_year === 0 ? currentYear : movie_year,
       movie_url,
@@ -61,20 +60,12 @@ export const Modal_Movie = () => {
     };
 
     postMovies(obj);
-    getMovies();
-    handleCloseModal();
   }
 
   useEffect(() => {
     getGender()
     getYear()
   }, [getGender, getYear])
-
-
-  function handleCloseModal() {
-    reset();
-    OpenModal_Movie(false);
-  }
 
   return (
     <div>
@@ -84,7 +75,7 @@ export const Modal_Movie = () => {
 
             <div className="container-modal-header">
               <p>AÑADIR PELICULAS</p>
-              <i className="bi bi-x-lg" onClick={() => handleCloseModal()}></i>
+              <i className="bi bi-x-lg" onClick={() => OpenModal_Movie(false)}></i>
             </div>
 
             <div className="container-modal-input">
@@ -99,9 +90,10 @@ export const Modal_Movie = () => {
               />
 
               <select name="movie_year" onChange={handleChangeSelect}>
+                <option value="0">SELECIONA UN AÑO</option>
                 {
                   year_list.map((item) => (
-                    <option key={item.id_year} value={item.year}>{item.year}</option>
+                    <option key={item.year_id} value={item.year}>{item.year}</option>
                   ))
                 }
 
@@ -128,6 +120,7 @@ export const Modal_Movie = () => {
               <div className="contenedor_select">
 
                 <select name="gender_id" onChange={handleChangeSelect}>
+                  <option value="0">SELECIONA UN GENERO</option>
                   {gender_list.map((item) => (
                     <option key={item.gender_id} value={item.gender_id}>
                       {item.gender_name}

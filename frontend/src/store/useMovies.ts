@@ -3,15 +3,19 @@ import { _movies, Movies, MoviesDTO } from "../models/Movies";
 import { GET_Movies, POST_Movie } from "../helpers/Fetching_Movies";
 
 type Data = {
-  form_movie: Movies;
+  // LISTADO
   list_movies: MoviesDTO[];
+
+  // FUNCIONES
   getMovies: () => void;
   postMovies: (obj: Movies) => void;
   reset: () => void;
+
+  // FORMULARIO
+  form_movie: Movies;
 };
 
 export const useMovies = create<Data>((set, get) => ({
-  form_movie: _movies,
   list_movies: [],
 
   getMovies: async () => {
@@ -39,4 +43,6 @@ export const useMovies = create<Data>((set, get) => ({
   },
 
   reset: () => set({ form_movie: _movies }),
+
+  form_movie: _movies,
 }));

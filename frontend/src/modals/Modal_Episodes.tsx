@@ -5,46 +5,45 @@ import { useModal } from "../store/useModal";
 import "../styles/Styles_Modal.css";
 
 export const Modal_Episodes = () => {
-  const { list_content, getContent } =
+  const { list_content, form_content_episode, getContent } =
     useContent((state) => state);
   const { _modal_episodes, OpenModal_Episodes, OpenModal_Season, OpenModal_Content } = useModal((state) => state);
   const { season_list, getSeason } = useData((state) => state);
 
 
 
-  const handleChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const { name, value } = e.target;
-    // setEpisode((prevData) => ({
-    //   ...prevData,
-    //   [name]: value,
-    // }));
-    // setSeason((prevData) => ({
-    //   ...prevData,
-    //   [name]: value,
-    // }));
-    // setContent((prevData) => ({
-    //   ...prevData,
-    //   [name]: value,
-    // }));
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    useContent.setState((state) => ({
+      form_content_episode: {
+        ...state.form_content_episode,
+        [name as keyof typeof state.form_content_episode]: value,
+      },
+    }));
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // const { name, value } = e.target;
-    // setGender((prevData) => ({
-    //   ...prevData,
-    //   [name]: parseInt(value, 10),
-    // }));
-    // setSeason((prevData) => ({
-    //   ...prevData,
-    //   [name]: parseInt(value, 10),
-    // }));
-    // setContent((prevData) => ({
-    //   ...prevData,
-    //   [name]: parseInt(value, 10),
-    // }));
-  };
 
-  const SendData = () => { };
+    const { name, value } = e.target;
+
+    useContent.setState((state) => {
+      let selectedValue: string | number = value;
+
+      if (name === "content_id" || name === "season_id") {
+        selectedValue = Number(value);
+      }
+
+      return {
+        form_content_episode: {
+          ...state.form_content_episode,
+          [name as keyof typeof state.form_content_episode]: selectedValue,
+        },
+      };
+    });
+  };
+  const sendData = () => {
+    console.log(form_content_episode)
+  };
 
 
   useEffect(() => {
@@ -74,10 +73,11 @@ export const Modal_Episodes = () => {
 
               <div className="contenedor_select">
 
-                <select>
+                <select name="content_id" onChange={handleChangeSelect}>
+                  <option value="0">SELECIONA UN TITULO</option>
                   {
                     list_content.map((item) => (
-                      <option key={item.content_id}>{item.content_title}</option>
+                      <option key={item.content_id} value={item.content_id}>{item.content_title}</option>
                     ))
                   }
 
@@ -91,10 +91,11 @@ export const Modal_Episodes = () => {
 
               <div className="contenedor_select">
 
-                <select>
+                <select name="season_id" onChange={handleChangeSelect}>
+                  <option value="0">SELECIONA UNA TEMPORADA</option>
                   {
                     season_list.map((item) => (
-                      <option key={item.season_id}>{item.season_name}</option>
+                      <option key={item.season_id} value={item.season_id}>{item.season_name}</option>
                     ))
                   }
 
@@ -108,7 +109,11 @@ export const Modal_Episodes = () => {
 
               <div className="contenedor_select">
 
-                <input placeholder="TUTULO CAPITULO" />
+                <input
+                  name="episode_name"
+                  value={form_content_episode.episode_name}
+                  onChange={handleChangeInput}
+                  placeholder="TUTULO CAPITULO" />
 
                 <div>
                   <i className="bi bi-plus-circle"></i>
@@ -118,7 +123,11 @@ export const Modal_Episodes = () => {
 
               <div className="contenedor_select">
 
-                <input placeholder="URL CAPITULO" />
+                <input
+                  name="episode_url"
+                  value={form_content_episode.episode_url}
+                  onChange={handleChangeInput}
+                  placeholder="URL CAPITULO" />
 
                 <div style={{ background: "red" }}>
                   <i className="bi bi-trash"></i>
@@ -145,7 +154,7 @@ export const Modal_Episodes = () => {
 
               </div>
 
-              <button><i className="bi bi-floppy"></i> GUARDAR</button>
+              <button onClick={() => sendData()}><i className="bi bi-floppy"></i> GUARDAR</button>
 
             </div>
           </div>

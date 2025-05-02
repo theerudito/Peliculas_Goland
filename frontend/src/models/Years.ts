@@ -1,4 +1,4 @@
 export interface YearDTO {
-  id_year: number;
+  year_id: number;
   year: number;
 }

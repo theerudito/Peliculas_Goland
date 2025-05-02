@@ -3,39 +3,33 @@ import { _episodes, Episodes } from "../models/Episodes";
 import { _content, Content, ContentDTO } from "../models/Contents";
 import {
   GET_Content,
-  GET_Content_Season,
   GET_Content_Type,
+  POST_Content,
 } from "../helpers/Fetching_Content";
 
 type Data = {
-  form_content: Content;
-  form_Episode: Episodes;
-  list_content_type: ContentDTO[];
+  // LISTADO
   list_content: ContentDTO[];
-  listEpisode: Episodes[];
-  listSeason: ContentDTO[];
+  list_content_type: ContentDTO[];
+
+  // DATOS
   type_content: number;
 
+  // FUNCIONES
   changeType: (type: number) => void;
   getContent_Type: () => void;
   getContent: () => void;
-  getSeason: (value: string) => void;
-  getEpisode: (value: string, id: number) => void;
-  addEpisode: (episode: Episodes) => void;
-  removeEpisode: (id: number) => void;
-  postContent: () => void;
-
+  postContent: (obj: Content) => void;
   reset: () => void;
+
+  // FORMULARIOS
+  form_content: Content;
+  form_content_episode: Episodes;
 };
 
 export const useContent = create<Data>((set, get) => ({
-  form_content: _content,
-  form_Episode: _episodes,
   list_content: [],
   list_content_type: [],
-  listEpisode: [],
-  listSeason: [],
-  data_content: [],
 
   type_content: 1,
 
@@ -68,34 +62,28 @@ export const useContent = create<Data>((set, get) => ({
     }
   },
 
-  getSeason: async (value: string) => {
-    const response = await GET_Content_Season(value);
-    set({
-      listSeason: Array.isArray(response) ? response : [],
-    });
-  },
+  postContent: async (obj: Content) => {
+    const result = await POST_Content(obj);
 
-  getEpisode: async () => {},
+    console.log(result);
 
-  postContent: () => {},
+    if (result.success === true) {
+      get().reset();
+      get().getContent();
+      get().getContent_Type();
+      return result.data;
+    }
 
-  addEpisode: (episode: Episodes) => {
-    set((state) => ({
-      listEpisode: [...state.listEpisode, episode],
-    }));
-  },
-
-  removeEpisode: (id: number) => {
-    set((state) => ({
-      listEpisode: state.listEpisode.filter((ep) => ep.episode_id !== id),
-    }));
+    return result.error;
   },
 
   reset: () => {
     set({
       form_content: _content,
-      form_Episode: _episodes,
-      listEpisode: [],
+      form_content_episode: _episodes,
     });
   },
+
+  form_content: _content,
+  form_content_episode: _episodes,
 }));
