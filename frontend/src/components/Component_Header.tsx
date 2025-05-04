@@ -15,9 +15,7 @@ export const Component_Header = () => {
 
   const { changeType } = useContent((state) => state);
   const { isLogin } = useAuth((state) => state);
-  const { OpenModal_Login, OpenModal_Content, OpenModal_Movie, OpenModal_Episodes } = useModal(
-    (state) => state
-  );
+  const { OpenModal } = useModal((state) => state);
 
   return (
     <>
@@ -40,20 +38,20 @@ export const Component_Header = () => {
         </div>
         <div className="container-header-buttons">
 
-          <div onClick={() => OpenModal_Movie(true)}>
+          <div onClick={() => OpenModal("movie")}>
             <i className="bi bi-camera-reels"></i>
           </div>
 
-          <div onClick={() => OpenModal_Content(true)}>
+          <div onClick={() => OpenModal("content")}>
             <i className="bi bi-film"></i>
           </div>
 
-          <div onClick={() => OpenModal_Episodes(true)}>
+          <div onClick={() => OpenModal("episodes")}>
             <i className="bi bi-film"></i>
           </div>
 
           {isLogin === false ? (
-            <div onClick={() => OpenModal_Login(true)}>
+            <div onClick={() => OpenModal("login")}>
               <i className="bi bi-person-fill"></i>
             </div>
           ) : (

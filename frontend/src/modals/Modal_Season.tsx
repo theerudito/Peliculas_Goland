@@ -2,7 +2,7 @@ import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
 
 export const Modal_Season = () => {
-  const { _modal_season, OpenModal_Season } = useModal((state) => state);
+  const { currentModal, CloseModal } = useModal((state) => state);
   const { form_season, postSeason } = useData((state) => state);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,12 +29,12 @@ export const Modal_Season = () => {
   return (
     <div>
       {
-        _modal_season && (
+        currentModal === "season" && (
           <div className="container_modal">
             <div className="container-modal-body">
               <div className="container-modal-header">
                 <p>AÑADIR TEMPORADAS</p>
-                <i className="bi bi-x-lg" onClick={() => OpenModal_Season(false)}></i>
+                <i className="bi bi-x-lg" onClick={() => CloseModal()}></i>
               </div>
               <div className="container-modal-input">
                 <input

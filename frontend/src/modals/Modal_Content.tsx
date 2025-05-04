@@ -5,7 +5,7 @@ import { useContent } from "../store/useContent";
 import { Content } from "../models/Contents";
 
 export const Modal_Content = () => {
-  const { _modal_content, OpenModal_Content, OpenModal_Gender } = useModal((state) => state);
+  const { currentModal, OpenModal, CloseModal } = useModal((state) => state);
   const { gender_list, getGender, year_list, getYear, type_list, getType } = useData((state) => state);
   const { form_content, postContent } = useContent((state) => state);
 
@@ -75,13 +75,13 @@ export const Modal_Content = () => {
   return (
     <div>
       {
-        _modal_content &&
+        currentModal === "content" &&
 
         <div className="container_modal">
           <div className="container-modal-body">
             <div className="container-modal-header">
               <p>AÑADIR SERIE O ANIME</p>
-              <i className="bi bi-x-lg" onClick={() => OpenModal_Content(false)}></i>
+              <i className="bi bi-x-lg" onClick={() => CloseModal()}></i>
             </div>
             <div className="container-modal-input">
 
@@ -132,7 +132,7 @@ export const Modal_Content = () => {
                   }
                 </select>
 
-                <div onClick={() => OpenModal_Gender(true)}>
+                <div onClick={() => OpenModal("gender")}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 

@@ -2,7 +2,7 @@ import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
 
 export const Modal_Gender = () => {
-  const { _modal_gender, OpenModal_Gender } = useModal((state) => state);
+  const { currentModal, CloseModal } = useModal((state) => state);
   const { form_gender, postGender } = useData((state) => state);
 
 
@@ -30,12 +30,12 @@ export const Modal_Gender = () => {
   return (
     <div>
       {
-        _modal_gender && (
+        currentModal === "gender" && (
           <div className="container_modal">
             <div className="container-modal-body">
               <div className="container-modal-header">
                 <p>AÑADIR GENERO</p>
-                <i className="bi bi-x-lg" onClick={() => OpenModal_Gender(false)}></i>
+                <i className="bi bi-x-lg" onClick={() => CloseModal()}></i>
               </div>
               <div className="container-modal-input">
                 <input

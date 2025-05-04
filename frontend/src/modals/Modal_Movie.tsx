@@ -6,7 +6,7 @@ import { Movies } from "../models/Movies";
 import { useEffect } from "react";
 
 export const Modal_Movie = () => {
-  const { _modal_movie, OpenModal_Movie, OpenModal_Gender } = useModal((state) => state);
+  const { currentModal, CloseModal, OpenModal } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, getGender, getYear, year_list } = useData((state) => state);
 
@@ -74,77 +74,79 @@ export const Modal_Movie = () => {
 
   return (
     <div>
-      {_modal_movie && (
-        <div className="container_modal">
-          <div className="container-modal-body">
+      {
 
-            <div className="container-modal-header">
-              <p>AÑADIR PELICULAS</p>
-              <i className="bi bi-x-lg" onClick={() => OpenModal_Movie(false)}></i>
-            </div>
+        currentModal === "movie" && (
+          <div className="container_modal">
+            <div className="container-modal-body">
 
-            <div className="container-modal-input">
-
-              <input
-                className="input"
-                type="text"
-                placeholder="TITULO"
-                name="movie_title"
-                value={form_movie.movie_title}
-                onChange={handleChangeInput}
-              />
-
-              <select name="movie_year" onChange={handleChangeSelect}>
-                <option value="0">SELECIONA UN AÑO</option>
-                {
-                  year_list.map((item) => (
-                    <option key={item.year_id} value={item.year}>{item.year}</option>
-                  ))
-                }
-
-              </select>
-
-              <input
-                className="input"
-                type="text"
-                placeholder="URL IMAGEN"
-                name="movie_cover"
-                value={form_movie.movie_cover}
-                onChange={handleChangeInput}
-              />
-
-              <input
-                className="input"
-                type="text"
-                placeholder="URL PELICULA"
-                value={form_movie.movie_url}
-                name="movie_url"
-                onChange={handleChangeInput}
-              />
-
-              <div className="contenedor_select">
-
-                <select name="gender_id" onChange={handleChangeSelect}>
-                  <option value="0">SELECIONA UN GENERO</option>
-                  {gender_list.map((item) => (
-                    <option key={item.gender_id} value={item.gender_id}>
-                      {item.gender_name}
-                    </option>
-                  ))}
-                </select>
-
-                <div onClick={() => OpenModal_Gender(true)}>
-                  <i className="bi bi-plus-circle"></i>
-                </div>
-
+              <div className="container-modal-header">
+                <p>AÑADIR PELICULAS</p>
+                <i className="bi bi-x-lg" onClick={() => CloseModal()}></i>
               </div>
 
-              <button onClick={() => sendData()}><i className="bi bi-floppy"></i> GUARDAR</button>
+              <div className="container-modal-input">
 
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="TITULO"
+                  name="movie_title"
+                  value={form_movie.movie_title}
+                  onChange={handleChangeInput}
+                />
+
+                <select name="movie_year" onChange={handleChangeSelect}>
+                  <option value="0">SELECIONA UN AÑO</option>
+                  {
+                    year_list.map((item) => (
+                      <option key={item.year_id} value={item.year}>{item.year}</option>
+                    ))
+                  }
+
+                </select>
+
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="URL IMAGEN"
+                  name="movie_cover"
+                  value={form_movie.movie_cover}
+                  onChange={handleChangeInput}
+                />
+
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="URL PELICULA"
+                  value={form_movie.movie_url}
+                  name="movie_url"
+                  onChange={handleChangeInput}
+                />
+
+                <div className="contenedor_select">
+
+                  <select name="gender_id" onChange={handleChangeSelect}>
+                    <option value="0">SELECIONA UN GENERO</option>
+                    {gender_list.map((item) => (
+                      <option key={item.gender_id} value={item.gender_id}>
+                        {item.gender_name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div onClick={() => OpenModal("gender")}>
+                    <i className="bi bi-plus-circle"></i>
+                  </div>
+
+                </div>
+
+                <button onClick={() => sendData()}><i className="bi bi-floppy"></i> GUARDAR</button>
+
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

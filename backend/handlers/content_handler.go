@@ -513,12 +513,15 @@ func POST_Content_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	for _, episode := range data.Episodes {
+	for i, episode := range data.Episodes {
+
+		episodeNumber := i + 1
+
 		_, err := tx.Exec(`
 			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
 			VALUES (?, ?, ?, ?, ?)
 		`,
-			episode.Episode_Number,
+			episodeNumber,
 			strings.ToUpper(episode.Episode_Name),
 			episode.Episode_Url,
 			data.Season_Id,

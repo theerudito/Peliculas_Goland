@@ -6,9 +6,9 @@ import "../styles/Styles_Modal.css";
 import { ContentDTO_EpisodeDTO } from "../models/Contents";
 
 export const Modal_Episodes = () => {
-  const { form_episode, form_content_episodes, list_content, getContent, list_episodes, add_episodes, remove_episodes, obtener_episode, postEpisodes } = useContent((state) => state);
-  const { _modal_episodes, OpenModal_Episodes, OpenModal_Season, OpenModal_Content } = useModal((state) => state);
+  const { currentModal, OpenModal, CloseModal } = useModal((state) => state);
   const { season_list, getSeason } = useData((state) => state);
+  const { form_episode, form_content_episodes, list_content, getContent, list_episodes, add_episodes, remove_episodes, obtener_episode, postEpisodes } = useContent((state) => state);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,7 +65,7 @@ export const Modal_Episodes = () => {
 
   return (
     <div>
-      {_modal_episodes && (
+      {currentModal === "episodes" && (
         <div className="container_modal">
 
           <div className="container-modal-body">
@@ -76,7 +76,7 @@ export const Modal_Episodes = () => {
 
               <i
                 className="bi bi-x-lg"
-                onClick={() => OpenModal_Episodes(false)}
+                onClick={() => CloseModal()}
               ></i>
 
             </div>
@@ -95,7 +95,7 @@ export const Modal_Episodes = () => {
 
                 </select>
 
-                <div onClick={() => OpenModal_Content(true)}>
+                <div onClick={() => OpenModal("content")}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 
@@ -113,7 +113,7 @@ export const Modal_Episodes = () => {
 
                 </select>
 
-                <div onClick={() => OpenModal_Season(true)}>
+                <div onClick={() => OpenModal("season")}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 
