@@ -3,21 +3,19 @@ import { useContent } from "../store/useContent";
 import { useData } from "../store/useData";
 import { useModal } from "../store/useModal";
 import "../styles/Styles_Modal.css";
+import { ContentDTO_EpisodeDTO } from "../models/Contents";
 
 export const Modal_Episodes = () => {
-  const { list_content, form_content_episode, getContent } =
-    useContent((state) => state);
+  const { form_episode, form_content_episodes, list_content, getContent, list_episodes, add_episodes, remove_episodes, obtener_episode, postEpisodes } = useContent((state) => state);
   const { _modal_episodes, OpenModal_Episodes, OpenModal_Season, OpenModal_Content } = useModal((state) => state);
   const { season_list, getSeason } = useData((state) => state);
-
-
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     useContent.setState((state) => ({
-      form_content_episode: {
-        ...state.form_content_episode,
-        [name as keyof typeof state.form_content_episode]: value,
+      form_episode: {
+        ...state.form_episode,
+        [name as keyof typeof state.form_episode]: value,
       },
     }));
   };
@@ -27,22 +25,36 @@ export const Modal_Episodes = () => {
     const { name, value } = e.target;
 
     useContent.setState((state) => {
-      let selectedValue: string | number = value;
-
-      if (name === "content_id" || name === "season_id") {
-        selectedValue = Number(value);
-      }
+      const selectedValue = (name === "content_id" || name === "season_id")
+        ? Number(value)
+        : value;
 
       return {
-        form_content_episode: {
-          ...state.form_content_episode,
-          [name as keyof typeof state.form_content_episode]: selectedValue,
+        form_content_episodes: {
+          ...state.form_content_episodes,
+          [name]: selectedValue,
         },
       };
     });
   };
+
+
   const sendData = () => {
-    console.log(form_content_episode)
+
+    const { content_id, season_id } = form_content_episodes;
+
+    if (!content_id || content_id === 0 || !season_id || season_id === 0) {
+      alert("Debes seleccionar un título y una temporada.");
+      return;
+    }
+
+    const obj: ContentDTO_EpisodeDTO = {
+      content_id,
+      season_id,
+      episodes: list_episodes
+    };
+
+    postEpisodes(obj);
   };
 
 
@@ -111,11 +123,11 @@ export const Modal_Episodes = () => {
 
                 <input
                   name="episode_name"
-                  value={form_content_episode.episode_name}
+                  value={form_episode.episode_name}
                   onChange={handleChangeInput}
                   placeholder="TUTULO CAPITULO" />
 
-                <div>
+                <div onClick={() => add_episodes(form_episode)}>
                   <i className="bi bi-plus-circle"></i>
                 </div>
 
@@ -125,11 +137,11 @@ export const Modal_Episodes = () => {
 
                 <input
                   name="episode_url"
-                  value={form_content_episode.episode_url}
+                  value={form_episode.episode_url}
                   onChange={handleChangeInput}
                   placeholder="URL CAPITULO" />
 
-                <div style={{ background: "red" }}>
+                <div style={{ background: "red" }} onClick={() => remove_episodes()}>
                   <i className="bi bi-trash"></i>
                 </div>
 
@@ -147,7 +159,14 @@ export const Modal_Episodes = () => {
                   </thead>
 
                   <tbody>
-
+                    {
+                      list_episodes.map((item) => (
+                        <tr key={item.episode_id} onClick={() => obtener_episode(item.episode_id)}>
+                          <td>{item.episode_id}</td>
+                          <td>{item.episode_name}</td>
+                        </tr>
+                      ))
+                    }
                   </tbody>
 
                 </table>

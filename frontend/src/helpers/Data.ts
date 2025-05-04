@@ -9,7 +9,7 @@ import { Genders } from "../models/Gender";
 
 export const Movies_List: MoviesDTO[] = [
   {
-    movie_movie_id: 1,
+    movie_id: 1,
     movie_title: "MAN OF HONOR",
     movie_year: 2000,
     movie_cover: image_1,
@@ -17,7 +17,7 @@ export const Movies_List: MoviesDTO[] = [
     movie_gender: "CRIMEN",
   },
   {
-    movie_movie_id: 2,
+    movie_id: 2,
     movie_title: "CADENA PERPECTUA",
     movie_year: 1994,
     movie_cover: image_2,
@@ -25,7 +25,7 @@ export const Movies_List: MoviesDTO[] = [
     movie_gender: "DRAMA",
   },
   {
-    movie_movie_id: 3,
+    movie_id: 3,
     movie_title: "THE GLADIATOR",
     movie_year: 1994,
     movie_cover: image_3,
@@ -54,8 +54,8 @@ export const Season_List: Season[] = [
 ];
 
 export const Content_Type_List: Content_Type[] = [
-  { content_type_id: 1, content_type_title: "ANIME" },
-  { content_type_id: 2, content_type_title: "SERIE" },
+  { content_type: 1, content_type_title: "ANIME" },
+  { content_type: 2, content_type_title: "SERIE" },
 ];
 
 export const Episode_List: Episodes[] = [

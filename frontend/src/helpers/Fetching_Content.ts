@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Content, ContentDTO } from "../models/Contents";
+import { Content, ContentDTO, ContentDTO_EpisodeDTO } from "../models/Contents";
 import { url_base } from "./Initial";
 
 export const GET_Content = async () => {
@@ -48,6 +48,19 @@ export const GET_Find_Content = async (value: number) => {
 export const POST_Content = async (obj: Content) => {
   try {
     const response = await axios.post(`${url_base}/content`, obj);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
+  }
+};
+
+export const POST_Content_Episodes = async (obj: ContentDTO_EpisodeDTO) => {
+  try {
+    const response = await axios.post(`${url_base}/content/season`, obj);
     return { success: true, data: response.data };
   } catch (error: unknown) {
     let message = "Error desconocido";

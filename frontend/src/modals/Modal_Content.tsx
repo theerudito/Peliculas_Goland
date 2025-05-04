@@ -29,7 +29,7 @@ export const Modal_Content = () => {
         selectedValue = Number(options[selectedIndex].text);
       }
 
-      if (name === "gender_id" || name === "content_type_id") {
+      if (name === "gender_id" || name === "content_type") {
         selectedValue = Number(value);
       }
 
@@ -51,7 +51,12 @@ export const Modal_Content = () => {
 
   const sendData = () => {
 
-    const { content_title, content_cover, content_type_id, content_year, gender_id } = form_content
+    if (form_content.content_type === 0 || form_content.gender_id === 0) {
+      alert("Debes seleccionar un genero y tipo de contenido");
+      return;
+    }
+
+    const { content_title, content_cover, content_type, content_year, gender_id } = form_content
 
     const currentYear = new Date().getFullYear();
 
@@ -59,7 +64,7 @@ export const Modal_Content = () => {
       content_id: 0,
       content_title,
       content_cover,
-      content_type_id: content_type_id === 0 ? 1 : content_type_id,
+      content_type: Number(content_type),
       content_year: content_year === 0 ? currentYear : content_year,
       gender_id: gender_id === 0 ? 1 : gender_id
     };
@@ -89,11 +94,11 @@ export const Modal_Content = () => {
                 placeholder="TITULO"
               />
 
-              <select name="content_type_id" onChange={handleChangeSelect}>
+              <select name="content_type" onChange={handleChangeSelect}>
                 <option value="0">SELECIONA UN TIPO CONTENIDO</option>
                 {
                   type_list.map((item) => (
-                    <option key={item.content_type_id} value={item.content_type_id}>{item.content_type_title}</option>
+                    <option key={item.content_type} value={item.content_type}>{item.content_type_title}</option>
                   ))
                 }
               </select>

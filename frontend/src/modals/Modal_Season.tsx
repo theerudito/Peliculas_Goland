@@ -17,6 +17,12 @@ export const Modal_Season = () => {
   };
 
   const sendData = async () => {
+
+    if (!form_season.season_name) {
+      alert("Debes añadir un titulo de temporada");
+      return;
+    }
+
     await postSeason(form_season)
   }
 

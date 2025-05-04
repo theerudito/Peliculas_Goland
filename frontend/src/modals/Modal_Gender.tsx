@@ -18,6 +18,12 @@ export const Modal_Gender = () => {
   };
 
   const sendData = async () => {
+
+    if (!form_gender.gender_name) {
+      alert("Debes añadir un titulo de genero");
+      return;
+    }
+
     await postGender(form_gender)
   }
 

@@ -102,8 +102,8 @@ export const useData = create<Data>()((set, get) => ({
 
   getType: () => {
     const type: Content_Type[] = [
-      { content_type_id: 1, content_type_title: "ANIME" },
-      { content_type_id: 2, content_type_title: "SERIE" },
+      { content_type: 1, content_type_title: "ANIME" },
+      { content_type: 2, content_type_title: "SERIE" },
     ];
 
     set({ type_list: type });

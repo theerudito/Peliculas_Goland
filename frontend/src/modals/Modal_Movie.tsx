@@ -38,13 +38,18 @@ export const Modal_Movie = () => {
       return {
         form_movie: {
           ...state.form_movie,
-          [name as keyof typeof state.form_movie]: selectedValue,
+          [name]: selectedValue,
         },
       };
     });
   };
 
   function sendData() {
+
+    if (!form_movie.gender_id) {
+      alert("Debes seleccionar el genero");
+      return;
+    }
 
     const { movie_title, movie_year, movie_url, movie_cover, gender_id } = form_movie;
 
@@ -53,7 +58,7 @@ export const Modal_Movie = () => {
     const obj: Movies = {
       movie_id: 0,
       movie_title,
-      movie_year: movie_year === 0 ? currentYear : movie_year,
+      movie_year: Number(movie_year) === 0 ? currentYear : Number(movie_year),
       movie_url,
       movie_cover,
       gender_id: gender_id === 0 ? 1 : gender_id

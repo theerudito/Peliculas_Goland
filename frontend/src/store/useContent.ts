@@ -1,18 +1,27 @@
 import { create } from "zustand";
-import { _episodes, Episodes } from "../models/Episodes";
-import { _content, Content, ContentDTO } from "../models/Contents";
+import { _episodes, EpisodeDTO } from "../models/Episodes";
+import {
+  _content,
+  _content_episodes,
+  Content,
+  ContentDTO,
+  ContentDTO_EpisodeDTO,
+} from "../models/Contents";
 import {
   GET_Content,
   GET_Content_Type,
   POST_Content,
+  POST_Content_Episodes,
 } from "../helpers/Fetching_Content";
 
 type Data = {
   // LISTADO
   list_content: ContentDTO[];
   list_content_type: ContentDTO[];
+  list_episodes: EpisodeDTO[];
 
   // DATOS
+  episode_id: number;
   type_content: number;
 
   // FUNCIONES
@@ -20,17 +29,24 @@ type Data = {
   getContent_Type: () => void;
   getContent: () => void;
   postContent: (obj: Content) => void;
+  postEpisodes: (obj: ContentDTO_EpisodeDTO) => void;
+  add_episodes: (obj: EpisodeDTO) => void;
+  remove_episodes: () => void;
+  obtener_episode: (episode_id: number) => void;
   reset: () => void;
 
   // FORMULARIOS
   form_content: Content;
-  form_content_episode: Episodes;
+  form_episode: EpisodeDTO;
+  form_content_episodes: ContentDTO_EpisodeDTO;
 };
 
 export const useContent = create<Data>((set, get) => ({
   list_content: [],
   list_content_type: [],
+  list_episodes: [],
 
+  episode_id: 0,
   type_content: 1,
 
   changeType: (type) => {
@@ -65,8 +81,6 @@ export const useContent = create<Data>((set, get) => ({
   postContent: async (obj: Content) => {
     const result = await POST_Content(obj);
 
-    console.log(result);
-
     if (result.success === true) {
       get().reset();
       get().getContent();
@@ -77,13 +91,69 @@ export const useContent = create<Data>((set, get) => ({
     return result.error;
   },
 
-  reset: () => {
+  postEpisodes: async (obj: ContentDTO_EpisodeDTO) => {
+    const result = await POST_Content_Episodes(obj);
+
+    console.log(result);
+
+    if (result.success === true) {
+      get().reset();
+      get().getContent();
+      get().getContent_Type();
+      return result.data;
+    }
+    return result.error;
+  },
+
+  add_episodes: (obj: EpisodeDTO) => {
+    const list = get().list_episodes;
+
+    let episode_id = obj.episode_id;
+
+    if (!episode_id || list.some((ep) => ep.episode_id === episode_id)) {
+      const maxId = list.reduce((max, ep) => Math.max(max, ep.episode_id), 0);
+      episode_id = maxId + 1;
+    }
+
+    const newEpisode: EpisodeDTO = {
+      ...obj,
+      episode_id,
+    };
+
+    set((state) => ({
+      list_episodes: [...state.list_episodes, newEpisode],
+    }));
+
+    get().reset();
+  },
+
+  remove_episodes: () => {
+    const { list_episodes, episode_id } = get();
+
+    if (list_episodes.length <= 0) {
+      set({ episode_id: 0 });
+      return;
+    }
+
+    const updatedList = list_episodes.filter(
+      (ep) => ep.episode_id !== episode_id
+    );
+
     set({
-      form_content: _content,
-      form_content_episode: _episodes,
+      list_episodes: updatedList,
+      episode_id: updatedList.length === 0 ? 0 : episode_id,
     });
   },
 
+  obtener_episode: (episode_id: number) => {
+    set({ episode_id });
+  },
+
+  reset: () => {
+    set({ form_content: _content, form_episode: _episodes });
+  },
+
   form_content: _content,
-  form_content_episode: _episodes,
+  form_episode: _episodes,
+  form_content_episodes: _content_episodes,
 }));
