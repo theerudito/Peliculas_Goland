@@ -2,6 +2,8 @@ services:
   peliculas:
     build: .
     container_name: peliculas-app
+    ports:
+      - "1080:1080"
     volumes:
       - data:/app
     working_dir: /app
