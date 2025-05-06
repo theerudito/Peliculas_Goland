@@ -6,8 +6,8 @@ CREATE TABLE
     password TEXT NOT NULL
   );
 
-INSERT INTO
-  Login (username, password)
+INSERT
+OR IGNORE INTO Login (username, password)
 VALUES
   (
     'THE BOSS',
@@ -21,8 +21,8 @@ CREATE TABLE
     gender_name TEXT NOT NULL UNIQUE
   );
 
-INSERT INTO
-  gender (gender_name)
+INSERT
+OR IGNORE INTO gender (gender_name)
 VALUES
   ('DRAMA'),
   ('COMEDIA'),
@@ -62,8 +62,8 @@ CREATE TABLE
     season_name TEXT NOT NULL
   );
 
-INSERT INTO
-  season (season_name)
+INSERT
+OR IGNORE INTO season (season_name)
 VALUES
   ('TEMPORADA 1'),
   ('TEMPORADA 2'),
@@ -93,14 +93,14 @@ CREATE TABLE
     FOREIGN KEY (gender_id) REFERENCES genders (gender_id)
   );
 
-INSERT INTO
-  movie (
-    movie_title,
-    movie_year,
-    movie_cover,
-    movie_url,
-    gender_id
-  )
+INSERT
+OR IGNORE INTO movie (
+  movie_title,
+  movie_year,
+  movie_cover,
+  movie_url,
+  gender_id
+)
 VALUES
   (
     'MAN OF HONOR',
@@ -136,14 +136,14 @@ CREATE TABLE
     FOREIGN KEY (gender_id) REFERENCES genders (gender_id)
   );
 
-INSERT INTO
-  content_type (
-    content_title,
-    content_type,
-    content_cover,
-    content_year,
-    gender_id
-  )
+INSERT
+OR IGNORE INTO content_type (
+  content_title,
+  content_type,
+  content_cover,
+  content_year,
+  gender_id
+)
 VALUES
   (
     'JUJUTSU KAISEN',
@@ -173,14 +173,14 @@ CREATE TABLE
     FOREIGN KEY (content_id) REFERENCES content_types (content_id)
   );
 
-INSERT INTO
-  episode (
-    episode_number,
-    episode_name,
-    episode_url,
-    season_id,
-    content_id
-  )
+INSERT
+OR IGNORE INTO episode (
+  episode_number,
+  episode_name,
+  episode_url,
+  season_id,
+  content_id
+)
 VALUES
   (
     1,
