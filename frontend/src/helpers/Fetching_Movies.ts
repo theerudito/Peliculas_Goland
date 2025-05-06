@@ -6,7 +6,6 @@ import { AddGuiones } from "./Añadir_Guiones";
 export const GET_Movies = async () => {
   try {
     const response = await axios.get<MoviesDTO[]>(`${url_base}/movie`);
-    console.log(response);
     return { success: true, data: response.data };
   } catch (error: unknown) {
     let message = "Error desconocido";

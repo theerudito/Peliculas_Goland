@@ -24,19 +24,19 @@
   overflow: hidden;
   box-shadow: 0 0 10px rgba(219, 214, 214, 0.5);
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .anime-image:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 20px rgba(219, 214, 214, 0.5);
-  opacity: 0.8;
+  
 }
 
 .anime-image img {
-  width: 100%;
-  height: auto;
+  width: 30vh;
+  height: 100%;
+  object-fit: calc(100% - 20px);
   display: block;
-  object-fit: cover;
 }
 
 .anime-info {

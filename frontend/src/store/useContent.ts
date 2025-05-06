@@ -73,9 +73,6 @@ export const useContent = create<Data>((set, get) => ({
 
   getContent_Type: async () => {
     const result = await GET_Content_Type(get().type_content);
-
-    console.log(result);
-
     if (result.success === true) {
       set({ list_content_type: result.data });
     }

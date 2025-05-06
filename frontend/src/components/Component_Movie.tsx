@@ -40,7 +40,7 @@ export const Component_Movie = () => {
                         onClick={() => playVideo(item.movie_url)}
                       ></i>
                     </div>
-                    <p className="card-title"></p>
+                    <p className="card-title">{item.movie_title}</p>
                   </div>
                 </div>
               ))}
