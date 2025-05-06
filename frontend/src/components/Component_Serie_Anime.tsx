@@ -3,20 +3,19 @@ import "../styles/Styles_Serie_Anime_Movies.css";
 import { useContent } from "../store/useContent";
 import cover from "../assets/logo.webp";
 import { Component_Content } from "./Component_Content";
-import { _contentDTO, ContentDTO } from "../models/Contents";
 
 export const Component_Serie_Anime = () => {
   const { list_content_type, getContent_Type } = useContent((state) => state);
 
   const [isPlaying, setIsPlaying] = useState(true);
 
-  const [obj, setObj] = useState<ContentDTO>(_contentDTO);
+  const [id, setId] = useState(0);
 
-  const playVideo = (content: ContentDTO) => {
-    if (content === null) return;
+  const playVideo = (id: number) => {
+    if (id === null) return;
 
     setIsPlaying(false);
-    setObj(content);
+    setId(id);
   };
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export const Component_Serie_Anime = () => {
                       <div className="card-play">
                         <i
                           className="bi bi-play-circle"
-                          onClick={() => playVideo(item)}
+                          onClick={() => playVideo(item.content_id)}
                         ></i>
                       </div>
                       <p className="card-title">{item.content_title}</p>
@@ -55,7 +54,7 @@ export const Component_Serie_Anime = () => {
               </>
             ) : (
               <>
-                <Component_Content obj={obj} />
+                <Component_Content id={id} />
               </>
             )}
           </div>

@@ -21,13 +21,11 @@ export const useMovies = create<Data>((set, get) => ({
   getMovies: async () => {
     const result = await GET_Movies();
 
-    if (result.data && Array.isArray(result.data)) {
-      set({
-        list_movies: result.data.length === 0 ? [] : result.data,
-      });
-    } else {
-      set({ list_movies: [] });
+    if (result.success === true) {
+      set({ list_movies: result.data });
     }
+
+    return result.error;
   },
 
   postMovies: async (obj: Movies) => {

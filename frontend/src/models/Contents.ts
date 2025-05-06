@@ -50,3 +50,17 @@ export const _content_episodes: ContentDTO_EpisodeDTO = {
   season_id: 0,
   episodes: [] as EpisodeDTO[],
 };
+
+export interface Content_Full_Data {
+  content: Content_Full;
+  seasons: SeasonDTO[];
+}
+
+export interface Content_Full {
+  content_id: number;
+  content_title: string;
+  content_type: string;
+  content_cover: string;
+  content_year: number;
+  content_gender: string;
+}

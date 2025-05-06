@@ -36,7 +36,7 @@ export const Component_Header = () => {
             <i className="bi bi-search"></i>
           </button>
         </div>
-        <div className="container-header-buttons">
+        <div className="container-header-buttons" style={{ color: "white" }}>
 
           <div onClick={() => OpenModal("movie")}>
             <i className="bi bi-camera-reels"></i>
