@@ -8,6 +8,7 @@ services:
     command: ["./peliculas"]
     stdin_open: true
     tty: true
+    restart: always
 
 volumes:
   data:

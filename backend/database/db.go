@@ -25,8 +25,7 @@ func Connect() {
 
 	log.Println("Conectado a la base de datos SQLite")
 
-	// Ejecutar init.sql si la DB no existe o si no tiene tablas de usuario
-	if !dbExists || isDBEmpty() {
+	if !dbExists {
 		initSQL, err := os.ReadFile("init.sql")
 		if err != nil {
 			log.Fatalf("No se pudo leer el archivo init.sql: %v", err)
@@ -39,15 +38,6 @@ func Connect() {
 
 		log.Println("Archivo init.sql ejecutado correctamente")
 	}
-}
-
-func isDBEmpty() bool {
-	var count int
-	row := DB.QueryRow("SELECT count(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
-	if err := row.Scan(&count); err != nil {
-		log.Fatalf("Error al verificar tablas en la base de datos: %v", err)
-	}
-	return count == 0
 }
 
 func fileExists(filename string) bool {
