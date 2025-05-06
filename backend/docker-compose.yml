@@ -1,0 +1,13 @@
+services:
+  peliculas:
+    build: .
+    container_name: peliculas-app
+    volumes:
+      - data:/app
+    working_dir: /app
+    command: ["./peliculas"]
+    stdin_open: true
+    tty: true
+
+volumes:
+  data:
