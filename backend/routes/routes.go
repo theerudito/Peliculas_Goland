@@ -8,11 +8,18 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 
+	allowedOrigins := map[string]bool{
+		"http://localhost:5173":                    true,
+		"https://web-peliculas.between-bytes.tech": true,
+	}
+
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173",
+		AllowCredentials: true,
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Accept",
-		AllowCredentials: true,
+		AllowOriginsFunc: func(origin string) bool {
+			return allowedOrigins[origin]
+		},
 	}))
 
 	api := app.Group("/api")

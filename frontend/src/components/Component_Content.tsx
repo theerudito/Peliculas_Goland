@@ -4,7 +4,7 @@ import "../styles/Styles_Content.css";
 
 export const Component_Content = ({ id }: { id: number }) => {
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState(0);
-  const { getContent_full, list_full_data, loading } = useContent(
+  const { getContent_full, list_full_data } = useContent(
     (state) => state
   );
 
