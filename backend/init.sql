@@ -7,7 +7,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO Login (username, password)
+INTO Login (username, password)
 VALUES
   (
     'THE BOSS',
@@ -22,7 +22,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO gender (gender_name)
+INTO gender (gender_name)
 VALUES
   ('DRAMA'),
   ('COMEDIA'),
@@ -63,7 +63,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO season (season_name)
+INTO season (season_name)
 VALUES
   ('TEMPORADA 1'),
   ('TEMPORADA 2'),
@@ -94,7 +94,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO movie (
+INTO movie (
   movie_title,
   movie_year,
   movie_cover,
@@ -137,7 +137,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO content_type (
+INTO content_type (
   content_title,
   content_type,
   content_cover,
@@ -174,7 +174,7 @@ CREATE TABLE
   );
 
 INSERT
-OR IGNORE INTO episode (
+INTO episode (
   episode_number,
   episode_name,
   episode_url,
