@@ -9,14 +9,14 @@ import (
 func SetupRoutes(app *fiber.App) {
 
 	allowedOrigins := map[string]bool{
-		"http://localhost:5173":                    true,
-		"https://web-peliculas.between-bytes.tech": true,
+		"http://localhost:5173":     true,
+		"http://web.test.sitio.com": true,
 	}
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-		AllowHeaders:     "Origin, Content-Type, Accept",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowOriginsFunc: func(origin string) bool {
 			return allowedOrigins[origin]
 		},
