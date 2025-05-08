@@ -9,8 +9,8 @@ import (
 func SetupRoutes(app *fiber.App) {
 
 	allowedOrigins := map[string]bool{
-		"http://localhost:5173":               true,
-		"http://peliculas.between-bytes.tech": true,
+		"http://localhost:5173":               true, // Desarrollo local
+		"http://peliculas.between-bytes.tech": true, // Producción
 	}
 
 	app.Use(cors.New(cors.Config{
