@@ -11,5 +11,3 @@ WORKDIR /app
 COPY --from=builder /app/peliculas .
 COPY --from=builder /app/init.sql .
 CMD ["./peliculas"]
-
-
