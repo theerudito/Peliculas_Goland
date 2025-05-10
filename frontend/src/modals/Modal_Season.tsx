@@ -38,6 +38,7 @@ export const Modal_Season = () => {
               </div>
               <div className="container-modal-input">
                 <input
+                  style={{ borderRadius: "5px" }}
                   name="season_name"
                   value={form_season.season_name}
                   onChange={handleChangeInput}

@@ -5,10 +5,12 @@ import { useData } from "../store/useData";
 import { Movies } from "../models/Movies";
 import { useEffect } from "react";
 
+
 export const Modal_Movie = () => {
   const { currentModal, CloseModal, OpenModal } = useModal((state) => state);
   const { form_movie, postMovies } = useMovies((state) => state);
   const { gender_list, getGender, getYear, year_list } = useData((state) => state);
+
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

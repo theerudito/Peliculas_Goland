@@ -24,15 +24,26 @@
 }
 
 .container-card {
+  width: 200px;
+  height: 300px;
   position: relative;
-  width: 250px;
-  height: 375px;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 12px;
   margin: 10px;
+  background-color: #000;
   flex-shrink: 0;
-  cursor: pointer;
+
   box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+}
+
+.container-card {
+  width: 200px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 10px;
+  background-color: #000;
 }
 
 .card-background-image {
@@ -77,13 +88,14 @@
   color: rgb(255, 255, 255);
 }
 
-.card-title {
-  align-self: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 0px 0px;
-  border-radius: 5px;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
-  width: 100%;
+.card-container-button {
+  display: flex;
+  width: auto;
+  height: 30px;
+  justify-content: space-between;
+  padding: 3px 5px;
+}
+
+.card-container-button > i {
+  cursor: pointer;
 }

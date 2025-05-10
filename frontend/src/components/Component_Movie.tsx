@@ -4,15 +4,13 @@ import { useMovies } from "../store/useMovies";
 import cover from "../assets/logo.webp";
 import { usePlayer } from "../store/usePlayer";
 import "../styles/Styles_Serie_Anime_Movies.css";
+import { useAuth } from "../store/useAuth";
+
 
 export const Component_Movie = () => {
   const { list_movies, getMovies } = useMovies((state) => state);
-  const { open_player, playing, url } = usePlayer((state) => state);
-
-  const playVideo = (url: string) => {
-    if (url === "") return;
-    open_player(url);
-  };
+  const { open_player, playing } = usePlayer((state) => state);
+  const { isLogin } = useAuth((state) => state);
 
   useEffect(() => {
     getMovies();
@@ -20,7 +18,16 @@ export const Component_Movie = () => {
 
   return (
     <div className="app-container">
+
+      <div className="container-header-search-box">
+        <input type="text" placeholder="Buscar..." />
+        <button className="container-header-search-btn">
+          <i className="bi bi-search"></i>
+        </button>
+      </div>
+
       <div className="main-content">
+
         <div className="container-content">
           {playing === false ? (
             <div className="container-body">
@@ -37,17 +44,28 @@ export const Component_Movie = () => {
                     <div className="card-play">
                       <i
                         className="bi bi-play-circle"
-                        onClick={() => playVideo(item.movie_url)}
+                        onClick={() => open_player(item.movie_url)}
                       ></i>
                     </div>
-                    <p className="card-title">{item.movie_title}</p>
+
+                    <div className="card-container-button">
+                      {
+                        isLogin && (
+                          <>
+                            <i className="bi bi-pencil-square"></i>
+                            <i className="bi bi-trash"></i>
+                          </>
+                        )
+                      }
+
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="container-player">
-              <Component_Player url={url} />
+              <Component_Player />
             </div>
           )}
         </div>

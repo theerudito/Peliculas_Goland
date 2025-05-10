@@ -5,7 +5,6 @@ type Data = {
   playing: boolean;
   open_player: (url: string) => void;
   close_player: () => void;
-  reset: () => void;
 };
 
 export const usePlayer = create<Data>((set) => ({

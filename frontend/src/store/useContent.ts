@@ -23,16 +23,19 @@ type Data = {
   list_episodes: EpisodeDTO[];
   list_full_data: Content_Full_Data | null;
   loading: boolean;
+  contend_id: number;
 
   // DATOS
   episode_id: number;
   type_content: number;
+  openContent: boolean;
 
   // FUNCIONES
+  openContent_Type: (open: boolean, id: number) => void;
   changeType: (type: number) => void;
   getContent_Type: () => void;
   getContent: () => void;
-  getContent_full: (value: number) => void;
+  getContent_full: () => void;
   postContent: (obj: Content) => void;
   postEpisodes: (obj: ContentDTO_EpisodeDTO) => void;
   add_episodes: (obj: EpisodeDTO) => void;
@@ -52,9 +55,15 @@ export const useContent = create<Data>((set, get) => ({
   list_episodes: [],
   list_full_data: null,
   loading: false,
+  openContent: false,
 
   episode_id: 0,
   type_content: 1,
+  contend_id: 0,
+
+  openContent_Type: (open: boolean, id: number) => {
+    set({ openContent: open, contend_id: id });
+  },
 
   changeType: (type) => {
     set({ type_content: type });
@@ -62,24 +71,27 @@ export const useContent = create<Data>((set, get) => ({
   },
 
   getContent: async () => {
-    set({ loading: true });
-
     const result = await GET_Content();
 
-    if (result.success === true) {
+    if (result.success === true && Array.isArray(result.data)) {
       set({ list_content: result.data });
+    } else {
+      set({ list_content: [] });
     }
   },
 
   getContent_Type: async () => {
     const result = await GET_Content_Type(get().type_content);
-    if (result.success === true) {
+
+    if (result.success === true && Array.isArray(result.data)) {
       set({ list_content_type: result.data });
+    } else {
+      set({ list_content_type: [] });
     }
   },
 
-  getContent_full: async (value: number) => {
-    const result = await GET_Content_Episodes(value);
+  getContent_full: async () => {
+    const result = await GET_Content_Episodes(get().contend_id);
     if (result.success === true) {
       set({ list_full_data: result.data, loading: false });
     }

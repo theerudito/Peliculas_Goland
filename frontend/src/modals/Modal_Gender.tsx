@@ -39,6 +39,7 @@ export const Modal_Gender = () => {
               </div>
               <div className="container-modal-input">
                 <input
+                  style={{ borderRadius: "5px" }}
                   name="gender_name"
                   value={form_gender.gender_name}
                   onChange={handleChangeInput}

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { _gender, Genders } from "../models/Gender";
 import { _season, Season } from "../models/Seasons";
 import { Content_Type } from "../models/Content_Type";
-import { Gender_List, Season_List } from "../helpers/Data";
+
 import {
   GET_Gender,
   GET_Season,
@@ -34,8 +34,8 @@ type Data = {
 
 export const useData = create<Data>()((set, get) => ({
   // LISTADO
-  gender_list: Gender_List,
-  season_list: Season_List,
+  gender_list: [],
+  season_list: [],
   year_list: [],
   type_list: [],
 

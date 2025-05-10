@@ -4,6 +4,7 @@ import { POST_Auth } from "../helpers/Fetching_Auth";
 
 type Data = {
   form_auth: Users;
+  
   postLogin: (obj: Users) => void;
   isLogin: boolean;
   reset: () => void;

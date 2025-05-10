@@ -43,11 +43,13 @@
 }
 
 .input {
-  border: none;
-  outline: none;
   border-radius: 5px;
-  background-color: lightgray;
   height: 30px;
+}
+
+input {
+  outline: none;
+  border: none;
 }
 
 select {
@@ -83,9 +85,10 @@ button {
 }
 
 .container-modal-table thead {
-  background-color: #2bb532;
   position: sticky;
   top: 0;
+  border-top: solid 1px white;
+  border-bottom: solid 1px white;
 }
 
 .container-modal-table th,

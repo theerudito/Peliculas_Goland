@@ -1,22 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../styles/Styles_Serie_Anime_Movies.css";
 import { useContent } from "../store/useContent";
 import cover from "../assets/logo.webp";
+import { useAuth } from "../store/useAuth";
 import { Component_Content } from "./Component_Content";
 
+
 export const Component_Serie_Anime = () => {
-  const { list_content_type, getContent_Type } = useContent((state) => state);
-
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  const [id, setId] = useState(0);
-
-  const playVideo = (id: number) => {
-    if (id === null) return;
-
-    setIsPlaying(false);
-    setId(id);
-  };
+  const { list_content_type, getContent_Type, openContent, openContent_Type } = useContent((state) => state);
+  const { isLogin } = useAuth((state) => state);
 
   useEffect(() => {
     getContent_Type();
@@ -24,10 +16,19 @@ export const Component_Serie_Anime = () => {
 
   return (
     <div className="app-container">
+
+      <div className="container-header-search-box">
+        <input type="text" placeholder="Buscar..." />
+        <button className="container-header-search-btn">
+          <i className="bi bi-search"></i>
+        </button>
+      </div>
+
       <div className="main-content">
         <div className="container-content">
           <div className="container-body">
-            {isPlaying === true ? (
+
+            {openContent === false ? (
               <>
                 {list_content_type.map((item) => (
                   <div key={item.content_id} className="container-card">
@@ -44,19 +45,30 @@ export const Component_Serie_Anime = () => {
                       <div className="card-play">
                         <i
                           className="bi bi-play-circle"
-                          onClick={() => playVideo(item.content_id)}
+                          onClick={() => openContent_Type(true, item.content_id)}
                         ></i>
                       </div>
-                      <p className="card-title">{item.content_title}</p>
+                      <div className="card-container-button">
+                        {
+                          isLogin && (
+                            <>
+                              <i className="bi bi-pencil-square"></i>
+                              <i className="bi bi-trash"></i>
+                            </>
+                          )
+                        }
+
+                      </div>
                     </div>
                   </div>
                 ))}
               </>
             ) : (
               <>
-                <Component_Content id={id} />
+                <Component_Content />
               </>
             )}
+
           </div>
         </div>
       </div>

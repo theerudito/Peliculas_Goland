@@ -13,7 +13,7 @@ import { useAuth } from "../store/useAuth";
 
 export const Component_Header = () => {
 
-  const { changeType } = useContent((state) => state);
+  const { changeType, openContent_Type } = useContent((state) => state);
   const { isLogin } = useAuth((state) => state);
   const { OpenModal } = useModal((state) => state);
 
@@ -23,19 +23,14 @@ export const Component_Header = () => {
         <nav className="container-header-nav-links">
           <Link to="/">Inicio</Link>
           <Link to="/peliculas">Películas</Link>
-          <Link to="/series" onClick={() => changeType(2)}>
+          <Link to="/series" onClick={() => { changeType(2); openContent_Type(false, 0); }}>
             Series
           </Link>
-          <Link to="/animes" onClick={() => changeType(1)}>
+          <Link to="/animes" onClick={() => { changeType(1); openContent_Type(false, 0); }}>
             Anime
           </Link>
         </nav>
-        <div className="container-header-search-box">
-          <input type="text" placeholder="Buscar..." />
-          <button className="container-header-search-btn">
-            <i className="bi bi-search"></i>
-          </button>
-        </div>
+
         <div className="container-header-buttons" style={{ color: "white" }}>
 
           <div onClick={() => OpenModal("movie")}>

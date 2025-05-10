@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { _movies, Movies, MoviesDTO } from "../models/Movies";
 import { GET_Movies, POST_Movie } from "../helpers/Fetching_Movies";
+import { Movies_List } from "../helpers/Data";
 
 type Data = {
   // LISTADO
@@ -21,8 +22,10 @@ export const useMovies = create<Data>((set, get) => ({
   getMovies: async () => {
     const result = await GET_Movies();
 
-    if (result.success === true) {
+    if (result.success === true && Array.isArray(result.data)) {
       set({ list_movies: result.data });
+    } else {
+      set({ list_movies: Movies_List });
     }
 
     return result.error;

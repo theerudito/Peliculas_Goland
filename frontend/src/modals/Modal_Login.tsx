@@ -32,12 +32,14 @@ export const Modal_Login = () => {
             </div>
             <div className="container-modal-input">
               <input
+                style={{ borderRadius: "5px" }}
                 type="text"
                 name="username"
                 value={form_auth.username}
                 onChange={handleChangeInput}
                 placeholder='USARIO' />
               <input
+                style={{ borderRadius: "5px" }}
                 type="password"
                 name="password"
                 value={form_auth.password}

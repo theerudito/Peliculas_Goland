@@ -19,35 +19,6 @@
   font-weight: bold;
 }
 
-.container-header-search-box {
-  display: flex;
-  border: 1px solid white;
-  border-radius: 5px;
-  overflow: hidden;
-  height: 30px;
-}
-
-.container-header-search-box input {
-  border: none;
-  outline: none;
-  width: 300px;
-}
-
-.container-header-search-btn {
-  background-color: #8000ff;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 18px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-  display: flex;
-  border-radius: 0px;
-}
-
 .container-header-buttons {
   display: flex;
   flex-direction: row;
