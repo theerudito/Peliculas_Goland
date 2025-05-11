@@ -1,10 +1,290 @@
-.container-body {
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-  user-select: none;
-  grid-template-columns: auto auto auto auto auto;
+@media (max-width: 1536px) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto auto auto auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 5px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
+}
+@media (max-width: 1280px) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto auto auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
+}
+@media (max-width: 1024px) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
+}
+@media (max-width: 768px) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto auto auto auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
+}
+@media (max-width: 640px) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 180px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
+}
+@media (max-width: 475) {
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .container-body {
+    display: grid;
+    place-content: center;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 10px;
+  }
+
+  .card-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .container-card {
+    width: 180px;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
+  }
 }
 
 .container-player {
@@ -21,36 +301,6 @@
   justify-content: center;
   display: flex;
   margin: auto;
-}
-
-.container-card {
-  width: 200px;
-  height: 300px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  margin: 10px;
-  background-color: #000;
-  flex-shrink: 0;
-
-  box-shadow: 0 0 10px rgba(19, 19, 19, 0.5);
-}
-
-.container-card {
-  width: 200px;
-  height: 300px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  margin: 10px;
-  background-color: #000;
-}
-
-.card-background-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .container-card:hover .card-background-image {

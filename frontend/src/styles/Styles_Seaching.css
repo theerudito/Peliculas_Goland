@@ -1,29 +1,29 @@
 .container-header-search-box {
-  position: fixed; /* Hace que se mantenga fija */
-  top: 50px; /* Baja 10px del borde superior */
-  left: 50%; /* Centra horizontalmente */
-  transform: translateX(-50%); /* Ajusta el centro exacto */
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   border: 1px solid white;
   border-radius: 5px;
   overflow: hidden;
   height: 30px;
-  background-color: #8000ff;
+  background-color: #00ff48;
   width: 380px;
-  z-index: 999; /* Asegura que esté por encima de otros elementos */
+  z-index: 999;
 }
 
 .container-header-search-box input {
   border: none;
   outline: none;
-  flex: 1; /* ocupa el resto del espacio */
+  flex: 1;
 }
 
 .container-header-search-btn {
   background-color: #8000ff;
   color: white;
   border: none;
-  width: 40px; /* tamaño del contenedor reducido */
+  width: 40px;
   cursor: pointer;
   font-size: 18px;
   height: 30px;

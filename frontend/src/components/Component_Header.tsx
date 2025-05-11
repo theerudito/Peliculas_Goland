@@ -10,6 +10,7 @@ import { Modal_Login } from "../modals/Modal_Login";
 import { Modal_Season } from "../modals/Modal_Season";
 import { Modal_Gender } from "../modals/Modal_Gender";
 import { useAuth } from "../store/useAuth";
+import { usePlayer } from "../store/usePlayer";
 
 export const Component_Header = () => {
 
@@ -17,16 +18,17 @@ export const Component_Header = () => {
   const { isLogin } = useAuth((state) => state);
   const { OpenModal } = useModal((state) => state);
 
+
   return (
     <>
       <div className="container-header-header">
         <nav className="container-header-nav-links">
           <Link to="/">Inicio</Link>
-          <Link to="/peliculas">Películas</Link>
-          <Link to="/series" onClick={() => { changeType(2); openContent_Type(false, 0); }}>
+          <Link to="/peliculas" onClick={() => usePlayer.setState({ playing: false })}>Películas</Link>
+          <Link to="/series" onClick={() => { changeType(2); openContent_Type(false, 0); usePlayer.setState({ playing: false }) }}>
             Series
           </Link>
-          <Link to="/animes" onClick={() => { changeType(1); openContent_Type(false, 0); }}>
+          <Link to="/animes" onClick={() => { changeType(1); openContent_Type(false, 0); usePlayer.setState({ playing: false }) }}>
             Anime
           </Link>
         </nav>

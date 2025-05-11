@@ -5,7 +5,6 @@ import cover from "../assets/logo.webp";
 import { useAuth } from "../store/useAuth";
 import { Component_Content } from "./Component_Content";
 
-
 export const Component_Serie_Anime = () => {
   const { list_content_type, getContent_Type, openContent, openContent_Type } = useContent((state) => state);
   const { isLogin } = useAuth((state) => state);
@@ -17,19 +16,21 @@ export const Component_Serie_Anime = () => {
   return (
     <div className="app-container">
 
-      <div className="container-header-search-box">
-        <input type="text" placeholder="Buscar..." />
-        <button className="container-header-search-btn">
-          <i className="bi bi-search"></i>
-        </button>
-      </div>
+      {openContent === false ? (
 
-      <div className="main-content">
-        <div className="container-content">
-          <div className="container-body">
+        <div>
+          <div className="container-header-search-box">
+            <input type="text" placeholder="Buscar..." />
+            <button className="container-header-search-btn">
+              <i className="bi bi-search"></i>
+            </button>
+          </div>
 
-            {openContent === false ? (
-              <>
+          <div className="main-content">
+            <div className="container-content">
+              <div className="container-body">
+
+
                 {list_content_type.map((item) => (
                   <div key={item.content_id} className="container-card">
                     <img
@@ -62,16 +63,15 @@ export const Component_Serie_Anime = () => {
                     </div>
                   </div>
                 ))}
-              </>
-            ) : (
-              <>
-                <Component_Content />
-              </>
-            )}
 
+
+              </div>
+            </div>
           </div>
+
         </div>
-      </div>
-    </div>
+      ) : (<Component_Content />)
+      }
+    </div >
   );
 };

@@ -44,3 +44,29 @@ export const POST_Movie = async (obj: Movies) => {
     return { success: false, error: message };
   }
 };
+
+export const PUT_Movie = async (obj: Movies, id: number) => {
+  try {
+    const response = await axios.put(`${url_base}/movie/${id}`, obj);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
+  }
+};
+
+export const DELETE_Movie = async (id: number) => {
+  try {
+    const response = await axios.delete(`${url_base}/movie/${id}`);
+    return { success: true, data: response.data };
+  } catch (error: unknown) {
+    let message = "Error desconocido";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || message;
+    }
+    return { success: false, error: message };
+  }
+};

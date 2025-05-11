@@ -4,7 +4,7 @@ import { POST_Auth } from "../helpers/Fetching_Auth";
 
 type Data = {
   form_auth: Users;
-  
+
   postLogin: (obj: Users) => void;
   isLogin: boolean;
   reset: () => void;
@@ -16,10 +16,9 @@ export const useAuth = create<Data>()((set, get) => ({
 
   postLogin: async (obj: Users) => {
     const result = await POST_Auth(obj);
-
     if (result.success === true) {
-      get().reset();
       set({ isLogin: true });
+      get().reset();
       return result.data;
     }
 

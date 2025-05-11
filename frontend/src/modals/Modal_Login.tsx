@@ -18,6 +18,7 @@ export const Modal_Login = () => {
 
   const SendData = async () => {
     await postLogin(form_auth)
+    CloseModal()
   }
 
   return (
