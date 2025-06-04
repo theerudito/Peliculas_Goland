@@ -9,7 +9,7 @@ import { Component_Search } from "./Component_Search";
 export const Component_Serie_Anime = () => {
   const { list_content_type, getContent_Type, openContent, openContent_Type } =
     useContent((state) => state);
-  const { isLogin = true } = useAuth((state) => state);
+  const { isLogin } = useAuth((state) => state);
 
   useEffect(() => {
     getContent_Type();
