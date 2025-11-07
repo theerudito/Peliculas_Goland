@@ -18,17 +18,12 @@ export const Component_Movie = () => {
 
   return (
     <div className="app-container">
-
       {playing === false ? (
-
         <div>
-
           <Component_Search />
 
           <div className="main-content">
-
             <div className="container-content">
-
               <div className="container-body">
                 {list_movies.map((item) => (
                   <div key={item.movie_id} className="container-card">
@@ -48,27 +43,28 @@ export const Component_Movie = () => {
                       </div>
 
                       <div className="card-container-button">
-                        {
-                          isLogin && (
-                            <>
-                              <i className="bi bi-pencil-square"></i>
-                              <i className="bi bi-trash" onClick={() => deleteMovies(item.movie_id)}></i>
-                            </>
-                          )
-                        }
-
+                        {isLogin && (
+                          <>
+                            <i className="bi bi-pencil-square"></i>
+                            <i
+                              className="bi bi-trash"
+                              onClick={() => deleteMovies(item.movie_id)}
+                            ></i>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div >
-        </div>) :
+          </div>
+        </div>
+      ) : (
         <div className="component-player">
           <Component_Player />
         </div>
-      }
-    </div >
+      )}
+    </div>
   );
 };
