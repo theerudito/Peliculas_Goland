@@ -4,68 +4,85 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"io"
+	"os"
 )
 
-func EncryptString(value string) (string, error) {
-
-	key := []byte("thisis32bitlongpassphraseimusing")
-
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return "", err
-	}
-
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		return "", err
-	}
-
-	nonce := make([]byte, aesGCM.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", err
-	}
-
-	ciphertext := aesGCM.Seal(nonce, nonce, []byte(value), nil)
-	return base64.StdEncoding.EncodeToString(ciphertext), nil
+func DerivarClave(valor string) []byte {
+	hash := sha256.Sum256([]byte(valor))
+	return hash[:]
 }
 
-func DecryptString(value string) (string, error) {
+func EncriptarDato(textPlano string) (string, error) {
 
-	key := []byte("thisis32bitlongpassphraseimusing")
+	key := os.Getenv("SECRET_KEY")
 
-	ciphertext, err := base64.StdEncoding.DecodeString(value)
+	keyBytes := DerivarClave(key)
+
+	block, err := aes.NewCipher(keyBytes)
+
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error creando cifrador: %v", err)
 	}
 
-	block, err := aes.NewCipher(key)
+	gcm, err := cipher.NewGCM(block)
+
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error creando GCM: %v", err)
 	}
 
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		return "", err
+	nonce := make([]byte, gcm.NonceSize())
+
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return "", fmt.Errorf("error generando nonce: %v", err)
 	}
 
-	nonceSize := aesGCM.NonceSize()
-	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+	cipherText := gcm.Seal(nonce, nonce, []byte(textPlano), nil)
+	return base64.StdEncoding.EncodeToString(cipherText), nil
 
-	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
-	if err != nil {
-		return "", err
-	}
-
-	return string(plaintext), nil
 }
 
-func ComparePassword(inputPassword, encryptedPassword string) (bool, error) {
-	decryptedPassword, err := DecryptString(encryptedPassword)
+func DesencriptarDato(textCifrado string) (string, error) {
+
+	key := os.Getenv("SECRET_KEY")
+
+	keyBytes := DerivarClave(key)
+
+	data, err := base64.StdEncoding.DecodeString(textCifrado)
+
 	if err != nil {
-		return false, err
+		return "", fmt.Errorf("error decodificando base64: %v", err)
 	}
 
-	return inputPassword == decryptedPassword, nil
+	block, err := aes.NewCipher(keyBytes)
+
+	if err != nil {
+		return "", fmt.Errorf("error creando cifrador: %v", err)
+	}
+
+	gcm, err := cipher.NewGCM(block)
+
+	if err != nil {
+		return "", fmt.Errorf("error creando GCM: %v", err)
+	}
+
+	nonceSize := gcm.NonceSize()
+
+	if len(data) < nonceSize {
+		return "", fmt.Errorf("texto cifrado demasiado corto")
+	}
+
+	nonce, cipherText := data[:nonceSize], data[nonceSize:]
+
+	plainText, err := gcm.Open(nil, nonce, cipherText, nil)
+
+	if err != nil {
+		return "", fmt.Errorf("error desencriptando: %v", err)
+	}
+
+	return string(plainText), nil
+
 }

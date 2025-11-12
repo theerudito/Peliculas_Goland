@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,11 +11,13 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func GET_Movie(c *fiber.Ctx) error {
+func GetMovie(c *fiber.Ctx) error {
 
 	var dto []models.MovieDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 		SELECT
 		m.movie_id,
 		m.movie_title,
@@ -65,13 +68,15 @@ func GET_Movie(c *fiber.Ctx) error {
 
 }
 
-func GET_Movie_ID(c *fiber.Ctx) error {
+func GetMovieId(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
 	var movie models.MovieDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 	SELECT
 		m.movie_id,
 		m.movie_title,
@@ -81,7 +86,7 @@ func GET_Movie_ID(c *fiber.Ctx) error {
 		g.gender_name
 	FROM movie AS m
 	INNER JOIN gender AS g ON m.gender_id = g.gender_id
-	WHERE m.movie_id = ?
+	WHERE m.movie_id = $1
 `, id)
 
 	if err != nil {
@@ -122,15 +127,17 @@ func GET_Movie_ID(c *fiber.Ctx) error {
 
 }
 
-func GET_Find_Movie(c *fiber.Ctx) error {
+func GetFindMovie(c *fiber.Ctx) error {
 
 	value := helpers.QuitarGuiones(c.Params("value"))
 
 	var dto []models.MovieDTO
 
+	conn := db.GetDB()
+
 	search := "%" + strings.ToUpper(value) + "%"
 
-	rows, err := db.DB.Query(`
+	rows, err := conn.Query(`
 	SELECT
 		m.movie_id,
 		m.movie_title,
@@ -140,7 +147,7 @@ func GET_Find_Movie(c *fiber.Ctx) error {
 		g.gender_name
 	FROM movie AS m
 	INNER JOIN gender AS g ON m.gender_id = g.gender_id
-	WHERE m.movie_title LIKE ?
+	WHERE m.movie_title LIKE $1
 `, search)
 
 	if err != nil {
@@ -181,9 +188,11 @@ func GET_Find_Movie(c *fiber.Ctx) error {
 
 }
 
-func POST_Movie(c *fiber.Ctx) error {
+func PostMovie(c *fiber.Ctx) error {
 
 	var movie models.Movie
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -191,11 +200,11 @@ func POST_Movie(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT movie_id FROM movie WHERE movie.movie_title = ? ", movie.Movie_Title)
+	row := conn.QueryRow("SELECT movie_id FROM movie WHERE movie.movie_title = $1 ", movie.Movie_Title)
 
 	var existingId int
 
-	if err := row.Scan(&existingId); err != nil && err != sql.ErrNoRows {
+	if err := row.Scan(&existingId); err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al verificar la existencia del registro",
 		})
@@ -207,7 +216,7 @@ func POST_Movie(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec(`INSERT INTO movie (movie_title, movie_year, movie_cover, movie_url, gender_id) VALUES (?, ?, ?, ?, ?)`,
+	_, err := conn.Exec(`INSERT INTO movie (movie_title, movie_year, movie_cover, movie_url, gender_id) VALUES ($1, $2, $3, $4, $5)`,
 		strings.ToUpper(movie.Movie_Title),
 		movie.Movie_Year,
 		movie.Movie_Cover,
@@ -226,9 +235,11 @@ func POST_Movie(c *fiber.Ctx) error {
 
 }
 
-func PUT_Movie(c *fiber.Ctx) error {
+func PutMovie(c *fiber.Ctx) error {
 
 	id := c.Params("id")
+
+	conn := db.GetDB()
 
 	var movie models.Movie
 
@@ -238,11 +249,11 @@ func PUT_Movie(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT movie_id FROM movie WHERE movie_id = ?", id)
+	row := conn.QueryRow("SELECT movie_id FROM movie WHERE movie_id = $1", id)
 
 	var existingId int
 	if err := row.Scan(&existingId); err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "No se encontró el registro",
 			})
@@ -252,13 +263,13 @@ func PUT_Movie(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec(`UPDATE movie SET
-		movie_title = ?, 
-		movie_year = ?, 
-		movie_cover = ?, 
-		movie_url = ?, 
-		gender_id = ?
-		WHERE movie_id = ?`,
+	_, err := conn.Exec(`UPDATE movie SET
+		movie_title 	= $1, 
+		movie_year 		= $2, 
+		movie_cover 	= $3, 
+		movie_url 		= $4, 
+		gender_id 		= $5
+		WHERE movie_id 	= $6`,
 		strings.ToUpper(movie.Movie_Title),
 		movie.Movie_Year,
 		movie.Movie_Cover,
@@ -279,16 +290,18 @@ func PUT_Movie(c *fiber.Ctx) error {
 
 }
 
-func DELETE_Movie(c *fiber.Ctx) error {
+func DeleteMovie(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	row := db.DB.QueryRow("SELECT movie_id FROM movie WHERE movie.movie_id = ?", id)
+	conn := db.GetDB()
+
+	row := conn.QueryRow("SELECT movie_id FROM movie WHERE movie.movie_id = $1", id)
 
 	var existingId int
 
 	if err := row.Scan(&existingId); err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "No se encontró el registro",
 			})
@@ -298,7 +311,7 @@ func DELETE_Movie(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec(`DELETE FROM movie WHERE movie.movie_id = ?`, id)
+	_, err := conn.Exec(`DELETE FROM movie WHERE movie.movie_id = $1`, id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

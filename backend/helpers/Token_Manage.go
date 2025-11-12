@@ -1,26 +1,15 @@
 package helpers
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func Generate_Token(value string) (string, error) {
+func GenerateToken(value string) (string, error) {
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error cargando el archivo .env")
-	// }
-
-	// secret := os.Getenv("secret.env")
-	// if secret == "" {
-	// 	log.Fatal("no encontrado en el entorno")
-	// }
-
-	// log.Println("Key_Token:", secret)
-
-	var jwtSecret = []byte("2025")
+	var jwtSecret = []byte(os.Getenv("SECRET_KEY"))
 
 	claims := jwt.MapClaims{
 		"user": value,

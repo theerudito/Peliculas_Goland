@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,11 +10,13 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func GET_Gender(c *fiber.Ctx) error {
+func GetGender(c *fiber.Ctx) error {
 
 	var dto []models.Gender
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 		SELECT g.gender_id, g.gender_name
 		FROM gender AS g
 	`)
@@ -47,21 +50,23 @@ func GET_Gender(c *fiber.Ctx) error {
 
 }
 
-func GET_Gender_ID(c *fiber.Ctx) error {
+func GetGenderId(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
 	var gender models.Gender
 
-	row := db.DB.QueryRow(`
+	conn := db.GetDB()
+
+	row := conn.QueryRow(`
 		SELECT g.gender_id, g.gender_name
 		FROM gender AS g
-		WHERE g.gender_id = ?`, id)
+		WHERE g.gender_id = $1`, id)
 
 	err := row.Scan(&gender.Gender_Id, &gender.Gender_Name)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "No se encontró el registro",
 			})
@@ -75,9 +80,11 @@ func GET_Gender_ID(c *fiber.Ctx) error {
 
 }
 
-func POST_Gender(c *fiber.Ctx) error {
+func PostGender(c *fiber.Ctx) error {
 
 	var gender models.Gender
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&gender); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -85,10 +92,10 @@ func POST_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT gender_id FROM gender WHERE gender_name = ?", strings.ToUpper(gender.Gender_Name))
+	row := conn.QueryRow("SELECT gender_id FROM gender WHERE gender_name = $1", strings.ToUpper(gender.Gender_Name))
 
 	var existingId int
-	if err := row.Scan(&existingId); err != nil && err != sql.ErrNoRows {
+	if err := row.Scan(&existingId); err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al verificar el registro",
 		})
@@ -99,7 +106,7 @@ func POST_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("INSERT INTO gender (gender_name) VALUES (?)", strings.ToUpper(gender.Gender_Name))
+	_, err := conn.Exec("INSERT INTO gender (gender_name) VALUES ($1)", strings.ToUpper(gender.Gender_Name))
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -113,9 +120,11 @@ func POST_Gender(c *fiber.Ctx) error {
 
 }
 
-func PUT_Gender(c *fiber.Ctx) error {
+func PutGender(c *fiber.Ctx) error {
 
 	id := c.Params("id")
+
+	conn := db.GetDB()
 
 	var gender models.Gender
 
@@ -125,11 +134,11 @@ func PUT_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	row := db.DB.QueryRow("SELECT gender_id FROM gender WHERE gender_id = ?", id)
+	row := conn.QueryRow("SELECT gender_id FROM gender WHERE gender_id = $1", id)
 
 	var existingId int
 	if err := row.Scan(&existingId); err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "No se encontró el registro",
 			})
@@ -139,7 +148,7 @@ func PUT_Gender(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err := db.DB.Exec("UPDATE gender SET gender_name = ? WHERE gender_id = ?", strings.ToUpper(gender.Gender_Name), id)
+	_, err := conn.Exec("UPDATE gender SET gender_name = $1 WHERE gender_id = $2", strings.ToUpper(gender.Gender_Name), id)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -149,39 +158,6 @@ func PUT_Gender(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Registro actualizado correctamente 🚀",
-	})
-
-}
-
-func DELETE_Gender(c *fiber.Ctx) error {
-
-	id := c.Params("id")
-
-	row := db.DB.QueryRow("SELECT gender_id FROM gender WHERE gender_id = ?", id)
-
-	var existingId int
-
-	if err := row.Scan(&existingId); err != nil {
-		if err == sql.ErrNoRows {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "No se encontró el registro",
-			})
-		}
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Error al verificar el registro",
-		})
-	}
-
-	_, err := db.DB.Exec("DELETE FROM gender WHERE gender_id = ?", id)
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "No se pudo eliminar el registro",
-		})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Registro eliminado correctamente 🚀",
 	})
 
 }

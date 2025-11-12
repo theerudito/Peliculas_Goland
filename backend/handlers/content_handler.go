@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,11 +11,13 @@ import (
 	"github.com/theerudito/peliculas/models"
 )
 
-func GET_Content(c *fiber.Ctx) error {
+func GetContent(c *fiber.Ctx) error {
 
 	var dto []models.ContentDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 	SELECT
 	c.content_id,
 	c.content_title,
@@ -67,13 +70,15 @@ func GET_Content(c *fiber.Ctx) error {
 
 }
 
-func GET_Content_ID(c *fiber.Ctx) error {
+func GetContentId(c *fiber.Ctx) error {
 
 	var dto models.ContentDTO
 
+	conn := db.GetDB()
+
 	id := c.Params("id")
 
-	rows, err := db.DB.Query(`
+	rows, err := conn.Query(`
 	SELECT
 	c.content_id,
 	c.content_title,
@@ -86,7 +91,7 @@ func GET_Content_ID(c *fiber.Ctx) error {
 	END AS type
 	FROM content_type c
 	INNER JOIN gender AS g ON g.gender_id = c.gender_id
-	WHERE c.content_id = ?
+	WHERE c.content_id = $1
 `, id)
 
 	if err != nil {
@@ -128,7 +133,7 @@ func GET_Content_ID(c *fiber.Ctx) error {
 
 }
 
-func GET_Find_Content(c *fiber.Ctx) error {
+func GetFindContent(c *fiber.Ctx) error {
 
 	value := helpers.QuitarGuiones(c.Params("value"))
 
@@ -138,7 +143,9 @@ func GET_Find_Content(c *fiber.Ctx) error {
 
 	var dto []models.ContentDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 	SELECT
 	c.content_id,
 	c.content_title,
@@ -151,7 +158,7 @@ func GET_Find_Content(c *fiber.Ctx) error {
 	END AS type
 	FROM content_type c
 	INNER JOIN gender AS g ON g.gender_id = c.gender_id
-	WHERE c.content_title LIKE ? AND c.content_type = ?
+	WHERE c.content_title LIKE $1 AND c.content_type = $2
 	`, search, id)
 
 	if err != nil {
@@ -190,13 +197,15 @@ func GET_Find_Content(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
-func GET_Content_Type(c *fiber.Ctx) error {
+func GetContentType(c *fiber.Ctx) error {
 
-	id := (c.Params("id"))
+	id := c.Params("id")
 
 	var dto []models.ContentDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 	SELECT
 	c.content_id,
 	c.content_title,
@@ -209,7 +218,7 @@ func GET_Content_Type(c *fiber.Ctx) error {
 	END AS type
 	FROM content_type c
 	INNER JOIN gender AS g ON g.gender_id = c.gender_id
-	WHERE c.content_type = ?
+	WHERE c.content_type = $1
 	GROUP BY c.content_title, c.content_type
 	`, id)
 
@@ -250,14 +259,16 @@ func GET_Content_Type(c *fiber.Ctx) error {
 	return c.JSON(dto)
 }
 
-func GET_Full_Content(c *fiber.Ctx) error {
+func GetFullContent(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
 	var content models.ContentDTO
 	seasonsMap := make(map[uint]*models.SeasonDTO)
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 		SELECT
 			c.content_id,
 			c.content_title,
@@ -278,7 +289,7 @@ func GET_Full_Content(c *fiber.Ctx) error {
 		LEFT JOIN season AS s ON s.season_id = e.season_id
 		LEFT JOIN content_type AS c ON c.content_id = e.content_id
 		LEFT JOIN gender g ON c.gender_id = g.gender_id
-		WHERE c.content_id = ?
+		WHERE c.content_id = $1
 		ORDER BY s.season_id, e.episode_number
 	`, id)
 
@@ -289,7 +300,7 @@ func GET_Full_Content(c *fiber.Ctx) error {
 	}
 	defer rows.Close()
 
-	found := false // 👈 controlamos si se encontraron registros
+	found := false //
 
 	for rows.Next() {
 		var (
@@ -379,9 +390,11 @@ func GET_Full_Content(c *fiber.Ctx) error {
 
 }
 
-func POST_Content(c *fiber.Ctx) error {
+func PostContent(c *fiber.Ctx) error {
 
 	var content models.Content
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&content); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -390,15 +403,15 @@ func POST_Content(c *fiber.Ctx) error {
 	}
 
 	var existingId int
-	err := db.DB.QueryRow(`
+	err := conn.QueryRow(`
 		SELECT content_id 
 		FROM content_type 
-		WHERE UPPER(content_title) = ?
+		WHERE UPPER(content_title) = $1
 	`,
 		strings.ToUpper(content.Content_Title),
 	).Scan(&existingId)
 
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al verificar existencia del contenido",
 		})
@@ -410,9 +423,9 @@ func POST_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err = db.DB.Exec(`
+	_, err = conn.Exec(`
 		INSERT INTO content_type (content_title, content_type, content_cover, content_year, gender_id)
-		VALUES (?, ?, ?, ?, ?)
+		VALUES ($1, $2, $3, $4, $5)
 	`,
 		strings.ToUpper(content.Content_Title),
 		content.Content_Type,
@@ -433,11 +446,13 @@ func POST_Content(c *fiber.Ctx) error {
 
 }
 
-func PUT_Content(c *fiber.Ctx) error {
+func PutContent(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
 	var content models.Content
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&content); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -446,17 +461,17 @@ func PUT_Content(c *fiber.Ctx) error {
 	}
 
 	var existingId int
-	err := db.DB.QueryRow(`
+	err := conn.QueryRow(`
 		SELECT content_id 
 		FROM content_type 
-		WHERE UPPER(content_title) = ?
-		AND content_id != ?
+		WHERE UPPER(content_title) = $1
+		AND content_id != $2
 	`,
 		strings.ToUpper(content.Content_Title),
 		id,
 	).Scan(&existingId)
 
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al verificar existencia del contenido",
 		})
@@ -468,14 +483,14 @@ func PUT_Content(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err = db.DB.Exec(`
+	_, err = conn.Exec(`
 		UPDATE content_type SET
-			content_title = ?,
-			content_type = ?,
-			content_cover = ?,
-			content_year = ?,
-			gender_id = ?
-		WHERE content_id = ?
+			content_title 	= $1,
+			content_type 	= $2,
+			content_cover 	= $3,
+			content_year 	= $4,
+			gender_id 		= $5
+		WHERE content_id 	= $6
 	`,
 		strings.ToUpper(content.Content_Title),
 		content.Content_Type,
@@ -496,9 +511,11 @@ func PUT_Content(c *fiber.Ctx) error {
 	})
 }
 
-func POST_Content_Season(c *fiber.Ctx) error {
+func PostContentSeason(c *fiber.Ctx) error {
 
 	var data models.ContentSeason
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -506,7 +523,7 @@ func POST_Content_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	tx, err := db.DB.Begin()
+	tx, err := conn.Begin()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al iniciar la transacción",
@@ -519,7 +536,7 @@ func POST_Content_Season(c *fiber.Ctx) error {
 
 		_, err := tx.Exec(`
 			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
-			VALUES (?, ?, ?, ?, ?)
+			VALUES ($1, $2, $3, $4, $5)
 		`,
 			episodeNumber,
 			strings.ToUpper(episode.Episode_Name),
@@ -547,9 +564,11 @@ func POST_Content_Season(c *fiber.Ctx) error {
 	})
 }
 
-func PUT_Content_Season(c *fiber.Ctx) error {
+func PutContentSeason(c *fiber.Ctx) error {
 
 	var data models.ContentSeason
+
+	conn := db.GetDB()
 
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -557,7 +576,7 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 		})
 	}
 
-	tx, err := db.DB.Begin()
+	tx, err := conn.Begin()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al iniciar la transacción",
@@ -566,7 +585,7 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 
 	_, err = tx.Exec(`
 		DELETE FROM episode
-		WHERE season_id = ? AND content_id = ?
+		WHERE season_id = $1 AND content_id = $2
 	`, data.Season_Id, data.Content_Id)
 
 	if err != nil {
@@ -579,7 +598,7 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 	for _, episode := range data.Episodes {
 		_, err := tx.Exec(`
 			INSERT INTO episode (episode_number, episode_name, episode_url, season_id, content_id)
-			VALUES (?, ?, ?, ?, ?)
+			VALUES ($1, $2, $3, $5, $6)
 		`,
 			episode.Episode_Number,
 			strings.ToUpper(episode.Episode_Name),
@@ -607,11 +626,13 @@ func PUT_Content_Season(c *fiber.Ctx) error {
 	})
 }
 
-func DELETE_Content(c *fiber.Ctx) error {
+func DeleteContent(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	tx, err := db.DB.Begin()
+	conn := db.GetDB()
+
+	tx, err := conn.Begin()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Error al iniciar la transacción",
@@ -620,7 +641,7 @@ func DELETE_Content(c *fiber.Ctx) error {
 
 	_, err = tx.Exec(`
 		DELETE FROM episode
-		WHERE content_id = ?
+		WHERE content_id = $1
 	`, id)
 
 	if err != nil {
@@ -632,7 +653,7 @@ func DELETE_Content(c *fiber.Ctx) error {
 
 	result, err := tx.Exec(`
 		DELETE FROM content_type
-		WHERE content_id = ?
+		WHERE content_id = $1
 	`, id)
 
 	if err != nil {

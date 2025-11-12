@@ -2,17 +2,20 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 	db "github.com/theerudito/peliculas/database"
 	"github.com/theerudito/peliculas/models"
 )
 
-func GET_Episode(c *fiber.Ctx) error {
+func GetEpisode(c *fiber.Ctx) error {
 
 	var dto []models.EpisodieDTO
 
-	rows, err := db.DB.Query(`
+	conn := db.GetDB()
+
+	rows, err := conn.Query(`
 		SELECT
 			e.episode_id,
 			e.episode_name,
@@ -60,13 +63,15 @@ func GET_Episode(c *fiber.Ctx) error {
 
 }
 
-func GET_Episode_ID(c *fiber.Ctx) error {
+func GetEpisodeId(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
 	var episodie models.EpisodieDTO
 
-	row := db.DB.QueryRow(`
+	conn := db.GetDB()
+
+	row := conn.QueryRow(`
 	SELECT
 	e.episode_id,
 	e.episode_name,
@@ -75,7 +80,7 @@ func GET_Episode_ID(c *fiber.Ctx) error {
 	s.season_name
 	FROM episode AS e
 	INNER JOIN season AS s ON s.season_id = e.season_id
-	WHERE e.episode_id = ?`, id)
+	WHERE e.episode_id = $1`, id)
 
 	err := row.Scan(
 		&episodie.Episode_Id,
@@ -86,7 +91,7 @@ func GET_Episode_ID(c *fiber.Ctx) error {
 	)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "No se encontró el registro",
 			})

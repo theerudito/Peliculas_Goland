@@ -5,45 +5,37 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
-var DB *sql.DB
+type MyDB struct {
+	DB *sql.DB
+}
 
-func Connect() {
-	dbExists := fileExists("movies.db")
+var instance *MyDB
 
-	var err error
-	DB, err = sql.Open("sqlite3", "./movies.db")
+func InitDB() {
+	if instance != nil {
+		return
+	}
+
+	db, err := sql.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_DSN"))
 	if err != nil {
 		log.Fatalf("Error al abrir la base de datos: %v", err)
 	}
 
-	if err = DB.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		log.Fatalf("No se pudo conectar a la base de datos: %v", err)
 	}
 
-	log.Println("Conectado a la base de datos SQLite")
+	log.Println("✅ Conectado a la base de datos:", os.Getenv("DB_DRIVER"))
 
-	if !dbExists {
-		initSQL, err := os.ReadFile("init.sql")
-		if err != nil {
-			log.Fatalf("No se pudo leer el archivo init.sql: %v", err)
-		}
-
-		_, err = DB.Exec(string(initSQL))
-		if err != nil {
-			log.Fatalf("Error al ejecutar init.sql: %v", err)
-		}
-
-		log.Println("Archivo init.sql ejecutado correctamente")
-	}
+	instance = &MyDB{DB: db}
 }
 
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
+func GetDB() *sql.DB {
+	if instance == nil {
+		InitDB()
 	}
-	return !info.IsDir()
+	return instance.DB
 }

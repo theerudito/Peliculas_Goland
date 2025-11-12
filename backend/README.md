@@ -1,0 +1,4 @@
+DB_DRIVER=postgres
+DB_DSN=
+FRONTEND=
+SECRET_KEY
