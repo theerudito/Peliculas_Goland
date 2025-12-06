@@ -1,28 +1,35 @@
-CREATE DATABASE peliculas;
+CREATE DATABASE movies;
 
-CREATE TABLE login
+-- USER
+CREATE TABLE
+    login
 (
-    user_id  SERIAL PRIMARY KEY,
+    user_id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    logo     TEXT
+    password TEXT NOT NULL
 );
 
-CREATE TABLE gender
+-- GENEROS
+CREATE TABLE
+    gender
 (
-    gender_id   SERIAL PRIMARY KEY,
+    gender_id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     gender_name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE season
+-- TEMPORADAS
+CREATE TABLE
+    season
 (
-    season_id   SERIAL PRIMARY KEY,
+    season_id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     season_name TEXT NOT NULL
 );
 
-CREATE TABLE movie
+-- PELÍCULAS
+CREATE TABLE
+    movie
 (
-    movie_id    SERIAL PRIMARY KEY,
+    movie_id    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     movie_title TEXT    NOT NULL,
     movie_year  INTEGER NOT NULL,
     movie_cover TEXT    NOT NULL,
@@ -31,9 +38,11 @@ CREATE TABLE movie
     FOREIGN KEY (gender_id) REFERENCES gender (gender_id)
 );
 
-CREATE TABLE content_type
+-- TIPOS DE CONTENIDO (Series, Animes, etc.)
+CREATE TABLE
+    content_type
 (
-    content_id    SERIAL PRIMARY KEY,
+    content_id    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content_title TEXT    NOT NULL,
     content_type  INTEGER NOT NULL,
     content_cover TEXT    NOT NULL,
@@ -42,9 +51,11 @@ CREATE TABLE content_type
     FOREIGN KEY (gender_id) REFERENCES gender (gender_id)
 );
 
-CREATE TABLE episode
+-- EPISODIOS DE TEMPORADAS
+CREATE TABLE
+    episode
 (
-    episode_id     SERIAL PRIMARY KEY,
+    episode_id     INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     episode_number INTEGER NOT NULL,
     episode_name   TEXT    NOT NULL,
     episode_url    TEXT    NOT NULL,

@@ -1,8 +1,7 @@
 INSERT
 INTO Login (username, password)
-VALUES ('BOSS',
-        'o0XiGAcpJHHZB88iSma6Bvpxt8hmwmUxtwtpljK/+jWhZg==');
-
+VALUES ('THE BOSS',
+        'Bcf34Lq3YDgyFzmOgQGx6A1laMs5aaf1nzF+UzGTZpEu/A4=');
 
 INSERT
 INTO gender (gender_name)
@@ -38,6 +37,7 @@ VALUES ('DRAMA'),
        ('EXPERIMENTAL');
 
 
+
 INSERT
 INTO season (season_name)
 VALUES ('TEMPORADA 1'),
@@ -55,6 +55,8 @@ VALUES ('TEMPORADA 1'),
        ('TEMPORADA 13'),
        ('TEMPORADA 14'),
        ('TEMPORADA 15');
+
+
 
 INSERT
 INTO movie (movie_title,
@@ -79,6 +81,7 @@ VALUES ('MAN OF HONOR',
         3);
 
 
+
 INSERT
 INTO content_type (content_title,
                    content_type,
@@ -95,6 +98,7 @@ VALUES ('JUJUTSU KAISEN',
         'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/the100.png',
         2010,
         1);
+
 
 INSERT
 INTO episode (episode_number,
