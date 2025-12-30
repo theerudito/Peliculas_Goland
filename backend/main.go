@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -22,6 +24,6 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	_ = app.Listen(":3000")
+	_ = app.Listen(fmt.Sprintf(":%s", os.Getenv("PortServer")))
 
 }

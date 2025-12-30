@@ -18,7 +18,7 @@ func DerivarClave(valor string) []byte {
 
 func EncriptarDato(textPlano string) (string, error) {
 
-	key := os.Getenv("SECRET_KEY")
+	key := os.Getenv("Secret_Key")
 
 	keyBytes := DerivarClave(key)
 
@@ -47,7 +47,7 @@ func EncriptarDato(textPlano string) (string, error) {
 
 func DesencriptarDato(textCifrado string) (string, error) {
 
-	key := os.Getenv("SECRET_KEY")
+	key := os.Getenv("Secret_Key")
 
 	keyBytes := DerivarClave(key)
 

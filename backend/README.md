@@ -1,4 +1,13 @@
-DB_DRIVER=postgres
-DB_DSN=
-FRONTEND=
-SECRET_KEY
+Mode=Develop
+DriverDB=postgres
+ServerDB=localhost
+PortDB=5432
+UserDB=postgres
+PasswordBD=1020
+NameDB=peliculas
+PortServer=5000
+Secret_Key=theerudito
+Url=http://127.0.0.1:2000/api/v1/
+Directory_Path=storage
+Images=images
+Videos=videos

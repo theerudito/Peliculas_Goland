@@ -1,7 +1,7 @@
 INSERT
 INTO Login (username, password)
 VALUES ('THE BOSS',
-        'Bcf34Lq3YDgyFzmOgQGx6A1laMs5aaf1nzF+UzGTZpEu/A4=');
+        'o0XiGAcpJHHZB88iSma6Bvpxt8hmwmUxtwtpljK/+jWhZg==');
 
 INSERT
 INTO gender (gender_name)
@@ -36,8 +36,6 @@ VALUES ('DRAMA'),
        ('RELIGIOSO'),
        ('EXPERIMENTAL');
 
-
-
 INSERT
 INTO season (season_name)
 VALUES ('TEMPORADA 1'),
@@ -56,108 +54,51 @@ VALUES ('TEMPORADA 1'),
        ('TEMPORADA 14'),
        ('TEMPORADA 15');
 
-
+INSERT
+INTO storage (file_name, url, extension)
+VALUES ('1',  'http://127.0.0.1:5000/api/v1/images/cover1.jpg', '.png'),
+       ('2',  'http://127.0.0.1:5000/api/v1/videos/cap1.mp4',   '.mp4'),
+       ('3',  'http://127.0.0.1:5000/api/v1/images/cover2.jpg', '.png'),
+       ('4',  'http://127.0.0.1:5000/api/v1/videos/cap1.mp4',   '.mp4'),
+       ('5',  'http://127.0.0.1:5000/api/v1/videos/cap2.mp4',   '.mp4');
 
 INSERT
 INTO movie (movie_title,
             movie_year,
-            movie_cover,
-            movie_url,
+            cover_id,
+            video_id,
             gender_id)
 VALUES ('MAN OF HONOR',
         2000,
-        'https://m.media-amazon.com/images/I/91M9JytQi2L._AC_UF894,1000_QL80_.jpg',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Medias%2FVideos%2FPete%20Bellis%20%26%20Tommy%20-%20You%20Should%20Know%20(Costa%20Mee%20Remix).mp4?alt=media&token=c1348dc4-ba43-4af5-9f65-1880584b7dd1',
-        1),
-       ('THE SHAWSHANK REDEMPTION',
-        1994,
-        'https://cuevana.biz/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2FuRRTV7p6l2ivtODWJVVAMRrwTn2.jpg&w=640&q=75',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Medias%2FVideos%2FPete%20Bellis%20%26%20Tommy%20-%20You%20Should%20Know%20(Costa%20Mee%20Remix).mp4?alt=media&token=c1348dc4-ba43-4af5-9f65-1880584b7dd1',
-        2),
-       ('GLADIATOR',
-        2000,
-        'https://cuevana.biz/_next/image?url=https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Foriginal%2Fo6XhzKghQFliN49iE4M4RX94PTB.jpg&w=640&q=75',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Medias%2FVideos%2FPete%20Bellis%20%26%20Tommy%20-%20You%20Should%20Know%20(Costa%20Mee%20Remix).mp4?alt=media&token=c1348dc4-ba43-4af5-9f65-1880584b7dd1',
-        3);
-
-
+        1,
+        2,
+        1);
 
 INSERT
 INTO content_type (content_title,
                    content_type,
-                   content_cover,
+                   cover_id,
                    content_year,
                    gender_id)
 VALUES ('JUJUTSU KAISEN',
         1,
-        'https://latanime.org/thumbs/imagen/jujutsu-kaisen-s2-castellano-1692305959.jpg',
+        3,
         2023,
-        1),
-       ('LOS 100',
-        2,
-        'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/the100.png',
-        2010,
         1);
-
 
 INSERT
 INTO episode (episode_number,
               episode_name,
-              episode_url,
+              video_id,
               season_id,
               content_id)
 VALUES (1,
         'Capitulo 1',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
+        4,
         1,
         1),
        (2,
         'Capitulo 2',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
+        5,
         1,
-        1),
-       (3,
-        'Capitulo 3',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
-        1,
-        1),
-       (1,
-        'Capitulo 1',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
-        1,
-        2),
-       (2,
-        'Capitulo 2',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
-        1,
-        2),
-       (3,
-        'Capitulo 3',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
-        1,
-        2),
-       (4,
-        'Capitulo 4',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_1.mp4?alt=media&token=6e063fc6-29c2-4522-be07-2e45cdbd81e8',
-        1,
-        2),
-       (5,
-        'Capitulo 5',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
-        1,
-        2),
-       (6,
-        'Capitulo 6',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
-        1,
-        2),
-       (7,
-        'Capitulo 1',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2Fvideo.mp4?alt=media&token=5f0bae50-f142-4052-ab75-7456b4d513eb',
-        2,
-        2),
-       (8,
-        'Capitulo 2',
-        'https://firebasestorage.googleapis.com/v0/b/imagenes-cd065.appspot.com/o/Peliculas%2FVideos%2FCap_2.mp4?alt=media&token=7c1b4c8e-5b78-48e8-ab4f-e4b43571998a',
-        2,
-        2);
+        1);

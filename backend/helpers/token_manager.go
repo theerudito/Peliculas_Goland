@@ -9,7 +9,7 @@ import (
 
 func GenerateToken(value string) (string, error) {
 
-	var jwtSecret = []byte(os.Getenv("SECRET_KEY"))
+	var jwtSecret = []byte(os.Getenv("Secret_Key"))
 
 	claims := jwt.MapClaims{
 		"user": value,

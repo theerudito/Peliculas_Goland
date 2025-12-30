@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -19,7 +20,10 @@ func InitDB() {
 		return
 	}
 
-	db, err := sql.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_DSN"))
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("ServerDB"), os.Getenv("PortDB"), os.Getenv("UserDB"), os.Getenv("PasswordBD"), os.Getenv("NameDB"))
+
+	db, err := sql.Open(os.Getenv("DriverDB"), dsn)
+
 	if err != nil {
 		log.Fatalf("Error al abrir la base de datos: %v", err)
 	}
@@ -28,7 +32,7 @@ func InitDB() {
 		log.Fatalf("No se pudo conectar a la base de datos: %v", err)
 	}
 
-	log.Println("✅ Conectado a la base de datos:", os.Getenv("DB_DRIVER"))
+	log.Println("✅ Conectado a la base de datos:", os.Getenv("DriverDB"))
 
 	instance = &MyDB{DB: db}
 }
