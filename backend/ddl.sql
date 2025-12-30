@@ -74,3 +74,20 @@ CREATE TABLE episode
     FOREIGN KEY (content_id) REFERENCES content_type (content_id),
     FOREIGN KEY (video_id) REFERENCES storage (storage_id)
 );
+
+CREATE TABLE log_actions (
+   log_actions_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+   action TEXT,
+   table_name TEXT,
+   record_id INTEGER,
+   description TEXT,
+   created_at TIMESTAMP DEFAULT now ()
+);
+
+CREATE TABLE logs_error (
+   logs_error_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+   message TEXT,
+   table_name TEXT,
+   record_id INTEGER,
+   created_at TIMESTAMP DEFAULT now ()
+);

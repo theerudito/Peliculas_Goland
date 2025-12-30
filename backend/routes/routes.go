@@ -65,4 +65,7 @@ func SetupRoutes(app *fiber.App) {
 	// LOGIN
 	v1.Post("/login", handlers.PostLogin)
 
+	v1.Get("/images/:id", handlers.ImagesController)
+	v1.Get("/videos/:id", handlers.VideoController)
+
 }
