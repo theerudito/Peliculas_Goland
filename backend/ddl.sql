@@ -88,6 +88,5 @@ CREATE TABLE logs_error (
    logs_error_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
    message TEXT,
    table_name TEXT,
-   record_id INTEGER,
    created_at TIMESTAMP DEFAULT now ()
 );
