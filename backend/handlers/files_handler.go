@@ -59,7 +59,7 @@ func VideoController(c *fiber.Ctx) error {
 	filePath := filepath.Join(root, folder, fileName)
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return c.Status(404).JSON(fiber.Map{"error": "imagen no encontrada"})
+		return c.Status(404).JSON(fiber.Map{"error": "video no encontrado"})
 	}
 
 	return c.SendFile(filePath)

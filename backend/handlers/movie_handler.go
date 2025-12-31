@@ -377,32 +377,38 @@ func PutMovie(c *fiber.Ctx) error {
 
 	var (
 		oldCoverID, oldVideoID int
+		oldCoverFileToDelete   string
+		oldVideoFileToDelete   string
 	)
 
 	conn := db.GetDB()
-
 	var movie models.Movie
 
 	if err := c.BodyParser(&movie); err != nil {
-		return c.Status(400).JSON(fiber.Map{"messaje": "body inválido"})
+		return c.Status(400).JSON(fiber.Map{"message": "body inválido"})
 	}
 
 	if movie.Movie_Id == 0 {
-		return c.Status(400).JSON(fiber.Map{"messaje": "movie_id requerido"})
+		return c.Status(400).JSON(fiber.Map{"message": "movie_id requerido"})
 	}
 
 	movieTitle := strings.ToUpper(movie.Movie_Title)
 	movieYear := movie.Movie_Year
 	genderID := movie.Gender_Id
 
-	err := conn.QueryRow(`SELECT cover_id, video_id FROM movie WHERE movie_id = $1`, movie.Movie_Id).Scan(&oldCoverID, &oldVideoID)
+	err := conn.QueryRow(`
+		SELECT cover_id, video_id
+		FROM movie
+		WHERE movie_id = $1`,
+		movie.Movie_Id,
+	).Scan(&oldCoverID, &oldVideoID)
 
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
-		return c.Status(404).JSON(fiber.Map{"messaje": "la película no existe"})
+		return c.Status(404).JSON(fiber.Map{"message": "la película no existe"})
 	}
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"messaje": "error validando película"})
+		return c.Status(500).JSON(fiber.Map{"message": "error validando película"})
 	}
 
 	coverFile, _ := c.FormFile("cover")
@@ -411,7 +417,6 @@ func PutMovie(c *fiber.Ctx) error {
 	readFile := func(fh *multipart.FileHeader) ([]byte, []byte, error) {
 
 		src, err := fh.Open()
-
 		if err != nil {
 			return nil, nil, err
 		}
@@ -430,98 +435,120 @@ func PutMovie(c *fiber.Ctx) error {
 
 	if err != nil {
 		_ = helpers.InsertLogsError(conn, "movie", err.Error())
-		return c.Status(500).JSON(fiber.Map{"messaje": "error iniciando transacción"})
+		return c.Status(500).JSON(fiber.Map{"message": "error iniciando transacción"})
 	}
 
 	defer tx.Rollback()
 
-	if coverFile != nil {
+	/* =========================
+	   COVER
+	========================= */
+	if coverFile != nil && coverFile.Size > 0 {
 
-		coverData, coverHeader, err := readFile(coverFile)
+		err = tx.QueryRow(`
+			SELECT CONCAT(file_name, extension)
+			FROM storage
+			WHERE storage_id = $1`,
+			oldCoverID,
+		).Scan(&oldCoverFileToDelete)
 
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error leyendo cover"})
+			return c.Status(500).JSON(fiber.Map{"message": "error obteniendo cover antiguo"})
+		}
+
+		coverData, coverHeader, err := readFile(coverFile)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"message": "error leyendo cover"})
 		}
 
 		coverExt := helpers.InfoExtention(coverHeader)
-
 		fileName := uuid.New().String()
 
-		url, err := helpers.SaveImageToDirectory(coverData, fileName, coverExt, os.Getenv("Images"))
-
+		url, err := helpers.SaveImageToDirectory(
+			coverData,
+			fileName,
+			coverExt,
+			os.Getenv("Images"),
+		)
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error guardando cover"})
+			return c.Status(500).JSON(fiber.Map{"message": "error guardando cover"})
 		}
 
 		_, err = tx.Exec(`
-		UPDATE storage
-		SET file_name	=  $1, 
-		    url			=  $2, 
-		    extension	=  $3
-		WHERE storage_id = $4`,
+			UPDATE storage
+			SET file_name = $1,
+			    url = $2,
+			    extension = $3
+			WHERE storage_id = $4`,
 			fileName,
 			url,
 			coverExt,
 			oldCoverID,
 		)
-
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error actualizando cover"})
+			return c.Status(500).JSON(fiber.Map{"message": "error actualizando cover"})
 		}
-
-		var cover string
-		_ = tx.QueryRow("SELECT CONCAT(file_name, extension) AS img FROM storage WHERE storage_id = $1", oldCoverID).Scan(&cover)
-
-		_ = helpers.DeleteImageFromDirectory(cover, os.Getenv("Images"))
-
 	}
 
-	if videoFile != nil {
+	/* =========================
+	   VIDEO
+	========================= */
+	if videoFile != nil && videoFile.Size > 0 {
 
-		videoData, videoHeader, err := readFile(videoFile)
+		err = tx.QueryRow(`
+			SELECT CONCAT(file_name, extension)
+			FROM storage
+			WHERE storage_id = $1`,
+			oldVideoID,
+		).Scan(&oldVideoFileToDelete)
 
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error leyendo video"})
+			return c.Status(500).JSON(fiber.Map{"message": "error obteniendo video antiguo"})
+		}
+
+		videoData, videoHeader, err := readFile(videoFile)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"message": "error leyendo video"})
 		}
 
 		videoExt := helpers.InfoExtention(videoHeader)
-
 		fileName := uuid.New().String()
 
-		url, err := helpers.SaveImageToDirectory(videoData, fileName, videoExt, os.Getenv("Videos"))
-
+		url, err := helpers.SaveImageToDirectory(
+			videoData,
+			fileName,
+			videoExt,
+			os.Getenv("Videos"),
+		)
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error guardando video"})
+			return c.Status(500).JSON(fiber.Map{"message": "error guardando video"})
 		}
 
 		_, err = tx.Exec(`
-		UPDATE storage
-		SET file_name       = $1, 
-		    url             = $2, 
-		    extension		= $3
-		WHERE storage_id	= $4`,
+			UPDATE storage
+			SET file_name = $1,
+			    url = $2,
+			    extension = $3
+			WHERE storage_id = $4`,
 			fileName,
 			url,
 			videoExt,
 			oldVideoID,
 		)
-
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"messaje": "error actualizando video"})
+			return c.Status(500).JSON(fiber.Map{"message": "error actualizando video"})
 		}
-
-		var video string
-		_ = tx.QueryRow("SELECT CONCAT(file_name, extension) AS img FROM storage WHERE storage_id = $1", oldVideoID).Scan(&video)
-
-		_ = helpers.DeleteImageFromDirectory(video, os.Getenv("Videos"))
 	}
 
+	/* =========================
+	   MOVIE
+	========================= */
 	_, err = tx.Exec(`
-	UPDATE movie SET
-		movie_title  = $1,
-		movie_year   = $2,
-		gender_id    = $3
-	WHERE movie_id   = $4`,
+		UPDATE movie SET
+			movie_title = $1,
+			movie_year = $2,
+			gender_id = $3
+		WHERE movie_id = $4`,
 		movieTitle,
 		movieYear,
 		genderID,
@@ -530,18 +557,42 @@ func PutMovie(c *fiber.Ctx) error {
 
 	if err != nil {
 		_ = helpers.InsertLogsError(conn, "movie", err.Error())
-		return c.Status(500).JSON(fiber.Map{"messaje": "error actualizando movie"})
+		return c.Status(500).JSON(fiber.Map{"message": "error actualizando movie"})
 	}
 
 	if err := tx.Commit(); err != nil {
 		_ = helpers.InsertLogsError(conn, "movie", err.Error())
-		return c.Status(500).JSON(fiber.Map{"messaje": "error confirmando transacción"})
+		return c.Status(500).JSON(fiber.Map{"message": "error confirmando transacción"})
 	}
 
-	_ = helpers.InsertLogs(conn, "UPDATE", "movie", int(movie.Movie_Id), "Película actualizada correctamente ✨")
+	/* =========================
+	   DELETE FILES AFTER COMMIT
+	========================= */
+	if oldCoverFileToDelete != "" {
+		_ = helpers.DeleteImageFromDirectory(
+			oldCoverFileToDelete,
+			os.Getenv("Images"),
+		)
+	}
 
-	return c.Status(200).JSON(fiber.Map{"message": "Película actualizada correctamente ✨"})
+	if oldVideoFileToDelete != "" {
+		_ = helpers.DeleteImageFromDirectory(
+			oldVideoFileToDelete,
+			os.Getenv("Videos"),
+		)
+	}
 
+	_ = helpers.InsertLogs(
+		conn,
+		"UPDATE",
+		"movie",
+		int(movie.Movie_Id),
+		"Película actualizada correctamente ✨",
+	)
+
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Película actualizada correctamente ✨",
+	})
 }
 
 func DeleteMovie(c *fiber.Ctx) error {
