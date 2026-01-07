@@ -19,17 +19,18 @@ func GetContent(c *fiber.Ctx) error {
 
 	rows, err := conn.Query(`
 	SELECT
-	c.content_id,
-	c.content_title,
-	c.content_cover,
-	c.content_year,
-	g.gender_name,
-	CASE
-	WHEN c.content_type = 1 THEN 'ANIME'
-	ELSE 'SERIE'
-	END AS type
+		c.content_id,
+		c.content_title,
+		c.content_year,
+		g.gender_name,
+		s.url AS content_cover,
+		CASE
+		WHEN c.content_type = 1 THEN 'ANIME'
+		ELSE 'SERIE'
+		END AS type
 	FROM content_type c
-	INNER JOIN gender AS g ON g.gender_id = c.gender_id`)
+		LEFT JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN storage AS s ON s.storage_id = c.cover_id`)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -46,9 +47,9 @@ func GetContent(c *fiber.Ctx) error {
 		err := rows.Scan(
 			&content.Content_Id,
 			&content.Content_Title,
-			&content.Content_Cover,
 			&content.Content_Year,
 			&content.Content_Gender,
+			&content.Content_Cover,
 			&content.Content_Type)
 
 		if err != nil {
@@ -80,17 +81,18 @@ func GetContentId(c *fiber.Ctx) error {
 
 	rows, err := conn.Query(`
 	SELECT
-	c.content_id,
-	c.content_title,
-	c.content_cover,
-	c.content_year,
-	g.gender_name,
-	CASE
-	WHEN c.content_type = 1 THEN 'ANIME'
-	ELSE 'SERIE'
-	END AS type
+		c.content_id,
+		c.content_title,
+		c.content_year,
+		g.gender_name,
+		s.url AS content_cover,
+		CASE
+		WHEN c.content_type = 1 THEN 'ANIME'
+		ELSE 'SERIE'
+		END AS type
 	FROM content_type c
-	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN storage AS s ON s.storage_id = c.cover_id
 	WHERE c.content_id = $1
 `, id)
 
@@ -108,9 +110,9 @@ func GetContentId(c *fiber.Ctx) error {
 		err := rows.Scan(
 			&dto.Content_Id,
 			&dto.Content_Title,
-			&dto.Content_Cover,
 			&dto.Content_Year,
 			&dto.Content_Gender,
+			&dto.Content_Cover,
 			&dto.Content_Type,
 		)
 
@@ -147,17 +149,18 @@ func GetFindContent(c *fiber.Ctx) error {
 
 	rows, err := conn.Query(`
 	SELECT
-	c.content_id,
-	c.content_title,
-	c.content_cover,
-	c.content_year,
-	g.gender_name,
-	CASE
-	WHEN c.content_type = 1 THEN 'ANIME'
-	ELSE 'SERIE'
-	END AS type
+		c.content_id,
+		c.content_title,
+		c.content_year,
+		g.gender_name,
+		s.url AS content_cover,
+		CASE
+		WHEN c.content_type = 1 THEN 'ANIME'
+		ELSE 'SERIE'
+		END AS type
 	FROM content_type c
-	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN storage AS s ON s.storage_id = c.cover_id
 	WHERE c.content_title LIKE $1 AND c.content_type = $2
 	`, search, id)
 
@@ -174,9 +177,9 @@ func GetFindContent(c *fiber.Ctx) error {
 		err := rows.Scan(
 			&content.Content_Id,
 			&content.Content_Title,
-			&content.Content_Cover,
 			&content.Content_Year,
 			&content.Content_Gender,
+			&content.Content_Cover,
 			&content.Content_Type,
 		)
 		if err != nil {
@@ -207,17 +210,18 @@ func GetContentType(c *fiber.Ctx) error {
 
 	rows, err := conn.Query(`
 	SELECT
-	c.content_id,
-	c.content_title,
-	c.content_cover,
-	c.content_year,
-	g.gender_name,
-	CASE
-	WHEN c.content_type = 1 THEN 'ANIME'
-	ELSE 'SERIE'
-	END AS type
+		c.content_id,
+		c.content_title,
+		c.content_year,
+		g.gender_name,
+		s.url AS content_cover,
+		CASE
+		WHEN c.content_type = 1 THEN 'ANIME'
+		ELSE 'SERIE'
+		END AS type
 	FROM content_type c
-	INNER JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN gender AS g ON g.gender_id = c.gender_id
+		LEFT JOIN storage AS s ON s.storage_id = c.cover_id
 	WHERE c.content_type = $1
 	GROUP BY c.content_title, c.content_type
 	`, id)
@@ -235,9 +239,9 @@ func GetContentType(c *fiber.Ctx) error {
 		err := rows.Scan(
 			&content.Content_Id,
 			&content.Content_Title,
-			&content.Content_Cover,
 			&content.Content_Year,
 			&content.Content_Gender,
+			&content.Content_Cover,
 			&content.Content_Type,
 		)
 
@@ -272,7 +276,7 @@ func GetFullContent(c *fiber.Ctx) error {
 		SELECT
 			c.content_id,
 			c.content_title,
-			c.content_cover,
+			i.url AS content_cover,
 			c.content_year,
 			CASE
 				WHEN c.content_type = 1 THEN 'ANIME'
@@ -281,14 +285,16 @@ func GetFullContent(c *fiber.Ctx) error {
 			e.episode_id,
 			e.episode_number,
 			e.episode_name,
-			e.episode_url,
+			v.url AS episode_url,
 			s.season_id,
 			s.season_name,
 			g.gender_name
 		FROM episode AS e
-		LEFT JOIN season AS s ON s.season_id = e.season_id
-		LEFT JOIN content_type AS c ON c.content_id = e.content_id
-		LEFT JOIN gender g ON c.gender_id = g.gender_id
+			LEFT JOIN season AS s ON s.season_id = e.season_id
+			LEFT JOIN content_type AS c ON c.content_id = e.content_id
+			LEFT JOIN gender g ON c.gender_id = g.gender_id
+			LEFT JOIN storage AS i ON i.storage_id = e.video_id
+			LEFT JOIN storage AS v ON v.storage_id = c.cover_id
 		WHERE c.content_id = $1
 		ORDER BY s.season_id, e.episode_number
 	`, id)

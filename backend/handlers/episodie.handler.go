@@ -20,10 +20,11 @@ func GetEpisode(c *fiber.Ctx) error {
 			e.episode_id,
 			e.episode_name,
 			e.episode_number,
-			e.episode_url,
-			s.season_name
-			FROM episode AS e
-			INNER JOIN season AS s ON s.season_id = e.season_id
+			s.season_name,
+			v.url AS episode_url
+		FROM episode AS e
+			LEFT JOIN season AS s ON s.season_id = e.season_id
+			LEFT JOIN storage AS v ON v.storage_id = e.video_id
 	`)
 
 	if err != nil {
@@ -41,8 +42,8 @@ func GetEpisode(c *fiber.Ctx) error {
 			&episodie.Episode_Id,
 			&episodie.Episode_Name,
 			&episodie.Episode_Number,
-			&episodie.Episode_Url,
 			&episodie.Season,
+			&episodie.Episode_Url,
 		)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -73,21 +74,22 @@ func GetEpisodeId(c *fiber.Ctx) error {
 
 	row := conn.QueryRow(`
 	SELECT
-	e.episode_id,
-	e.episode_name,
-	e.episode_number,
-	e.episode_url,
-	s.season_name
+		e.episode_id,
+		e.episode_name,
+		e.episode_number,
+		s.season_name,
+		v.url AS episode_url
 	FROM episode AS e
-	INNER JOIN season AS s ON s.season_id = e.season_id
+		LEFT JOIN season AS s ON s.season_id = e.season_id
+		LEFT JOIN storage AS v ON v.storage_id = e.video_id
 	WHERE e.episode_id = $1`, id)
 
 	err := row.Scan(
 		&episodie.Episode_Id,
 		&episodie.Episode_Name,
 		&episodie.Episode_Number,
-		&episodie.Episode_Url,
 		&episodie.Season,
+		&episodie.Episode_Url,
 	)
 
 	if err != nil {

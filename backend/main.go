@@ -26,6 +26,7 @@ func main() {
 	})
 
 	db.InitDB()
+
 	defer db.GetDB().Close()
 
 	if err := helpers.CreateFolders(); err != nil {
