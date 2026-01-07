@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/theerudito/peliculas/handlers"
@@ -9,13 +11,12 @@ import (
 func SetupRoutes(app *fiber.App) {
 
 	allowedOrigins := map[string]bool{
-		"http://localhost:5173":               true, // Frontend Desarrollo
-		"http://peliculas.between-bytes.tech": true, // Frontend Producción
+		os.Getenv("URL_Frontend"): true,
 	}
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS, PATCH",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowOriginsFunc: func(origin string) bool {
 			return allowedOrigins[origin]
