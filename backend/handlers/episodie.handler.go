@@ -21,7 +21,7 @@ func GetEpisode(c *fiber.Ctx) error {
 			e.episode_name,
 			e.episode_number,
 			s.season_name,
-			v.url AS episode_url
+			COALESCE(v.url, '') AS episode_url
 		FROM episode AS e
 			LEFT JOIN season AS s ON s.season_id = e.season_id
 			LEFT JOIN storage AS v ON v.storage_id = e.video_id
@@ -42,8 +42,8 @@ func GetEpisode(c *fiber.Ctx) error {
 			&episodie.Episode_Id,
 			&episodie.Episode_Name,
 			&episodie.Episode_Number,
-			&episodie.Season,
-			&episodie.Episode_Url,
+			&episodie.Episode_Season,
+			&episodie.Episode_Video,
 		)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -78,7 +78,7 @@ func GetEpisodeId(c *fiber.Ctx) error {
 		e.episode_name,
 		e.episode_number,
 		s.season_name,
-		v.url AS episode_url
+		COALESCE(v.url, '') AS episode_url
 	FROM episode AS e
 		LEFT JOIN season AS s ON s.season_id = e.season_id
 		LEFT JOIN storage AS v ON v.storage_id = e.video_id
@@ -88,8 +88,8 @@ func GetEpisodeId(c *fiber.Ctx) error {
 		&episodie.Episode_Id,
 		&episodie.Episode_Name,
 		&episodie.Episode_Number,
-		&episodie.Season,
-		&episodie.Episode_Url,
+		&episodie.Episode_Season,
+		&episodie.Episode_Video,
 	)
 
 	if err != nil {

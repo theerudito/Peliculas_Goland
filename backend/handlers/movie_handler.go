@@ -18,7 +18,7 @@ import (
 
 func GetMovie(c *fiber.Ctx) error {
 
-	var dto []models.MovieDTO
+	var movies []models.MovieDTO
 
 	conn := db.GetDB()
 
@@ -27,12 +27,13 @@ func GetMovie(c *fiber.Ctx) error {
 			m.movie_id,
 			m.movie_title,
 			m.movie_year,
-			COALESCE(c.url, '') AS cover,
+			COALESCE(i.url, '') AS cover,
 			COALESCE(v.url, '') AS video,
+			g.gender_id,
 			g.gender_name
 		FROM movie AS m
 			LEFT JOIN gender AS g ON m.gender_id = g.gender_id
-			LEFT JOIN storage AS c ON m.cover_id = c.storage_id
+			LEFT JOIN storage AS i ON m.cover_id = i.storage_id
     		LEFT JOIN storage AS v ON m.video_id = v.storage_id
 	`)
 
@@ -47,6 +48,7 @@ func GetMovie(c *fiber.Ctx) error {
 	defer rows.Close()
 
 	for rows.Next() {
+
 		var movie models.MovieDTO
 
 		err := rows.Scan(
@@ -55,7 +57,8 @@ func GetMovie(c *fiber.Ctx) error {
 			&movie.Movie_Year,
 			&movie.Movie_Cover,
 			&movie.Movie_Video,
-			&movie.Gender,
+			&movie.Movie_Gender_Id,
+			&movie.Movie_Gender,
 		)
 
 		if err != nil {
@@ -65,14 +68,14 @@ func GetMovie(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error al leer los registros"})
 		}
 
-		dto = append(dto, movie)
+		movies = append(movies, movie)
 	}
 
-	if len(dto) == 0 {
+	if len(movies) == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "No se encontraron registros"})
 	}
 
-	return c.JSON(dto)
+	return c.JSON(movies)
 
 }
 
@@ -89,12 +92,13 @@ func GetMovieId(c *fiber.Ctx) error {
 			m.movie_id,
 			m.movie_title,
 			m.movie_year,
-			COALESCE(c.url, '') AS cover,
+			COALESCE(i.url, '') AS cover,
 			COALESCE(v.url, '') AS video,
+			g.gender_id,
 			g.gender_name
 		FROM movie AS m
 			INNER JOIN gender AS g ON m.gender_id = g.gender_id
-			LEFT JOIN storage AS c ON m.cover_id = c.storage_id
+			LEFT JOIN storage AS i ON m.cover_id = i.storage_id
     		LEFT JOIN storage AS v ON m.video_id = v.storage_id
 		WHERE m.movie_id = $1
 `, id)
@@ -115,7 +119,8 @@ func GetMovieId(c *fiber.Ctx) error {
 			&movie.Movie_Year,
 			&movie.Movie_Cover,
 			&movie.Movie_Video,
-			&movie.Gender,
+			&movie.Movie_Gender_Id,
+			&movie.Movie_Gender,
 		)
 
 		if err != nil {
@@ -141,7 +146,7 @@ func GetFindMovie(c *fiber.Ctx) error {
 
 	value := helpers.QuitarGuiones(c.Params("value"))
 
-	var dto []models.MovieDTO
+	var movies []models.MovieDTO
 
 	conn := db.GetDB()
 
@@ -152,15 +157,15 @@ func GetFindMovie(c *fiber.Ctx) error {
 			m.movie_id,
 			m.movie_title,
 			m.movie_year,
-			COALESCE(c.url, '') AS cover,
+			COALESCE(i.url, '') AS cover,
 			COALESCE(v.url, '') AS video,
+			g.gender_id,
 			g.gender_name
 		FROM movie AS m
 			INNER JOIN gender AS g ON m.gender_id = g.gender_id
-			LEFT JOIN storage AS c ON m.cover_id = c.storage_id
+			LEFT JOIN storage AS i ON m.cover_id = i.storage_id
     		LEFT JOIN storage AS v ON m.video_id = v.storage_id
-		WHERE m.movie_title LIKE $1
-`, search)
+		WHERE m.movie_title LIKE $1`, search)
 
 	if err != nil {
 
@@ -180,8 +185,10 @@ func GetFindMovie(c *fiber.Ctx) error {
 			&movie.Movie_Year,
 			&movie.Movie_Cover,
 			&movie.Movie_Video,
-			&movie.Gender,
+			&movie.Movie_Gender_Id,
+			&movie.Movie_Gender,
 		)
+
 		if err != nil {
 
 			_ = helpers.InsertLogsError(conn, "movie", err.Error())
@@ -189,14 +196,15 @@ func GetFindMovie(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error al leer los registros"})
 		}
 
-		dto = append(dto, movie)
+		movies = append(movies, movie)
+
 	}
 
-	if len(dto) == 0 {
+	if len(movies) == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "No se encontraron registros"})
 	}
 
-	return c.JSON(dto)
+	return c.JSON(movies)
 
 }
 
@@ -394,7 +402,7 @@ func PutMovie(c *fiber.Ctx) error {
 
 	movieTitle := strings.ToUpper(movie.Movie_Title)
 	movieYear := movie.Movie_Year
-	genderID := movie.Gender_Id
+	genderID := movie.Movie_Gender_Id
 
 	err := conn.QueryRow(`
 		SELECT cover_id, video_id
